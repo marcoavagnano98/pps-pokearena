@@ -7,4 +7,6 @@ lazy val root = (project in file("."))
     name := "pps-pokearena",
     libraryDependencies ++= Dependencies.Gdx()
   )
-libraryDependencies ++= Seq()
+libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "3.2.16" % Test
+)
