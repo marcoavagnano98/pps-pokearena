@@ -1,8 +1,7 @@
 import com.badlogic.gdx.backends.lwjgl3.*
-import com.badlogic.gdx.{Game, Gdx, ScreenAdapter}
+import view.Game
 
-object Game extends com.badlogic.gdx.Game:
-  override def create(): Unit = ???
+
 
 object Launcher:
   @main
