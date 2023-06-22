@@ -1,7 +1,8 @@
-package model.entities
+package model.entities.pokemon
 
-import model.entities.ElementType
-import model.entities.PokemonStatus
+import model.entities.pokemon.PokemonStatus
+import model.entities.Entity
+
 trait Pokemon extends Entity:
   def hp: Int
 
@@ -23,42 +24,21 @@ trait Pokemon extends Entity:
 
 
 object Pokemon:
-
-  def apply(id: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: List[Move], status: PokemonStatus): Pokemon = ???
+  def apply(id: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: List[Move], elementType: ElementType): Pokemon =
+    PokemonImpl(id = id, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType)
 
   private case class PokemonImpl(override val height: Int = 5,
-                                 override val width: Int,
+                                 override val width: Int = 5,
                                  override val id: String,
                                  override val hp: Int,
                                  override val attack: Int,
                                  override val defense: Int,
                                  override val speed: Int,
                                  override val moves: List[Move],
-                                 override val status: PokemonStatus,
+                                 override val status: PokemonStatus = HealthyStatus(),
                                  override val elementType: ElementType
                                 ) extends Pokemon:
 
     override def withHp(newHp: Int): Pokemon = copy(hp = newHp)
+
     override def withStatus(newStatus: PokemonStatus): Pokemon = copy(status = newStatus)
-
-/*
-trait ElementType
-case class Fire() extends ElementType
-case class Pokemon[T <: ElementType](override val height:Int,
-                                     override val width:Int,
-                                     override val id:String,
-                                     elementType: T,
-                                     override val hp:Int,
-                                     override val attack:Int,
-                                     override val defense:Int,
-                                     override val speed:Int,
-                                     override val moves:List[Move]) extends BasePokemon:
-  override type ElementType = T
-
-object main:
-  @main def test() =
-    val p = Pokemon[Fire](10,20,"ciao",new Fire,13,14,13,14,List())
-    print(p.elementType)
-*/
-
-
