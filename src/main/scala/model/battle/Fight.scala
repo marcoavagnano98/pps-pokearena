@@ -1,26 +1,26 @@
 package model.battle
 
-import model.entities.BasePokemon
+import model.entities.pokemon.Pokemon
 
 /**
- * [[Fight]] models clash between two [[BasePokemon]]
+ * [[Fight]] models clash between two [[Pokemon]]
  */
 trait Fight:
   /**
    * 
-   * @return player's [[BasePokemon]]
+   * @return player's [[Pokemon]]
    */
-  def playerPokemon: BasePokemon
+  def playerPokemon: Pokemon
   /**
    *
-   * @return opponent's [[BasePokemon]]
+   * @return opponent's [[Pokemon]]
    */
-  def opponentPokemon: BasePokemon
+  def opponentPokemon: Pokemon
   
   type Turn
 
   /**
    * 
-   * @return defeated [[BasePokemon]]
+   * @return defeated [[Pokemon]]
    */
-  def endFight: BasePokemon
+  def endFight: Pokemon

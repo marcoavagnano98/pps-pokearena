@@ -1,7 +1,7 @@
 package model.battle
 
-import model.entities.{BasePokemon, Trainer}
-
+import model.entities.{Trainer}
+import model.entities.pokemon.Pokemon
 /**
  * Battle models clash between two trainers
  */
@@ -22,12 +22,12 @@ trait Battle:
    *
    * @return list player's pokemon
    */
-  def playerPokemon: List[BasePokemon]
+  def playerPokemon: List[Pokemon]
   /**
    *
    * @return list opponent's pokemon
    */
-  def opponentPokemon: List[BasePokemon]
+  def opponentPokemon: List[Pokemon]
 
   /**
    *

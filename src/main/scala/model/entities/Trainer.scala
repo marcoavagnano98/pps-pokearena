@@ -1,9 +1,9 @@
 package model.entities
-import model.entities.BasePokemon
+import model.entities.pokemon.Pokemon
 
 trait Trainer:
   /**
    * @return pokemonTeam return the pokemon team of the trainer
    *
    */
-  def pokemonTeam: List[BasePokemon]
+  def pokemonTeam: List[Pokemon]
