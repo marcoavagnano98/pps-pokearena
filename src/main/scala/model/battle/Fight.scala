@@ -29,10 +29,6 @@ trait Fight:
 case class FightTurn(pokemonInBattle: Seq[Pokemon]):
   extension (seq: Seq[Pokemon])
     def missTurn: Seq[Pokemon] =
-    /*seq.filter(p =>
-      (p.status.isInstanceOf[SkipTurn] && !p.status.asInstanceOf[SkipTurn].applyStatus(p))
-        || !p.status.isInstanceOf[SkipTurn])
-  */
       seq.filter({
         case pokemon: Pokemon => pokemon.status match
           case s:SkipTurn => !s.applyStatus(pokemon)
