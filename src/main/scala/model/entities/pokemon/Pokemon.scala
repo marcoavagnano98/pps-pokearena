@@ -12,7 +12,7 @@ trait Pokemon extends Entity:
 
   def speed: Int
 
-  def moves: List[Move]
+  def moves: Seq[Move]
 
   def elementType: ElementType
 
@@ -22,9 +22,11 @@ trait Pokemon extends Entity:
 
   def withStatus(status: PokemonStatus): Pokemon
 
+  def withMoves(moves: Seq[Move]) : Pokemon
+
 
 object Pokemon:
-  def apply(id: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: List[Move], elementType: ElementType): Pokemon =
+  def apply(id: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: Seq[Move], elementType: ElementType): Pokemon =
     PokemonImpl(id = id, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType)
 
   private case class PokemonImpl(override val height: Int = 5,
@@ -34,7 +36,7 @@ object Pokemon:
                                  override val attack: Int,
                                  override val defense: Int,
                                  override val speed: Int,
-                                 override val moves: List[Move],
+                                 override val moves: Seq[Move],
                                  override val status: PokemonStatus = HealthyStatus(),
                                  override val elementType: ElementType
                                 ) extends Pokemon:
@@ -42,3 +44,5 @@ object Pokemon:
     override def withHp(newHp: Int): Pokemon = copy(hp = newHp)
 
     override def withStatus(newStatus: PokemonStatus): Pokemon = copy(status = newStatus)
+
+    override def withMoves(newMoves: Seq[Move]) : Pokemon = copy(moves = newMoves)
