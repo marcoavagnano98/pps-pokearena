@@ -1,32 +1,40 @@
 package model.entities.pokemon
 
-import model.entities.pokemon.AdditionalEffects.*
 import model.entities.pokemon.Pokemon
 
 trait PokemonStatus
 
-trait StatusWithEffect extends PokemonStatus:
+trait PokemonStatusWithEffect extends PokemonStatus :
   type Result
 
   def applyStatus(p: Pokemon): Result
 
+object AdditionalEffects:
+
+  trait SkipTurn extends PokemonStatusWithEffect :
+    override type Result = Boolean
+
+    def probability: Int
+
+  trait GainDamage extends PokemonStatusWithEffect :
+    override type Result = Pokemon
+
+    def damage: Int
+
+import model.entities.pokemon.AdditionalEffects.*
+import scala.util.Random
+import util.Utilities.dice
+
 class HealthyStatus extends PokemonStatus
 
-class ParalizedStatus extends StatusWithEffect with SkipTurn:
-  override type Result = Boolean
+class ParalyzeStatus extends PokemonStatusWithEffect with SkipTurn :
+  override def probability: Int = 30
 
   override def applyStatus(pokemon: Pokemon): Boolean =
-    true
+    Random.dice(probability)
 
-class BurnStatus extends StatusWithEffect with GainDamage:
-  override type Result = Pokemon
+class BurnStatus extends PokemonStatusWithEffect with GainDamage :
+  override def damage: Int = 30
 
   override def applyStatus(pokemon: Pokemon): Pokemon =
     pokemon withHp (pokemon.hp - damage)
-
-object AdditionalEffects:
-  trait SkipTurn:
-    val probabilty = 30
-
-  trait GainDamage:
-    val damage = 30
