@@ -1,8 +1,8 @@
 package model.entities.pokemon
 
-import model.entities.pokemon.{Move, Pokemon, PokemonStatus}
-
+import model.entities.pokemon.{Move, Pokemon, PokemonStatus, PokemonStatusWithEffect}
 import scala.util.Random
+import util.Utilities.*
 
 trait Move:
   def damage: Int
@@ -27,14 +27,23 @@ object Move:
                               override val name: String,
                               override val elementType: ElementType,
                               override val status: PokemonStatus,
-                             ) extends Move:
-    private val probabiltyForApplyStatus = 30
+                             ) extends Move :
 
-    override def applyStatus(p: Pokemon): Pokemon =
-      val rand = Random()
-      if (rand.between(1, 100) <= probabiltyForApplyStatus) then
-        p withStatus status
-      p
+    override def applyStatus(p: Pokemon): Pokemon = status match
+      case s: PokemonStatusWithEffect => p withStatus s
+      case _ => p
+//      case s:PokemonStatusWithEffect if randomDice(s.probabilityForApplyStatus)=>
+//        val newP = p withStatus s
+//        s match
+//          case s:PersistentEffect => s applyPersistentEffect newP
+//          case _ => newP
+//      case _ => p
+
+
+
+
+
+
 
 
 

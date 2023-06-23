@@ -1,9 +1,7 @@
 package model.parser
 
 import model.entities.pokemon.{ElementType, Move, Pokemon, PokemonStatus}
-import model.entities.pokemon.BurnStatus
-import model.entities.pokemon.ParalyzeStatus
-import model.entities.pokemon.HealthyStatus
+import model.entities.pokemon.AllPokemonStatus.*
 
 import scala.io.Source
 

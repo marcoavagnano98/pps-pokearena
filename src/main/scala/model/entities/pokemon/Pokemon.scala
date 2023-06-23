@@ -2,8 +2,9 @@ package model.entities.pokemon
 
 import model.entities.pokemon.PokemonStatus
 import model.entities.Entity
+import model.entities.pokemon.AllPokemonStatus.HealthyStatus
 
-trait Pokemon extends Entity:
+trait Pokemon extends Entity :
   def hp: Int
 
   def attack: Int
@@ -22,8 +23,11 @@ trait Pokemon extends Entity:
 
   def withStatus(status: PokemonStatus): Pokemon
 
-  def withMoves(moves: Seq[Move]) : Pokemon
+  def withMoves(moves: Seq[Move]): Pokemon
 
+  def withSpeed(speed: Int): Pokemon
+
+  def withAtk(atk: Int): Pokemon
 
 object Pokemon:
   def apply(id: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: Seq[Move], elementType: ElementType): Pokemon =
@@ -39,10 +43,14 @@ object Pokemon:
                                  override val moves: Seq[Move],
                                  override val status: PokemonStatus = HealthyStatus(),
                                  override val elementType: ElementType
-                                ) extends Pokemon:
+                                ) extends Pokemon :
 
     override def withHp(newHp: Int): Pokemon = copy(hp = newHp)
 
     override def withStatus(newStatus: PokemonStatus): Pokemon = copy(status = newStatus)
 
-    override def withMoves(newMoves: Seq[Move]) : Pokemon = copy(moves = newMoves)
+    override def withMoves(newMoves: Seq[Move]): Pokemon = copy(moves = newMoves)
+
+    override def withSpeed(newSpeed: Int): Pokemon = copy(speed = newSpeed)
+
+    override def withAtk(newAtk: Int): Pokemon = copy(attack = newAtk)
