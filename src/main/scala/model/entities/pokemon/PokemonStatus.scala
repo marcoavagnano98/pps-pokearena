@@ -1,7 +1,7 @@
 package model.entities.pokemon
 
 import model.entities.pokemon.Pokemon
-import util.Utilities.randomDice
+//import util.Utilities.randomDice
 
 
 /*
@@ -24,7 +24,8 @@ import util.Utilities.randomDice
 */
 
 //
-import util.Utilities.randomDice
+import util.Utilities.*
+import scala.util.Random
 
 trait PokemonStatus
 
@@ -39,7 +40,7 @@ object AdditionalEffect:
 
     def probabilityToApplySkipTurn: Int
 
-    override def applyEffect(pokemon: Pokemon): Result = randomDice(probabilityToApplySkipTurn)
+    override def applyEffect(pokemon: Pokemon): Result = Random.dice(probabilityToApplySkipTurn)
 
   trait DealDamage extends PermanentEffect :
     def quantityOfDamage: Int
@@ -85,7 +86,7 @@ object AllPokemonStatus:
 
     override def probabilityToApplyStatus: Int = 30
 
-    override def applyStatus(pokemon: Pokemon): Pokemon = if (randomDice(probabilityToApplyStatus)) {
+    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
       changeStatsEffect(pokemon, atkToChange) withStatus this
     } else {
       pokemon
@@ -96,7 +97,7 @@ object AllPokemonStatus:
     override def probabilityToApplyStatus: Int = 30
     override def probabilityToApplySkipTurn: Int = 30
 
-    override def applyStatus(pokemon: Pokemon): Pokemon = if (randomDice(probabilityToApplyStatus)) {
+    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
       changeStatsEffect(pokemon, speedToChange) withStatus this
     } else {
       pokemon
