@@ -1,85 +1,26 @@
 package model.entities.pokemon
 
 import model.entities.pokemon.Pokemon
-//import util.Utilities.randomDice
-
-
-/*
-
-  trait PokemonStatus
-
-  trait PokemonStatusWithEffect extend PokemonStatus
-
-
-  NormalStatus
-  Burn
-
-
-  Effect
-
-  Item
-  pozione with ChangeStatsEffect
-
-
-*/
-
-//
 import util.Utilities.*
 import scala.util.Random
 
-trait PokemonStatus
-
-object AdditionalEffect:
-  trait PermanentEffect:
-    type Result
-
-    def applyEffect(pokemon: Pokemon): Result
-
-  trait SkipTurn extends PermanentEffect :
-    override type Result = Boolean
-
-    def probabilityToApplySkipTurn: Int
-
-    override def applyEffect(pokemon: Pokemon): Result = Random.dice(probabilityToApplySkipTurn)
-
-  trait DealDamage extends PermanentEffect :
-    def quantityOfDamage: Int
-
-    override type Result = Pokemon
-
-    override def applyEffect(pokemon: Pokemon): Result = pokemon withHp (pokemon.hp - quantityOfDamage)
-
-  trait ChangeStatsEffect:
-    def changeStatsEffect(pokemon: Pokemon, stat: Int): Pokemon
-
-  case class ChangeHpEffect() extends ChangeStatsEffect :
-    override def changeStatsEffect(pokemon: Pokemon, stat: Int): Pokemon =
-      pokemon withHp stat
-
-  trait ChangeAtkEffect extends ChangeStatsEffect :
-    def atkToChange: Int
-
-    override def changeStatsEffect(pokemon: Pokemon, stat: Int): Pokemon =
-      pokemon withHp stat
-
-  trait ChangeSpeedEffect extends ChangeStatsEffect :
-    def speedToChange: Int
-
-    override def changeStatsEffect(pokemon: Pokemon, stat: Int): Pokemon =
-      pokemon withSpeed speedToChange
-
+trait PokemonStatus:
+  def name:String
+  def description:String
 
 trait PokemonStatusWithEffect extends PokemonStatus :
   def probabilityToApplyStatus: Int
 
   def applyStatus(p: Pokemon): Pokemon
 
-import AdditionalEffect.*
+import StatusEffects.*
 
 object AllPokemonStatus:
-  class HealthyStatus extends PokemonStatus
+  case class HealthyStatus(override val name:String = "Normal",
+                      override val description:String = "Normal status") extends PokemonStatus
 
-  class BurnStatus extends PokemonStatusWithEffect with DealDamage with ChangeAtkEffect :
+  case class BurnStatus(override val name:String = "Burn",
+                   override val description:String = "Lose 30 hp every turn and reduce the atk") extends PokemonStatusWithEffect with DealDamageEffect with ChangeAtkEffect :
     override def atkToChange: Int = 10
 
     override def quantityOfDamage: Int = 30
@@ -92,7 +33,8 @@ object AllPokemonStatus:
       pokemon
     }
 
-  class ParalyzeStatus extends PokemonStatusWithEffect with SkipTurn with ChangeSpeedEffect :
+  case class ParalyzeStatus(override val name:String = "Paralyze",
+                       override val description:String = "Possibility to skip the turn and decrease speed") extends PokemonStatusWithEffect with SkipTurnEffect with ChangeSpeedEffect :
     override def speedToChange: Int = 10
     override def probabilityToApplyStatus: Int = 30
     override def probabilityToApplySkipTurn: Int = 30
