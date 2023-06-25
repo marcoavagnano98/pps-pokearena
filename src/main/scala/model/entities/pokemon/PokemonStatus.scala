@@ -23,12 +23,12 @@ object AllPokemonStatus:
                    override val description:String = "Lose 30 hp every turn and reduce the atk") extends PokemonStatusWithEffect with DealDamageEffect with ChangeAtkEffect :
     override def atkToChange: Int = 10
 
-    override def quantityOfDamage: Int = 30
+    override def damageOverTime: Int = 30
 
     override def probabilityToApplyStatus: Int = 30
 
     override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
-      changeStatsEffect(pokemon, atkToChange) withStatus this
+      applyChangeStat(pokemon) withStatus this
     } else {
       pokemon
     }
@@ -40,7 +40,7 @@ object AllPokemonStatus:
     override def probabilityToApplySkipTurn: Int = 30
 
     override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
-      changeStatsEffect(pokemon, speedToChange) withStatus this
+      applyChangeStat(pokemon) withStatus this
     } else {
       pokemon
     }
