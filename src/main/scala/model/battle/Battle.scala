@@ -1,9 +1,11 @@
 package model.battle
 
 import model.entities.Trainer
+import model.entities.pokemon.ElementType.Fire
 import model.entities.pokemon.{Move, Pokemon}
 
 import scala.language.postfixOps
+
 /**
  * Battle models clash between two trainers
  */
@@ -20,41 +22,54 @@ trait Battle:
    */
   def opponent: Trainer
 
-
   /**
    *
-   * @return an instance of new [[Fight]]
+   * @return an instance of new [[BattleEngine]]
    */
-  def fight(playerMove: Move, aiMove:Move): Boolean
+  def fight(playerMove: Move, aiMove: Move): Boolean
+
+enum BattleOption:
+  case Attack(move: Move)
+  case Bag(/*item*/)
+  case Change(pos: Int)
+
+case class BattleUnit(pokemon: Pokemon, trainer: Trainer, battleOption: BattleOption):
+  def withPokemonUpdate(pokemon: Pokemon): BattleUnit = copy(pokemon = pokemon)
 
 object Battle:
   def apply(player: Trainer, opponent: Trainer): Battle =
-    BattleImpl(player,opponent)
+    BattleImpl(player, opponent)
+
   private case class BattleImpl(override val player: Trainer,
                                 override val opponent: Trainer,
-                                ) extends Battle:
-    var playerPokemon:Seq[Pokemon] = player.pokemonTeam
-    var opponentPokemon:Seq[Pokemon] = opponent.pokemonTeam
+                               ) extends Battle :
 
-    override def fight(playerMove: Move, aiMove:Move): Boolean =
-      import util.Utilities.pop
+    import util.Utilities.{pop, updateHead}
+
+    var playerPokemon: Seq[Pokemon] = player.pokemonTeam
+    var opponentPokemon: Seq[Pokemon] = opponent.pokemonTeam
+
+    override def fight(playerMove: Move, aiMove: Move): Boolean =
       (playerPokemon pop, opponentPokemon pop) match
         case (Some(p1), Some(p2)) =>
           playerPokemon = p1._2
           opponentPokemon = p2._2
+          val playerUnit = BattleUnit(p1._1, player, BattleOption.Attack(playerMove))
+          val opponentUnit = BattleUnit(p2._1, opponent, BattleOption.Attack(aiMove))
           for
-            updatedPokemon <- Fight(p1._1,p2._1,Map(p1._1.id -> playerMove, p2._1.id -> aiMove))
-          do update(p1._1, p2._1, updatedPokemon)
+            updatedUnit <- BattleEngine(Seq(playerUnit, opponentUnit))
+          do updateDefenderDamage(updatedUnit)
           false
-
         case _ => true
 
-    def update(p1:Pokemon, p2:Pokemon,updated: Pokemon): Unit =
-      updated.id match
-        case id: String if id == p1.id => playerPokemon = playerPokemon.updated(0, updated)
-        case _ => opponentPokemon = opponentPokemon.updated(0, updated)
+    def updateDefenderDamage(updatedUnit: BattleUnit): Unit =
+      updatedUnit.trainer match
+        case _: Trainer /*Player*/ => playerPokemon = playerPokemon updateHead updatedUnit.pokemon
+        case _ => opponentPokemon = opponentPokemon updateHead updatedUnit.pokemon
 
 
-
-
-
+/*extension (b: Battle)
+  def changePokemon(t: Trainer, i: Int): Unit =
+    t match
+      case _:Trainer/*Player*/ => playerPokemon = playerPokemon updateHead i
+      case _ => opponentPokemon = opponentPokemon updateHead i*/
