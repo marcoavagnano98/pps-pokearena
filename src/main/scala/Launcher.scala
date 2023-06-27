@@ -1,6 +1,6 @@
 import com.badlogic.gdx.backends.lwjgl3.*
 import view.Game
-
+import pokearena.PokeArena
 
 
 object Launcher:
@@ -10,4 +10,4 @@ object Launcher:
     config.setTitle("PokeArena")
     config.setResizable(System.getProperty("os.arch") != "aarch64")
     config.setWindowedMode(960, 540)
-    Lwjgl3Application(Game, config)
+    Lwjgl3Application(PokeArena(), config)

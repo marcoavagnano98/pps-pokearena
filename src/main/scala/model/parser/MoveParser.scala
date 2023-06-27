@@ -11,7 +11,7 @@ object MoveParser:
   import io.circe.HCursor
   import io.circe.Decoder
 
-  private val movesFileName = "move.json"
+  private val movesFileName = "data/moves.json"
 
   def getAllMoves: Seq[Move] =
     val inputString = Source.fromResource(movesFileName).mkString
@@ -23,15 +23,17 @@ object MoveParser:
         element <- hCursor.downField("type").as[String]
         power <- hCursor.downField("power").as[Int]
         pp <- hCursor.downField("pp").as[Int]
-        status <- hCursor.downField("effect").downField("statusCondition").as[String]
+        status <- hCursor.downField("effect").downField("statusCondition").as[Option[String]]
       } yield Move(damage = power, powerPoint = pp, name = name, elementType = element, status = convertStringToPokemonStatus(status))
     }
 
     val decodingResult = parser.decode[List[Move]](inputString)
-    decodingResult.toOption.get
+    decodingResult match
+      case Right(l) => l
+      case _ => List()
 
-  private def convertStringToPokemonStatus(status: String) : PokemonStatus = status match {
-    case "paralysis" => ParalyzeStatus()
-    case "burn" => BurnStatus()
+  private def convertStringToPokemonStatus(status: Option[String]) : PokemonStatus = status match {
+    case Some("paralysis") => ParalyzeStatus()
+    case Some("burn") => BurnStatus()
     case _ => HealthyStatus()
   }
