@@ -1,59 +1,54 @@
 package model.battle
 
+import model.battle.{BattlePair, OptionalPair}
 import model.entities.Trainer
 import model.entities.pokemon.AdditionalEffects.{GainDamage, SkipTurn}
 import model.entities.pokemon.ElementType.Fire
 import model.entities.pokemon.{Move, ParalyzeStatus, Pokemon}
 
-object BattleEngine:
+import scala.Tuple2
+import scala.annotation.tailrec
+import scala.language.postfixOps
 
+object BattleEngine:
   import BattleOption.*
 
-  def apply(unitsInBattle: Seq[BattleUnit]): Seq[BattleUnit] =
+  given Ordering[BattleUnit] = Ordering.by[BattleUnit, Int](_.pokemon.speed).reverse
+
+  given Conversion [(BattleUnit,BattleUnit), OptionalPair[BattleUnit]] with
+    def apply(t: (BattleUnit, BattleUnit)): OptionalPair[BattleUnit] =
+      BattlePair(Seq(t._1, t._2).sorted)
+
+  def apply(t:(BattleUnit, BattleUnit)): Seq[BattleUnit] =
     for
-      turn <- Turn(unitsInBattle).generate
-      unitAfterTurn <- performTurn(turn, turn._1.battleOption)
-    yield unitAfterTurn
+      battleUnit <- performTurn(t).toSeq
+      battleUnitAlive <- battleUnit
+      battleUnitUpdated <-{println(battleUnitAlive.pokemon);  battleUnitAlive.withDamageStatusApplied.withLife }
+    yield battleUnitUpdated
 
-  def performTurn(t: (BattleUnit, BattleUnit), option: BattleOption): Option[BattleUnit] =
-    option match
-      case Attack(move) => withLife(attack(t, move))
-      case _ => ???
+  def performTurn(battlePair: OptionalPair[BattleUnit]): OptionalPair[BattleUnit] =
+    @tailrec
+    def _loop(battlePair: OptionalPair[BattleUnit], turnLife: Int): OptionalPair[BattleUnit] =
+      (battlePair.first, battlePair.second) match
+        case (Some(firstUnit), Some(secondUnit)) if turnLife > 0 =>
+          firstUnit.battleOption match
+            case Attack(move) if !(firstUnit skipEffect) => _loop(battlePair withSecondUpdated unitAfterAttack(firstUnit, secondUnit, move) switched, turnLife - 1)
+            case _ => _loop(battlePair switched, turnLife - 1)
+        case _ => battlePair
+    _loop(battlePair, battlePair.toSeq.size)
 
-  def attack(t: (BattleUnit, BattleUnit), move: Move): BattleUnit =
+  def unitAfterAttack(b1: BattleUnit, b2: BattleUnit, move: Move): BattleUnit =
+    
     val computeTotalDamage: (Int, Int, Int) => Int = (power, attack, defense) => (4 * power * (attack / defense)) / 50
-    t._2.withPokemonUpdate(
+
+    b2.withPokemonUpdate(
       move.applyStatus(
-        t._2.pokemon.withHp(
-          t._2.pokemon.hp - computeTotalDamage(
-            t._1.pokemon.attack,
-            t._2.pokemon.defense,
-            move.damage
-          )))
-    )
+        b2.pokemon.withHp(
+          b2.pokemon.hp - computeTotalDamage(
+            move.damage,
+            b1.pokemon.attack,
+            b2.pokemon.defense
+          ))))
 
-  def withLife(unit: BattleUnit): Option[BattleUnit] =
-    unit.pokemon.hp match
-      case value: Int if value > 0 => Some(unit)
-      case _ => None
+  def heal: BattleUnit = ???
 
-case class Turn(unitsInBattle: Seq[BattleUnit]):
-  extension (seq: Seq[BattleUnit])
-    def applyStatusEffect: Seq[BattleUnit] =
-      seq.filter({
-        case battleUnit: BattleUnit => battleUnit.pokemon.status match
-          case s: SkipTurn => !s.applyStatus(battleUnit.pokemon)
-          case _ => true
-      }).map(battleUnit => battleUnit.pokemon.status match {
-        case s: GainDamage => battleUnit withPokemonUpdate s.applyStatus(battleUnit.pokemon)
-        case _ => battleUnit
-      })
-
-    def sortBySpeed: Seq[BattleUnit] =
-      seq.sortWith(_.pokemon.speed > _.pokemon.speed)
-
-  val generate: Seq[(BattleUnit, BattleUnit)] =
-    for
-      unitInTurn <- unitsInBattle.applyStatusEffect.sortBySpeed
-      unitInBattle <- unitsInBattle if !(unitInTurn equals unitInBattle)
-    yield (unitInTurn, unitInBattle)
