@@ -1,40 +1,46 @@
 package model.entities.pokemon
 
 import model.entities.pokemon.Pokemon
+import util.Utilities.*
+import scala.util.Random
 
-trait PokemonStatus
+trait PokemonStatus:
+  def name:String
+  def description:String
 
 trait PokemonStatusWithEffect extends PokemonStatus :
-  type Result
+  def probabilityToApplyStatus: Int
 
-  def applyStatus(p: Pokemon): Result
+  def applyStatus(p: Pokemon): Pokemon
 
-object AdditionalEffects:
+import StatusEffects.*
 
-  trait SkipTurn extends PokemonStatusWithEffect :
-    override type Result = Boolean
+object AllPokemonStatus:
+  case class HealthyStatus(override val name:String = "Normal",
+                      override val description:String = "Normal status") extends PokemonStatus
 
-    def probability: Int
+  case class BurnStatus(override val name:String = "Burn",
+                   override val description:String = "Lose 30 hp every turn and reduce the atk") extends PokemonStatusWithEffect with DealDamageEffect with ChangeAtkEffect :
+    override def atkToChange: Int = 10
 
-  trait GainDamage extends PokemonStatusWithEffect :
-    override type Result = Pokemon
+    override def damageOverTime: Int = 30
 
-    def damage: Int
+    override def probabilityToApplyStatus: Int = 30
 
-import model.entities.pokemon.AdditionalEffects.*
-import scala.util.Random
-import util.Utilities.dice
+    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
+      applyChangeStat(pokemon) withStatus this
+    } else {
+      pokemon
+    }
 
-class HealthyStatus extends PokemonStatus
+  case class ParalyzeStatus(override val name:String = "Paralyze",
+                       override val description:String = "Possibility to skip the turn and decrease speed") extends PokemonStatusWithEffect with SkipTurnEffect with ChangeSpeedEffect :
+    override def speedToChange: Int = 10
+    override def probabilityToApplyStatus: Int = 30
+    override def probabilityToApplySkipTurn: Int = 30
 
-class ParalyzeStatus extends PokemonStatusWithEffect with SkipTurn :
-  override def probability: Int = 30
-
-  override def applyStatus(pokemon: Pokemon): Boolean =
-    Random.dice(probability)
-
-class BurnStatus extends PokemonStatusWithEffect with GainDamage :
-  override def damage: Int = 30
-
-  override def applyStatus(pokemon: Pokemon): Pokemon =
-    pokemon withHp (pokemon.hp - damage)
+    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
+      applyChangeStat(pokemon) withStatus this
+    } else {
+      pokemon
+    }

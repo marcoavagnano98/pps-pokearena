@@ -4,9 +4,6 @@ import scala.util.Random
 
 object Utilities:
 
-  extension (r: Random)
-    def dice(probability: Int): Boolean = (r.between(1, 101)) <= probability
-
   extension[A](seq: Seq[A])
     def pop: Option[(A, Seq[A])] = seq match
       case h :: t => Some(h, t)
@@ -16,3 +13,6 @@ object Utilities:
       case h :: t => Seq(elem, h) concat t
       case _ => elem :: Nil
 
+
+  extension (r: Random)
+    def dice(probability: Int): Boolean = r.between(1, 101) <= probability
