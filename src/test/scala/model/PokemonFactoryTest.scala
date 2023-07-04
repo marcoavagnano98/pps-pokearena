@@ -14,6 +14,5 @@ class PokemonFactoryTest extends AnyFlatSpec with should.Matchers:
   }
 
   "A PokemonFactory" should "return Bulbasaur with specified id 1" in{
-    //assertResult(bulbasaur)(PokemonFactory.getPokemonById("1"))
     bulbasaur shouldBe PokemonFactory.getPokemonById("1").get
   }
