@@ -1,9 +1,13 @@
 package model.entities.pokemon
 
 import model.entities.Entity
-import model.entities.pokemon.PokemonStatus
 
-trait Pokemon extends Entity:
+import model.entities.pokemon.PokemonStatus
+import model.entities.pokemon.AllPokemonStatus.HealthyStatus
+
+trait Pokemon extends Entity :
+  def name: String
+
   def hp: Int
 
   def attack: Int
@@ -12,7 +16,7 @@ trait Pokemon extends Entity:
 
   def speed: Int
 
-  def moves: List[Move]
+  def moves: Seq[Move]
 
   def elementType: ElementType
 
@@ -22,23 +26,39 @@ trait Pokemon extends Entity:
 
   def withStatus(status: PokemonStatus): Pokemon
 
+  def withMoves(moves: Seq[Move]): Pokemon
+
+  def withSpeed(speed: Int): Pokemon
+
+  def withAtk(atk: Int): Pokemon
 
 object Pokemon:
-  def apply(id: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: List[Move], elementType: ElementType): Pokemon =
-    PokemonImpl(id = id, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType)
-
+  def apply(id: String, name: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: Seq[Move], elementType: ElementType): Pokemon =
+    PokemonImpl(id = id, name = name, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType)
+  
   private case class PokemonImpl(override val height: Int = 5,
                                  override val width: Int = 5,
+                                 override val name: String,
                                  override val id: String,
                                  override val hp: Int,
                                  override val attack: Int,
                                  override val defense: Int,
                                  override val speed: Int,
-                                 override val moves: List[Move],
+                                 override val moves: Seq[Move],
                                  override val status: PokemonStatus = HealthyStatus(),
                                  override val elementType: ElementType
-                                ) extends Pokemon:
+                                ) extends Pokemon :
+    private val maxHp = hp
 
-    override def withHp(newHp: Int): Pokemon = copy(hp = newHp)
+    override def withHp(newHp: Int): Pokemon = newHp match 
+      case hp if hp < 0 => copy(hp = 0)
+      case hp if hp > maxHp => copy(hp=maxHp)
+      case _ => copy(hp=newHp)
 
     override def withStatus(newStatus: PokemonStatus): Pokemon = copy(status = newStatus)
+
+    override def withMoves(newMoves: Seq[Move]): Pokemon = copy(moves = newMoves)
+
+    override def withSpeed(newSpeed: Int): Pokemon = copy(speed = newSpeed)
+
+    override def withAtk(newAtk: Int): Pokemon = copy(attack = newAtk)

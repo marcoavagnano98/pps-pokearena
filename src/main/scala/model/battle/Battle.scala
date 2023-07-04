@@ -2,6 +2,14 @@ package model.battle
 
 import model.entities.Trainer
 import model.entities.pokemon.Pokemon
+
+import model.entities.{Player, Trainer}
+import model.entities.pokemon.AdditionalEffects.{GainDamage, SkipTurn}
+import model.entities.pokemon.ElementType.Fire
+import model.entities.pokemon.{Move, Pokemon}
+
+import scala.language.postfixOps
+
 /**
  * Battle models clash between two trainers
  */
@@ -20,19 +28,60 @@ trait Battle:
 
   /**
    *
-   * @return list player's pokemon
+   * @return an instance of new [[BattleEngine]]
    */
-  def playerPokemon: List[Pokemon]
-  /**
-   *
-   * @return list opponent's pokemon
-   */
-  def opponentPokemon: List[Pokemon]
+  def fight(playerMove: Move, aiMove: Move): Boolean
 
-  /**
-   *
-   * @return an instance of new [[Fight]]
-   */
-  def startFight: Fight
+enum BattleOption:
+  case Attack(move: Move)
+  case Bag(/*item*/)
+  case Change(pos: Int)
 
+case class BattleUnit(pokemon: Pokemon, trainer: Trainer, battleOption: BattleOption):
+  def withPokemonUpdate(pokemon: Pokemon): BattleUnit = copy(pokemon = pokemon)
 
+  def skipEffect: Boolean =
+    pokemon.status match
+      case s: SkipTurn => s.applyStatus(pokemon)
+      case _ => false
+
+  def withDamageStatusApplied: BattleUnit =
+    pokemon.status match
+      case s: GainDamage => this withPokemonUpdate s.applyStatus(pokemon)
+      case _ => this
+
+  def withLife: Option[BattleUnit] =
+    pokemon.hp match
+      case value: Int if value > 0 => Some(this)
+      case _ => None
+
+object Battle:
+  def apply(player: Trainer, opponent: Trainer): Battle =
+    BattleImpl(player, opponent)
+
+  private case class BattleImpl(override val player: Trainer,
+                                override val opponent: Trainer,
+                               ) extends Battle :
+
+    import util.Utilities.{pop, updateHead}
+
+    var playerPokemon: Seq[Pokemon] = player.pokemonTeam
+    var opponentPokemon: Seq[Pokemon] = opponent.pokemonTeam
+
+    override def fight(playerMove: Move, aiMove: Move): Boolean =
+      (playerPokemon pop, opponentPokemon pop) match
+        case (Some(p1), Some(p2)) =>
+          playerPokemon = p1._2
+          opponentPokemon = p2._2
+          val playerUnit = BattleUnit(p1._1, player, BattleOption.Attack(playerMove))
+          val opponentUnit = BattleUnit(p2._1, opponent, BattleOption.Attack(aiMove))
+          for
+            updatedUnit <- BattleEngine(playerUnit, opponentUnit)
+          do updateDefenderDamage(updatedUnit)
+          false
+
+        case _ => println(playerPokemon); println(opponentPokemon); true
+
+    def updateDefenderDamage(updatedUnit: BattleUnit): Unit = updatedUnit.trainer match
+      case _: Player /*Player*/ => playerPokemon = playerPokemon updateHead updatedUnit.pokemon
+      case _ => opponentPokemon = opponentPokemon updateHead updatedUnit.pokemon

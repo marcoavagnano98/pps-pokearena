@@ -1,41 +1,46 @@
 package model.entities.pokemon
 
 import model.entities.pokemon.Pokemon
-
-trait PokemonStatus
-
-trait PokemonStatusWithEffect extends PokemonStatus :
-  type Result
-
-  def applyStatus(p: Pokemon): Result
-
-object AdditionalEffects:
-
-  trait SkipTurn extends PokemonStatusWithEffect :
-    override type Result = Boolean
-
-    def probability: Int
-
-  trait GainDamage extends PokemonStatusWithEffect :
-    override type Result = Pokemon
-
-    def damage: Int
-
-import model.entities.pokemon.AdditionalEffects.*
-import util.Utilities.dice
-
+import util.Utilities.*
 import scala.util.Random
 
-class HealthyStatus extends PokemonStatus
+trait PokemonStatus:
+  def name:String
+  def description:String
 
-class ParalyzeStatus extends PokemonStatusWithEffect with SkipTurn :
-  override def probability: Int = 30
+trait PokemonStatusWithEffect extends PokemonStatus :
+  def probabilityToApplyStatus: Int
 
-  override def applyStatus(pokemon: Pokemon): Boolean =
-    Random.dice(probability)
+  def applyStatus(p: Pokemon): Pokemon
 
-class BurnStatus extends PokemonStatusWithEffect with GainDamage :
-  override def damage: Int = 30
+import StatusEffects.*
 
-  override def applyStatus(pokemon: Pokemon): Pokemon =
-    pokemon withHp (pokemon.hp - damage)
+object AllPokemonStatus:
+  case class HealthyStatus(override val name:String = "Normal",
+                           override val description:String = "Normal status") extends PokemonStatus
+
+  case class BurnStatus(override val name:String = "Burn",
+                        override val description:String = "Lose 30 hp every turn and reduce the atk") extends PokemonStatusWithEffect with DealDamageEffect with ChangeAtkEffect :
+    override def atkToChange: Int = 10
+
+    override def damageOverTime: Int = 30
+
+    override def probabilityToApplyStatus: Int = 30
+
+    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
+      applyChangeStat(pokemon) withStatus this
+    } else {
+      pokemon
+    }
+
+  case class ParalyzeStatus(override val name:String = "Paralyze",
+                            override val description:String = "Possibility to skip the turn and decrease speed") extends PokemonStatusWithEffect with SkipTurnEffect with ChangeSpeedEffect :
+    override def speedToChange: Int = 10
+    override def probabilityToApplyStatus: Int = 30
+    override def probabilityToApplySkipTurn: Int = 30
+
+    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
+      applyChangeStat(pokemon) withStatus this
+    } else {
+      pokemon
+    }
