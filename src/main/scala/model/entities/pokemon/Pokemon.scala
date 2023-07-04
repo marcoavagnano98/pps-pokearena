@@ -1,7 +1,7 @@
 package model.entities.pokemon
 
-import model.entities.pokemon.PokemonStatus
 import model.entities.Entity
+import model.entities.pokemon.PokemonStatus
 
 trait Pokemon extends Entity:
   def hp: Int

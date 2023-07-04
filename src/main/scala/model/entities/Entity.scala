@@ -21,7 +21,6 @@ trait Entity:
    */
   def id: String
 
-
 trait VisibleEntity extends Entity :
   /**
    *

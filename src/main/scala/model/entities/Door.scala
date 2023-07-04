@@ -1,8 +1,7 @@
 package model.entities
 
 enum DoorState:
-  case Open
-  case Close
+  case Open, Close
 
 trait Door extends VisibleEntity:
   /**

@@ -22,8 +22,9 @@ object AdditionalEffects:
     def damage: Int
 
 import model.entities.pokemon.AdditionalEffects.*
-import scala.util.Random
 import util.Utilities.dice
+
+import scala.util.Random
 
 class HealthyStatus extends PokemonStatus
 

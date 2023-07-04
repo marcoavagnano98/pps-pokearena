@@ -1,6 +1,6 @@
 package model.battle
 
-import model.entities.{Trainer}
+import model.entities.Trainer
 import model.entities.pokemon.Pokemon
 /**
  * Battle models clash between two trainers

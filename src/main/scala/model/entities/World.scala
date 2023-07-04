@@ -7,4 +7,3 @@ object World:
    * @param y coordinate
    */
   case class Position(x: Int, y: Int)
-
