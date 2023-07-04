@@ -3,8 +3,8 @@ package model.battle
 import model.entities.Trainer
 import model.entities.pokemon.Pokemon
 
-import model.entities.{Player, Trainer}
-import model.entities.pokemon.AdditionalEffects.{GainDamage, SkipTurn}
+import model.entities.{Opponent, Trainer}
+import model.entities.pokemon.StatusEffects.{DealDamageEffect, SkipTurnEffect}
 import model.entities.pokemon.ElementType.Fire
 import model.entities.pokemon.{Move, Pokemon}
 
@@ -42,17 +42,17 @@ case class BattleUnit(pokemon: Pokemon, trainer: Trainer, battleOption: BattleOp
 
   def skipEffect: Boolean =
     pokemon.status match
-      case s: SkipTurn => s.applyStatus(pokemon)
+      case s: SkipTurnEffect => s applyEffect pokemon
       case _ => false
 
   def withDamageStatusApplied: BattleUnit =
     pokemon.status match
-      case s: GainDamage => this withPokemonUpdate s.applyStatus(pokemon)
+      case s: DealDamageEffect => withPokemonUpdate(s.applyEffect(pokemon))
       case _ => this
 
   def withLife: Option[BattleUnit] =
     pokemon.hp match
-      case value: Int if value > 0 => Some(this)
+      case value: Int if value > 0 => Some(copy())
       case _ => None
 
 object Battle:
@@ -63,7 +63,7 @@ object Battle:
                                 override val opponent: Trainer,
                                ) extends Battle :
 
-    import util.Utilities.{pop, updateHead}
+    import util.Utilities.{pop, updatedHead}
 
     var playerPokemon: Seq[Pokemon] = player.pokemonTeam
     var opponentPokemon: Seq[Pokemon] = opponent.pokemonTeam
@@ -83,5 +83,5 @@ object Battle:
         case _ => println(playerPokemon); println(opponentPokemon); true
 
     def updateDefenderDamage(updatedUnit: BattleUnit): Unit = updatedUnit.trainer match
-      case _: Player /*Player*/ => playerPokemon = playerPokemon updateHead updatedUnit.pokemon
-      case _ => opponentPokemon = opponentPokemon updateHead updatedUnit.pokemon
+      case _: Opponent /*Player*/ => playerPokemon = playerPokemon updatedHead updatedUnit.pokemon
+      case _ => opponentPokemon = opponentPokemon updatedHead updatedUnit.pokemon

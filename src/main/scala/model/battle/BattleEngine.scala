@@ -2,9 +2,9 @@ package model.battle
 
 import model.battle.{BattlePair, OptionalPair}
 import model.entities.Trainer
-import model.entities.pokemon.AdditionalEffects.{GainDamage, SkipTurn}
+
 import model.entities.pokemon.ElementType.Fire
-import model.entities.pokemon.{Move, ParalyzeStatus, Pokemon}
+import model.entities.pokemon.{Move, Pokemon}
 
 import scala.Tuple2
 import scala.annotation.tailrec
