@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import model.entities.pokemon.{Pokemon, PokemonFactory}
 import view.Sprites.getPokemonSprite
-import view.screen.PokemonChoiceCell
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 
