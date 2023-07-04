@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{ApplicationAdapter, Game, Gdx}
+import view.screen.PokemonChoiceScreen
 import model.entities.*
 import util.Screen.ScreenBehavior
 import util.Screen.BasicScreen.given_Conversion_ScreenBehavior_ScreenAdapter
@@ -24,8 +25,8 @@ object PokemonArena extends Game:
   def endGame(stats: ScreenBehavior): Unit = ???
 
   override def create(): Unit = {
-    changeScreen(GameScreen())
     //changeScreen(GameScreen())
+    //changeScreen(PokemonChoiceScreen())
   }
 
   override def dispose(): Unit = {

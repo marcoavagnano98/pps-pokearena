@@ -6,4 +6,4 @@ object World:
    * @param x coordinate
    * @param y coordinate
    */
-  case class Position(x: Int, y: Int)
+  case class Position(x: Float, y: Float)

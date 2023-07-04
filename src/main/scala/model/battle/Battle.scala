@@ -3,7 +3,7 @@ package model.battle
 import model.entities.Trainer
 import model.entities.pokemon.Pokemon
 
-import model.entities.{Opponent, Trainer}
+import model.entities.{Player, Trainer}
 import model.entities.pokemon.StatusEffects.{DealDamageEffect, SkipTurnEffect}
 import model.entities.pokemon.ElementType.Fire
 import model.entities.pokemon.{Move, Pokemon}
@@ -83,5 +83,5 @@ object Battle:
         case _ => println(playerPokemon); println(opponentPokemon); true
 
     def updateDefenderDamage(updatedUnit: BattleUnit): Unit = updatedUnit.trainer match
-      case _: Opponent /*Player*/ => playerPokemon = playerPokemon updatedHead updatedUnit.pokemon
+      case _: Player => playerPokemon = playerPokemon updatedHead updatedUnit.pokemon
       case _ => opponentPokemon = opponentPokemon updatedHead updatedUnit.pokemon

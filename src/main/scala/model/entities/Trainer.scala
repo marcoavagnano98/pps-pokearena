@@ -3,16 +3,21 @@ import model.entities.pokemon.Pokemon
 import com.badlogic.gdx.math.Rectangle
 import model.entities.World.Position
 import util.Drawable
-trait Trainer extends Drawable
+
+trait Trainer extends VisibleEntity:
+  def pokemonTeam: Seq[Pokemon]
+
 object Trainer:
-  def apply(path: String, x: Float, y: Float, width: Float, height: Float): Trainer =
-    TrainerImpl(path, Rectangle(x, y, width, height))
-  private case class TrainerImpl(path: String, bounds: Rectangle) extends Trainer
+  def apply(x: Float, y: Float, width: Int, height: Int, id: String, pokemonList: Seq[Pokemon]): Trainer =
+    TrainerImpl(Position(x, y), width, height, id, pokemonList)
+  private case class TrainerImpl(override val position: Position, override val width: Int, override val height: Int, override val id: String, override val pokemonTeam: Seq[Pokemon]) extends Trainer
 
-trait Opponent extends Trainer with Drawable
-  def pokemonTeam: List[Pokemon] = List.empty
+trait Player extends Trainer with MovingAbility
 
-object Opponent:
-  def apply(path: String, x: Float, y: Float, width: Float, height: Float, pokemonTeam: List[Pokemon]): Opponent =
-    OpponentImpl(path, Rectangle(x, y, width, height), pokemonTeam)
-  private case class OpponentImpl(path: String, bounds: Rectangle, pokemonTeam: List[Pokemon]) extends Opponent
+object Player:
+
+  def apply(x: Float, y: Float, width: Int, height: Int, id: String, pokemonList: Seq[Pokemon]): Player =
+    PlayerImpl(Position(x, y), width, height, id, pokemonList)
+  private case class PlayerImpl(override val position: Position, override val width: Int, override val height: Int, override val id: String, override val pokemonTeam: Seq[Pokemon]) extends Player:
+    override def updatePosition(position: Position): VisibleEntity = copy(position = position)
+
