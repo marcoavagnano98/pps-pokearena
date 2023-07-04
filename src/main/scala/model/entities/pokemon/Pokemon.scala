@@ -34,7 +34,7 @@ trait Pokemon extends Entity :
 object Pokemon:
   def apply(id: String, name: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: Seq[Move], elementType: ElementType): Pokemon =
     PokemonImpl(id = id, name = name, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType)
-
+  
   private case class PokemonImpl(override val height: Int = 5,
                                  override val width: Int = 5,
                                  override val name: String,
@@ -47,8 +47,12 @@ object Pokemon:
                                  override val status: PokemonStatus = HealthyStatus(),
                                  override val elementType: ElementType
                                 ) extends Pokemon :
+    private val maxHp = hp
 
-    override def withHp(newHp: Int): Pokemon = copy(hp = newHp)
+    override def withHp(newHp: Int): Pokemon = newHp match 
+      case hp if hp < 0 => copy(hp = 0)
+      case hp if hp > maxHp => copy(hp=maxHp)
+      case _ => copy(hp=newHp)
 
     override def withStatus(newStatus: PokemonStatus): Pokemon = copy(status = newStatus)
 
