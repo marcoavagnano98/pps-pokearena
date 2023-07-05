@@ -32,8 +32,8 @@ object MoveParser:
       case Right(l) => l
       case _ => List()
 
-  private def convertStringToPokemonStatus(status: Option[String]) : PokemonStatus = status match {
-    case Some("paralysis") => ParalyzeStatus()
-    case Some("burn") => BurnStatus()
-    case _ => HealthyStatus()
+  private def convertStringToPokemonStatus(status: Option[String]) : Option[PokemonStatus] = status match {
+    case Some("paralysis") => Some(ParalyzeStatus())
+    case Some("burn") => Some(BurnStatus())
+    case _ => None
   }
