@@ -13,4 +13,4 @@ object Launcher:
     config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode.refreshRate)
     config.setResizable(System.getProperty("os.arch") != "aarch64")
     config.setWindowedMode(1000, 1000)
-    Lwjgl3Application(PokemonArena, config)
+    Lwjgl3Application(PokeArena(), config)
