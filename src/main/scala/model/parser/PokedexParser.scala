@@ -2,7 +2,7 @@ package model.parser
 
 import model.entities.pokemon.{ElementType, Move, Pokemon}
 
-import scala.io.Source
+import scala.io.{Codec, Source}
 
 object PokedexParser:
 
@@ -13,8 +13,7 @@ object PokedexParser:
   private val pokedexFileName = "data/pokedex.json"
 
   def getAllPokemon: Seq[Pokemon] =
-    val inputString = Source.fromResource(pokedexFileName).mkString
-
+    val inputString = Source.fromResource(pokedexFileName)(Codec("UTF-8")).mkString
     import givenConversionStringElementType.given
     given pokemonDecoder: Decoder[Pokemon] = (hCursor: HCursor) =>
       for
