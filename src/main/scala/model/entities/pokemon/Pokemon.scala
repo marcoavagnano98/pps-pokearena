@@ -36,9 +36,7 @@ object Pokemon:
   def apply(id: String, name: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: Seq[Move], elementType: ElementType): Pokemon =
     PokemonImpl(id = id, name = name, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType)
   
-  private case class PokemonImpl(override val height: Int = 5,
-                                 override val width: Int = 5,
-                                 override val name: String,
+  private case class PokemonImpl(override val name: String,
                                  override val id: String,
                                  override val hp: Int,
                                  override val attack: Int,

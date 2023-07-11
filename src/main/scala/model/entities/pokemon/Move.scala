@@ -31,14 +31,11 @@ object Move:
 
     override def applyStatus(p: Pokemon): Pokemon =
       if p.status != status && status.nonEmpty then
-        status match
+        status.get match
           case s: PokemonStatusWithEffect => p withStatus s
           case _ => p
       else
         p
-
-
-
 
 
 

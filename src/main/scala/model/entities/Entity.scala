@@ -7,13 +7,13 @@ trait Entity:
    *
    * @return width of [[Entity]]
    */
-  def width: Int
+  def width: Float = EntityDefaultValues.height(this)
 
   /**
    *
    * @return height of [[Entity]]
    */
-  def height: Int
+  def height: Float = EntityDefaultValues.width(this)
 
   /**
    *
@@ -35,3 +35,21 @@ trait MovingAbility:
    * @return the same Entity with position updated
    */
   def updatePosition(position: Position): VisibleEntity
+
+/**
+ * This object contains the default values for each type of [[Entity]].
+ */
+object EntityDefaultValues:
+  import model.entities.pokemon.Pokemon
+  import model.entities.Trainer
+  /** Given an [[Entity]] it returns its width.
+   */
+  val width: Entity => Float =
+    case _: Pokemon => 5
+    case _: Trainer => 10
+    case _ => 0
+
+  val height: Entity => Float =
+    case _: Pokemon => 5
+    case _: Trainer => 10
+    case _ => 0
