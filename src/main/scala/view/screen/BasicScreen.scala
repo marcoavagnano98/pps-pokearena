@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.{GL20, Texture}
 import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.Viewport
+import controller.events.EventDispatcher
 
 import scala.language.postfixOps
 
@@ -37,7 +38,6 @@ abstract class BasicScreen extends ScreenAdapter:
         font.draw(batch, w.s, w.pos.x, w.pos.y)
     )
     batch.end()
-
     stage.draw()
     stage.act(delta)
 
