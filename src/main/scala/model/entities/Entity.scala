@@ -32,7 +32,7 @@ trait VisibleEntity extends Entity :
 trait MovingAbility:
   /**
    * @param position the new position of the entity
-   * @return the same Entity with position updated
+   * @return the same [[Entity]] with position updated
    */
   def updatePosition(position: Position): VisibleEntity
 
@@ -40,15 +40,21 @@ trait MovingAbility:
  * This object contains the default values for each type of [[Entity]].
  */
 object EntityDefaultValues:
+
   import model.entities.pokemon.Pokemon
   import model.entities.Trainer
-  /** Given an [[Entity]] it returns its width.
+
+  /**
+   * Given an [[Entity]] it returns its width.
    */
   val width: Entity => Float =
     case _: Pokemon => 5
     case _: Trainer => 10
     case _ => 0
 
+  /**
+   * Given an [[Entity]] it returns its height.
+   */
   val height: Entity => Float =
     case _: Pokemon => 5
     case _: Trainer => 10

@@ -26,7 +26,7 @@ object StatusEffects:
   trait ChangeStatsEffect:
     def applyChangeStat(pokemon: Pokemon): Pokemon
 
-  trait ChangeHpEffect() extends ChangeStatsEffect :
+  trait ChangeHpEffect extends ChangeStatsEffect :
     def hpToChange: Int
 
     override def applyChangeStat(pokemon: Pokemon): Pokemon =
