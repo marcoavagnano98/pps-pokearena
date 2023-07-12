@@ -15,7 +15,7 @@ case class Potion(override val id: String = "Item_01",override val position: Pos
 
   override def use(p: Pokemon): Pokemon =
     applyChangeStat(p)
-    p
+
       
     
     
