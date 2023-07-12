@@ -9,7 +9,7 @@ trait MenuEvent extends Event
 trait GameEvent extends  Event
 trait BattleEvent extends Event
 
-case class StartGame(list: List[Pokemon]) extends MenuEvent
+case class StartGame(list: Seq[Pokemon]) extends MenuEvent
 
 case class EndBattle(trainerId: String) extends BattleEvent
 

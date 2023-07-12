@@ -6,7 +6,6 @@ import model.battle.{Battle, BattleOption}
 import model.entities.pokemon.Pokemon
 import model.entities.{Entity, Player, Trainer}
 import pokearena.PokeArena
-import view.GameScreen
 import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
 
 import scala.collection.mutable

@@ -10,15 +10,15 @@ import model.entities.Trainer
 import model.battle.*
 
 import scala.language.postfixOps
-
+import model.entities.World.Position
 class TestBattle extends AnyFlatSpec with should.Matchers:
 
   val bulbasaur: Pokemon = PokemonFactory.getPokemonById("1").get
   val charmender: Pokemon = PokemonFactory.getPokemonById("4").get
   val action: Move = Move(20, 10, "azione", Normal, None)
   val lethalMove: Move = Move(9999, 10, "azione", Normal, None)
-  val player: Player = Player(0,0,"",PokemonFactory(3))
-  val opponent: Trainer = Trainer(0,0,"",PokemonFactory(3))
+  val player: Player = Player(Position(0,0),"",PokemonFactory(3))
+  val opponent: Trainer = Trainer(Position(0,0),"",PokemonFactory(3))
   val slowestBt: BattleUnit = BattleUnit(bulbasaur, player, BattleOption.Attack(action))
   val fastestBt: BattleUnit = BattleUnit(charmender, opponent, BattleOption.Attack(action))
 

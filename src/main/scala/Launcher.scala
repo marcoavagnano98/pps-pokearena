@@ -1,5 +1,4 @@
 import com.badlogic.gdx.backends.lwjgl3.*
-import view.PokemonArena
 import pokearena.PokeArena
 
 

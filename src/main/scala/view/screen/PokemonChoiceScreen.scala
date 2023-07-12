@@ -14,6 +14,7 @@ import model.entities.pokemon.{Pokemon, PokemonFactory}
 import view.Sprites.getPokemonSprite
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import controller.events.EventDispatcher
 
 class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
 
@@ -54,6 +55,12 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
     val mySkin = new Skin(Gdx.files.internal("assets/uiskin.json"))
     val buttonStart: TextButton = new TextButton("START", mySkin)
 
+    buttonStart.addListener(new ClickListener() {
+      override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
+        import controller.events.StartGame
+        EventDispatcher.addEvent(StartGame(listPokemonChose))
+        true
+    })
 
     rootTable.add(table)
     rootTable.row()
