@@ -13,7 +13,7 @@ class ItemTest extends AnyFlatSpec with should.Matchers:
   private var bulbasaur = Pokemon("1","Bulbasaur",50,49,49,45,List(),ElementType.Grass)
   private val potion = Potion(position = Position(12,41))
 
-  "A potion" should "increase the amount of hp of pokemon by 50" in{
+  "A potion" should "increase the amount of hp of pokemon by 50" in {
     bulbasaur = bulbasaur withHp 0
     bulbasaur = potion use bulbasaur
     assertResult(50)(bulbasaur.hp)
