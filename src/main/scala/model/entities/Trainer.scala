@@ -14,6 +14,7 @@ object Trainer:
 
 trait Player extends Trainer with MovingAbility:
   def withPokemon(pokemonTeam : Seq[Pokemon]) : Player
+  def withPosition(position : Position) : Player
 
 object Player:
 
@@ -23,3 +24,4 @@ object Player:
     override def updatePosition(position: Position): VisibleEntity = copy(position = position)
 
     override def withPokemon(pokemonTeam: Seq[Pokemon]): Player = copy(pokemonTeam=pokemonTeam)
+    override def  withPosition(position : Position) : Player =  copy(position=position)

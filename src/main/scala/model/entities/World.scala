@@ -7,18 +7,18 @@ import scala.annotation.tailrec
 trait World:
 
   def player: Player
-  //def player_=(player: Player): Unit
+  def player_=(player: Player): Unit
   def opponents: Seq[Trainer]
-  def generate(pokemonTeam: Seq[Pokemon]): Unit
-
-
+  def generate(pokemonTeam: Seq[Pokemon]): Unit 
+  def visibleEntities:Seq[VisibleEntity]  = Seq[VisibleEntity](player).++:(opponents)
 object World:
   def apply(): World = WorldImpl()
 
-  class WorldImpl() extends World:
+  private class WorldImpl() extends World:
     private var _player: Player = Player(Position(0,0),"player",Seq.empty)
     private var _opponents: Seq[Trainer] = Seq.empty
 
+    override def player_=(player: Player ) = _player = player
     override def player = _player
     override def opponents = _opponents
 

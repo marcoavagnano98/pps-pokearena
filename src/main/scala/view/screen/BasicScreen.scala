@@ -49,7 +49,7 @@ abstract class BasicScreen extends ScreenAdapter:
 
   final override def resize(width: Int, height: Int): Unit = stage.getViewport.update(width,height,true)
 
-  final override def show(): Unit =
+  override def show(): Unit =
     stage.clear()
     actors.foreach(stage.addActor)
     Gdx.input.setInputProcessor(stage)

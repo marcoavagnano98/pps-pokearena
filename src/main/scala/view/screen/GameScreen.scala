@@ -13,13 +13,42 @@ import util.Screen.ScreenBehavior
 import view.screen
 import view.Sprites.getPlayerSprite
 import view.screen.Drawable
+import view.PlayerProcessor
 
 class GameScreen(world: World) extends BasicScreen:
 
+  override def show(): Unit = 
+    super.show()
+    Gdx.input.setInputProcessor(PlayerProcessor(world))
+  
   override def viewport: Viewport = FitViewport(1000,1000)
+  val speed: (Double, Double) = (viewport.getWorldWidth/10, viewport.getWorldHeight/10)
 
   override def drawables: Seq[screen.Drawable] =
-    world.opponents.map(o => Drawable(getPlayerSprite(o),o.position.x.toFloat,o.position.y.toFloat,o.height,o.width)).toList
+    world.visibleEntities.map(o => Drawable(getPlayerSprite(o),o.position.x.toFloat,o.position.y.toFloat,o.height,o.width)).toList
+/*
+   def handleInput(): Unit =
+     var x = world.player.position.x
+     var y = world.player.position.y
+
+     if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+       x += speed._1
+     } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+       x += speed._1
+     } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+       y += speed._2
+     } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+       y -= speed._2
+     }
+
+    if (isValidCell(newPlayerPosition.x, newPlayerPosition.y))
+       newPosition = newPlayerPosition // Aggiorna la variabile newPosition solo se la nuova posizione è valida
+
+   def isValidCell(x: Int, y: Int): Boolean =
+     val gridX = x / cellSize
+     val gridY = y / cellSize
+
+     gridX >= 0 && gridX < gridWidth && gridY >= 0 && gridY < gridHeight*/
 
 
   /*val viewport: Viewport = PokemonArena.viewport
