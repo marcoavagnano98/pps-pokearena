@@ -21,7 +21,7 @@ abstract class BasicScreen extends ScreenAdapter:
   private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/fnt_white.fnt"))
 
 
-  final override def render(delta: Float): Unit =
+   override def render(delta: Float): Unit =
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     val batch = stage.getBatch

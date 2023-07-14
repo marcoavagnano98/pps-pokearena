@@ -3,7 +3,7 @@ package model.battle
 import model.entities.Trainer
 import model.entities.pokemon.Pokemon
 
-import model.entities.{Player, Trainer}
+import model.entities.{Player, Trainer, Item}
 import model.entities.pokemon.StatusEffects.{DealDamageEffect, SkipTurnEffect}
 import model.entities.pokemon.ElementType.Fire
 import model.entities.pokemon.{Move, Pokemon}
@@ -34,10 +34,10 @@ trait Battle:
 
 enum BattleOption:
   case Attack(move: Move)
-  case Bag(/*item*/)
+  case Bag(item: Item)
   case Change(pos: Int)
 
-case class BattleUnit(pokemon: Pokemon, trainer: Trainer, battleOption: BattleOption):
+case class BattleUnit(trainerRef: String,pokemon: Pokemon, battleOption: BattleOption):
   def withPokemonUpdate(pokemon: Pokemon): BattleUnit = copy(pokemon = pokemon)
 
   def skipEffect: Boolean =
@@ -73,15 +73,17 @@ object Battle:
         case (Some(p1), Some(p2)) =>
           playerPokemon = p1._2
           opponentPokemon = p2._2
-          val playerUnit = BattleUnit(p1._1, player, BattleOption.Attack(playerMove))
-          val opponentUnit = BattleUnit(p2._1, opponent, BattleOption.Attack(aiMove))
+          val playerUnit = BattleUnit(player.id,p1._1, BattleOption.Attack(playerMove))
+          val opponentUnit = BattleUnit(opponent.id, p2._1, BattleOption.Attack(aiMove))
           for
             updatedUnit <- BattleEngine(playerUnit, opponentUnit)
           do updateDefenderDamage(updatedUnit)
           false
+        case _ => true
 
-        case _ => println(playerPokemon); println(opponentPokemon); true
+    def updateDefenderDamage(updatedUnit: BattleUnit): Unit =
 
-    def updateDefenderDamage(updatedUnit: BattleUnit): Unit = updatedUnit.trainer match
-      case _: Player => playerPokemon = playerPokemon updatedHead updatedUnit.pokemon
-      case _ => opponentPokemon = opponentPokemon updatedHead updatedUnit.pokemon
+      if updatedUnit.trainerRef == player.id then
+        playerPokemon = playerPokemon updatedHead updatedUnit.pokemon
+      else
+        opponentPokemon = opponentPokemon updatedHead updatedUnit.pokemon

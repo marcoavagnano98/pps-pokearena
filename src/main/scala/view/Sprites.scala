@@ -8,4 +8,7 @@ object Sprites:
     "sprites/pokedex/" + pokemon.id + ".png"
     
   def getPlayerSprite(trainer: VisibleEntity): String = "assets/trainers/"+ trainer.id+ ".png"
+
   def getSpritePokemonId(id: String): String = "sprites/pokedex/" + id + ".png"
+
+  def getBattleSprite(id: String): String = "sprites/pokedex/battle/" + id + ".png"

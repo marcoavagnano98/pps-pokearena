@@ -16,14 +16,12 @@ import scala.collection.mutable.Queue
 object EventDispatcher:
   val eventQueue: mutable.Queue[Event] = mutable.Queue.empty
 
-  def addEvent(e: Event): Unit =
-    eventQueue += e
+  def addEvent(events: Event*): Unit =
+    eventQueue.addAll(events)
 
-  def dispatchAll(): Unit =
+  def dispatch(): Unit =
     if eventQueue.nonEmpty then
-      for e <- eventQueue
-        do e match
-          case _: MenuEvent => MenuController.eventHandler(e)
-          case _: BattleEvent => BattleController.eventHandler(e)
-          case _: GameEvent => GameController.eventHandler(e)
-      eventQueue.dequeue()
+      eventQueue.dequeue() match
+          case e: MenuEvent => MenuController.eventHandler(e)
+          case e: BattleEvent => BattleController.eventHandler(e)
+          case e: GameEvent => GameController.eventHandler(e)
