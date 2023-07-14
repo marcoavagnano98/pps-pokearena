@@ -27,11 +27,11 @@ object AllPokemonStatus:
 
     override def probabilityToApplyStatus: Int = 30
 
-    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
-      applyChangeStat(pokemon) withStatus this
-    } else {
-      pokemon
-    }
+    override def applyStatus(pokemon: Pokemon): Pokemon =
+      if (Random.dice(probabilityToApplyStatus))
+        applyChangeStat(pokemon) withStatus this
+      else
+        pokemon
 
   case class ParalyzeStatus(override val name:String = "Paralyze",
                             override val description:String = "Possibility to skip the turn and decrease speed") extends PokemonStatusWithEffect with SkipTurnEffect with ChangeSpeedEffect :
@@ -39,8 +39,8 @@ object AllPokemonStatus:
     override def probabilityToApplyStatus: Int = 30
     override def probabilityToApplySkipTurn: Int = 30
 
-    override def applyStatus(pokemon: Pokemon): Pokemon = if (Random.dice(probabilityToApplyStatus)) {
-      applyChangeStat(pokemon) withStatus this
-    } else {
-      pokemon
-    }
+    override def applyStatus(pokemon: Pokemon): Pokemon =
+      if (Random.dice(probabilityToApplyStatus))
+        applyChangeStat(pokemon) withStatus this
+      else
+        pokemon
