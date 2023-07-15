@@ -25,23 +25,25 @@ import model.entities.pokemon.PokemonFactory
 import pokearena.PokeArena
 import view.battle.DialogueBox
 import view.battle.layout.BattleMenuOption.{BagOption, FightOption}
-import view.battle.layout.{BagLayout, BattleMenuLayout, BattleMenuOption, FightLayout}
+import view.battle.layout.{BagLayout, BattleMenuLayout, BattleMenuOption, FightLayout, PokemonInfoLayout}
 import view.screen.Drawable
 
 
-class BattleScreen() extends BasicScreen :
+class BattleScreen(battle: Battle) extends BasicScreen :
   val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
   override def viewport = new ScreenViewport()
 
   override def background: Option[TextureRegion] = Some(TextureRegion(Texture("assets/pokemon_grass.png"), 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight));
 
-  val battleMenuLayout: BattleMenuLayout = BattleMenuLayout("bulbasaur", skin, battleMenuRegion,menuLayoutAction)
-  val fightLayout: FightLayout = FightLayout(PokemonFactory(1).head, skin,battleMenuRegion, fightLayoutAction)
+  val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(battle.player.pokemonTeam.head.name, skin, battleMenuRegion,menuLayoutAction)
+  val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin,battleMenuRegion, fightLayoutAction)
   fightLayout.setVisible(false)
   val bagLayout: BagLayout = BagLayout(Seq(Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione"),
     Potion("",Position(0,0),"Pozione"),
       Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione")), skin,battleMenuRegion, bagLayoutAction)
   bagLayout.setVisible(false)
+  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head,skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y,200,100))
+  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head,skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y,200,100))
 
   def updateView: Unit = ???
 
@@ -72,9 +74,11 @@ class BattleScreen() extends BasicScreen :
     battleMenuLayout.setVisible(true)
 
   override def actors: Seq[Actor] =
-    Seq(battleMenuLayout, fightLayout, bagLayout)
+    Seq(battleMenuLayout, fightLayout, bagLayout, pPlayerInfoLayout, pOpponentLayout)
 
   override def drawables: Seq[view.screen.Drawable] =
+    val pPlayerId = battle.player.pokemonTeam.head.id
+    val pOpponentId = battle.opponent.pokemonTeam.head.id
     Seq(
-      view.screen.Drawable(Sprites.getBattleSprite("1"), pBRegion.x, pBRegion.y, pBRegion.width, pBRegion.height),
-      view.screen.Drawable(Sprites.getBattleSprite("4"), oBRegion.x, oBRegion.y, oBRegion.width, oBRegion.height))
+      view.screen.Drawable(Sprites.getBattleSprite(pPlayerId), pBRegion.x, pBRegion.y, pBRegion.width, pBRegion.height),
+      view.screen.Drawable(Sprites.getBattleSprite(pOpponentId), oBRegion.x, oBRegion.y, oBRegion.width, oBRegion.height))

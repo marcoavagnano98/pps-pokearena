@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.Align
 import view.battle.DialogueBox
 import model.entities.{Item, Potion, World}
 
-class BagLayout(var items: Seq[Item], skin: Skin, rect:Rectangle, actionPerformed: Int => Unit) extends Table:
-  val box: DialogueBox = DialogueBox("Seleziona uno strumento di cura", skin)
+class BagLayout(var layoutInfo: Seq[Item], skin: Skin, rect:Rectangle, actionPerformed: Int => Unit) extends Table with Layout[Seq[Item]]:
+  val box: DialogueBox = DialogueBox(Seq("Seleziona uno strumento di cura"), skin)
   add(box)
   box.setDebug(true)
   generateScrollableTable
@@ -26,32 +26,32 @@ class BagLayout(var items: Seq[Item], skin: Skin, rect:Rectangle, actionPerforme
         true
     }
 
-  def generateItemList: Seq[(Int,TextField)] =
+  private def generateItemList: Seq[(Int,TextField)] =
     for
-      i <- items.indices
-      label = new TextField(items(i).name, skin)
+      i <- layoutInfo.indices
+      label = new TextField(layoutInfo(i).name, skin)
     yield (i, {
       label.setAlignment(Align.center)
       label.addListener(itemListener(i))
       label
     })
 
-  def generateScrollableTable: Unit =
+  private def generateScrollableTable: Unit =
     val table = Table()
     table.setDebug(true)
     row()
     for
     ((index, label) <- generateItemList)
       table.add(label).pad(5)
-      if index != (items.length - 1) then
+      if index != (layoutInfo.length - 1) then
         table.row()
     val scrollPane: ScrollPane = ScrollPane(table)
     scrollPane.setFadeScrollBars(false)
     scrollPane.setDebug(true)
     add(scrollPane).fill().minHeight(100)
 
-  def update(newItemList: Seq[Item]): Unit =
-    items = newItemList
+  override def update(newItemList: Seq[Item]): Unit =
+    layoutInfo = newItemList
     cleanItemTable
     generateScrollableTable
 

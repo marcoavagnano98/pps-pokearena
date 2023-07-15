@@ -31,6 +31,8 @@ trait Battle:
    * @return an instance of new [[BattleEngine]]
    */
   def fight(playerMove: Move, aiMove: Move): Boolean
+  
+  
 
 enum BattleOption:
   case Attack(move: Move)

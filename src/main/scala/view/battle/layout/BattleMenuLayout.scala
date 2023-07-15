@@ -5,16 +5,17 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Touchable}
 import com.badlogic.gdx.scenes.scene2d.ui.{ImageTextButton, Skin, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import model.entities.pokemon.Pokemon
 import view.battle.DialogueBox
 
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuLayout(pokemonName: String, skin: Skin, rect: Rectangle, actionPerformed: BattleMenuOption => Unit) extends Table:
+class BattleMenuLayout(val layoutInfo: String, skin: Skin, rect: Rectangle, actionPerformed: BattleMenuOption => Unit) extends Table with Layout[String]:
 
   import BattleMenuOption.*
 
-  val box: DialogueBox = DialogueBox("Cosa deve fare " + pokemonName + "?", skin)
+  val box: DialogueBox = DialogueBox(Seq("Cosa deve fare " + layoutInfo + "?"), skin)
   add(box).colspan(2)
   box.setDebug(true)
   row()
@@ -35,7 +36,7 @@ class BattleMenuLayout(pokemonName: String, skin: Skin, rect: Rectangle, actionP
         true
     }
 
-
+  override def update(newLayoutInfo: String): Unit = {}
   
 
 

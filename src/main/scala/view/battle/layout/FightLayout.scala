@@ -5,13 +5,14 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.{Cell, ImageTextButton, Skin, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Align
 import model.entities.pokemon.{Move, Pokemon, PokemonFactory}
 import view.battle.DialogueBox
 
 import scala.io.Source
 
-class FightLayout(var pokemon: Pokemon, skin: Skin, rect: Rectangle, actionPerformed: Int => Unit) extends Table:
-  val box: DialogueBox = DialogueBox("Scegli una mossa", skin)
+class FightLayout(var layoutInfo: Pokemon, skin: Skin, rect: Rectangle, actionPerformed: Int => Unit) extends Table with Layout[Pokemon]:
+  val box: DialogueBox = DialogueBox(Seq("Scegli una mossa"), skin)
   add(box).colspan(2)
   row()
   generateTable
@@ -26,9 +27,9 @@ class FightLayout(var pokemon: Pokemon, skin: Skin, rect: Rectangle, actionPerfo
   }
   def generateButtons: Seq[(Int, ImageTextButton)] =
       for
-        i <- pokemon.moves.indices
-        b = ImageTextButton(pokemon.moves(i).name, skin)
-        checkedButton = {b.addListener(moveButtonListener(i)); checkPP(b, pokemon.moves(i))}
+        i <- layoutInfo.moves.indices
+        b = ImageTextButton(layoutInfo.moves(i).name, skin)
+        checkedButton = {b.addListener(moveButtonListener(i)); checkPP(b, layoutInfo.moves(i))}
       yield (i, checkedButton)
 
   def checkPP(button: ImageTextButton, move: Move): ImageTextButton =
@@ -44,8 +45,8 @@ class FightLayout(var pokemon: Pokemon, skin: Skin, rect: Rectangle, actionPerfo
       if (elem._1 + 1) % 2 == 0 then
         row()
 
-  def update(p: Pokemon): Unit =
-    pokemon = p
+  override def update(newLayoutInfo: Pokemon): Unit =
+    layoutInfo = newLayoutInfo
     for
       (index,button) <- generateButtons
       cell = getCells.items(index)
