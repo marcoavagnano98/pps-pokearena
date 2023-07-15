@@ -6,8 +6,8 @@ import view.screen.{PokemonChoiceScreen, BasicScreen, BattleScreen}
 import controller.GameController
 object PokeArena extends Game:
   override def create(): Unit =
-    setScreen(PokemonChoiceScreen(PokemonFactory(12)))
-
+   // setScreen(PokemonChoiceScreen(PokemonFactory(12)))
+    setScreen(BattleScreen())
   /**
    * Change screen to one using the given behavior.
    */

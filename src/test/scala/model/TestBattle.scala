@@ -36,5 +36,5 @@ class TestBattle extends AnyFlatSpec with should.Matchers:
   }
 
   "A Battle engine " should " return healed battle units after potion used" in {
-    BattleEngine.unitAfterAttack(fastestBt, slowestBt, actionMove))
+    BattleEngine.unitAfterAttack(fastestBt, slowestBt, actionMove)
   }

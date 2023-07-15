@@ -47,9 +47,9 @@ class FightLayout(var pokemon: Pokemon, skin: Skin, rect: Rectangle, actionPerfo
   def update(p: Pokemon): Unit =
     pokemon = p
     for
-      elem <- generateButtons
-      cell = getCells.items(elem._1)
+      (index,button) <- generateButtons
+      cell = getCells.items(index)
     do
       cell.getActor match
-        case _: ImageTextButton => cell.setActor(elem._2)
+        case _: ImageTextButton => cell.setActor(button)
         case _ =>

@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, utils}
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
-import model.entities.Entity
+import model.entities.{Entity, Potion}
 import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, Drawable, TextureRegionDrawable}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -20,11 +20,12 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import controller.events.{EventDispatcher, OptionChosen}
 import model.battle.BattleOption.*
+import model.entities.World.Position
 import model.entities.pokemon.PokemonFactory
 import pokearena.PokeArena
 import view.battle.DialogueBox
-import view.battle.layout.BattleMenuOption.{FightOption, BagOption}
-import view.battle.layout.{BattleMenuLayout, BattleMenuOption, FightLayout}
+import view.battle.layout.BattleMenuOption.{BagOption, FightOption}
+import view.battle.layout.{BagLayout, BattleMenuLayout, BattleMenuOption, FightLayout}
 import view.screen.Drawable
 
 
@@ -37,6 +38,10 @@ class BattleScreen() extends BasicScreen :
   val battleMenuLayout: BattleMenuLayout = BattleMenuLayout("bulbasaur", skin, battleMenuRegion,menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(PokemonFactory(1).head, skin,battleMenuRegion, fightLayoutAction)
   fightLayout.setVisible(false)
+  val bagLayout: BagLayout = BagLayout(Seq(Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione"),
+    Potion("",Position(0,0),"Pozione"),
+      Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione")), skin,battleMenuRegion, bagLayoutAction)
+  bagLayout.setVisible(false)
 
   def updateView: Unit = ???
 
@@ -55,16 +60,19 @@ class BattleScreen() extends BasicScreen :
   def menuLayoutAction(option: BattleMenuOption): Unit =
     option match
       case FightOption => fightLayout.setVisible(true)
-      case _ =>
+      case _ => bagLayout.setVisible(true)
     battleMenuLayout.setVisible(false)
 
   private def fightLayoutAction(moveIndex: Int): Unit =
     fightLayout.setVisible(false)
     battleMenuLayout.setVisible(true)
     //EventDispatcher.addEvent(OptionChosen(Attack()))
+  private def bagLayoutAction(itemIndex: Int): Unit =
+    bagLayout.setVisible(false)
+    battleMenuLayout.setVisible(true)
 
   override def actors: Seq[Actor] =
-    Seq(battleMenuLayout, fightLayout)
+    Seq(battleMenuLayout, fightLayout, bagLayout)
 
   override def drawables: Seq[view.screen.Drawable] =
     Seq(
