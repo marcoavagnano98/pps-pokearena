@@ -28,7 +28,6 @@ trait VisibleEntity extends Entity :
    */
   def position: Position
 
-
 trait MovingAbility:
   /**
    * @param position the new position of the entity

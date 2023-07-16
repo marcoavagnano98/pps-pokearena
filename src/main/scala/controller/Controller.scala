@@ -52,8 +52,6 @@ object GameController extends Controller:
     screen = GameScreen(model)
     handleScreenChange(screen)
 
-
-
 object BattleController extends Controller:
   override type T = Battle
   

@@ -13,12 +13,14 @@ class PlayerProcessor(world: World) extends InputAdapter:
   private def updatePlayerPosition(newX: Double, newY: Double): Unit =
     world.player = world.player withPosition Position(newX, newY)
 
+  private def updateSpritePlayer(direction:String): Unit = world.player = world.player movesTo direction
+
   override def keyDown(keycode: Int): Boolean =
     keycode match
-      case Keys.RIGHT => {x = playerSpeed; y = 0}
-      case Keys.LEFT =>  {x = -playerSpeed; y = 0}
-      case Keys.UP => {y = playerSpeed; x = 0}
-      case Keys.DOWN => {y = -playerSpeed; x = 0}
+      case Keys.RIGHT => {x = playerSpeed; y = 0; updateSpritePlayer("right")}
+      case Keys.LEFT =>  {x = -playerSpeed; y = 0; updateSpritePlayer("left")}
+      case Keys.UP => {y = playerSpeed; x = 0; updateSpritePlayer("up")}
+      case Keys.DOWN => {y = -playerSpeed; x = 0; updateSpritePlayer("player")}
       case _ =>
     canMove
     true
