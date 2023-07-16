@@ -47,7 +47,8 @@ object GameController extends Controller:
   def removeTrainer(id: String): Unit = ??? /* TODO: remove the current trainer from the visible entities list */
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
-    model.generate(pokemonList)
+    model.createMap("map_")
+    model.generateEntities(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
 

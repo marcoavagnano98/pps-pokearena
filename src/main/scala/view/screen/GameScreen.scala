@@ -11,21 +11,23 @@ import model.entities.pokemon.*
 import model.entities.{Map, Player, Trainer}
 import util.Screen.ScreenBehavior
 import view.screen
-import view.Sprites.getPlayerSprite
+import view.Sprites.{getMapSprite, getPlayerSprite}
 import view.screen.Drawable
 import view.PlayerProcessor
 
 class GameScreen(world: World) extends BasicScreen:
+  override def viewport: Viewport = FitViewport(1000,1000)
 
   override def show(): Unit = 
     super.show()
     Gdx.input.setInputProcessor(PlayerProcessor(world))
-  
-  override def viewport: Viewport = FitViewport(1000,1000)
-  val speed: (Double, Double) = (viewport.getWorldWidth/10, viewport.getWorldHeight/10)
 
-  override def drawables: Seq[screen.Drawable] =
-    world.visibleEntities.map(o => Drawable(getPlayerSprite(o),o.position.x.toFloat,o.position.y.toFloat,o.height,o.width)).toList
+  world.dimenion
+
+  override def drawables: Seq[Drawable] =
+    Drawable(world.gameMap.background, world.gameMap.bounds.x, world.gameMap.bounds.y, world.gameMap.bounds.width, world.gameMap.bounds.height) +:
+    world.visibleEntities.map(o => Drawable(getPlayerSprite(o), o.position.x.toFloat, o.position.y.toFloat, o.height, o.width))
+
 /*
    def handleInput(): Unit =
      var x = world.player.position.x

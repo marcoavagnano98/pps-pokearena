@@ -11,8 +11,6 @@ import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
 import scala.collection.mutable
 import scala.collection.mutable.Queue
 
-
-
 object EventDispatcher:
   val eventQueue: mutable.Queue[Event] = mutable.Queue.empty
 
