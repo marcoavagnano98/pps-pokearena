@@ -22,4 +22,5 @@ object Map:
         case otherEntity => otherEntity
       }
       copy(entities = updatedEntities)
+      
 

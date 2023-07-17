@@ -3,14 +3,13 @@ import com.badlogic.gdx.{Game, Gdx, Screen}
 import controller.events.{EndBattle, EventDispatcher}
 import model.entities.pokemon.PokemonFactory
 import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
-import controller.GameController
+import controller.{BattleController, GameController}
 import model.entities.{Player, Trainer}
 import model.battle.Battle
 import model.entities.World.Position
 object PokeArena extends Game:
   override def create(): Unit =
     setScreen(PokemonChoiceScreen(PokemonFactory(12)))
-   // setScreen(BattleScreen(Battle(Player(Position(0,0), "", PokemonFactory(4)), Trainer(Position(0,0), "", PokemonFactory(4)))))
   /**
    * Change screen to one using the given behavior.
    */

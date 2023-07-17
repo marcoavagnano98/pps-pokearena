@@ -11,7 +11,7 @@ import scala.language.postfixOps
 
 object BattleEngine:
 
-  import BattleOption.*
+  import BattleChoice.*
 
   given Ordering[BattleUnit] = Ordering.by[BattleUnit, Int](_.pokemon.speed).reverse
 

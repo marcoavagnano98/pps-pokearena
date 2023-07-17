@@ -30,16 +30,22 @@ trait Battle:
    *
    * @return an instance of new [[BattleEngine]]
    */
-  def fight(playerMove: Move, aiMove: Move): Boolean
-  
-  
 
-enum BattleOption:
+  def takeTurn(playerChoice: BattleChoice, opponentChoice: BattleChoice): Unit
+  
+  /**
+   *
+   * @return optionally both pokemon in battle of player and opponent
+   */
+  def pokemonInBattle: (Option[Pokemon], Option[Pokemon])
+
+
+enum BattleChoice:
   case Attack(move: Move)
   case Bag(item: Item)
   case Change(pos: Int)
 
-case class BattleUnit(trainerRef: String,pokemon: Pokemon, battleOption: BattleOption):
+case class BattleUnit(trainerRef: String,pokemon: Pokemon, battleOption: BattleChoice):
   def withPokemonUpdate(pokemon: Pokemon): BattleUnit = copy(pokemon = pokemon)
 
   def skipEffect: Boolean =
@@ -63,29 +69,32 @@ object Battle:
 
   private case class BattleImpl(override val player: Trainer,
                                 override val opponent: Trainer,
-                               ) extends Battle :
+                               ) extends Battle:
 
-    import util.Utilities.{pop, updatedHead}
-
-    var playerPokemon: Seq[Pokemon] = player.pokemonTeam
-    var opponentPokemon: Seq[Pokemon] = opponent.pokemonTeam
-
-    override def fight(playerMove: Move, aiMove: Move): Boolean =
-      (playerPokemon pop, opponentPokemon pop) match
-        case (Some(p1), Some(p2)) =>
-          playerPokemon = p1._2
-          opponentPokemon = p2._2
-          val playerUnit = BattleUnit(player.id,p1._1, BattleOption.Attack(playerMove))
-          val opponentUnit = BattleUnit(opponent.id, p2._1, BattleOption.Attack(aiMove))
-          for
-            updatedUnit <- BattleEngine(playerUnit, opponentUnit)
-          do updateDefenderDamage(updatedUnit)
-          false
-        case _ => true
-
-    def updateDefenderDamage(updatedUnit: BattleUnit): Unit =
-
-      if updatedUnit.trainerRef == player.id then
-        playerPokemon = playerPokemon updatedHead updatedUnit.pokemon
-      else
-        opponentPokemon = opponentPokemon updatedHead updatedUnit.pokemon
+    import util.Utilities.{pop, push, swap}
+    import BattleChoice.*
+    var playerTeam: Seq[Pokemon] = player.pokemonTeam
+    var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
+    
+    override def takeTurn(playerChoice: BattleChoice, opponentChoice: BattleChoice): Unit =
+      val t1 = selectPlayerPokemon(playerTeam,playerChoice)
+      val t2 = opponentTeam.pop
+      playerTeam = t1._2
+      opponentTeam = t2._2
+      for
+        updatedUnit <- BattleEngine(BattleUnit(player.id,t1._1, playerChoice),  BattleUnit(opponent.id, t2._1, opponentChoice))
+      do updatePokemonList(updatedUnit)
+    
+    def updatePokemonList(updatedUnit: BattleUnit): Unit =
+        if updatedUnit.trainerRef == player.id then
+          playerTeam = playerTeam push updatedUnit.pokemon
+        else
+          opponentTeam = opponentTeam push updatedUnit.pokemon
+          
+    def selectPlayerPokemon(pokemonList: Seq[Pokemon], battleChoice: BattleChoice): (Pokemon, Seq[Pokemon]) =
+      battleChoice match
+        case Change(pos) => pokemonList swap(0, pos) pop
+        case _ =>  pokemonList pop
+    
+    override def pokemonInBattle: (Option[Pokemon], Option[Pokemon]) =
+      (playerTeam.headOption, opponentTeam.headOption)

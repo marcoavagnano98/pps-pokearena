@@ -1,6 +1,6 @@
 package controller.events
 
-import model.battle.BattleOption
+import model.battle.BattleChoice
 import model.entities.pokemon.Pokemon
 import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
 
@@ -13,4 +13,4 @@ case class StartGame(list: Seq[Pokemon]) extends MenuEvent
 
 case class EndBattle(trainerId: String) extends BattleEvent
 
-case class OptionChosen(battleOption: BattleOption) extends BattleEvent
+case class OptionChosen(battleOption: BattleChoice) extends BattleEvent

@@ -5,13 +5,14 @@ import scala.util.Random
 object Utilities:
 
   extension[A](seq: Seq[A])
-    def pop: Option[(A, Seq[A])] = seq match
-      case h :: t => Some(h, t)
-      case _ => None
 
-    def updatedHead(elem: A) : Seq[A] = seq match
-      case h :: t => Seq(elem, h) concat t
-      case _ => elem :: Nil
+
+    def pop: (A, Seq[A]) = (seq.head, seq.tail)
+
+    def push(elem: A) : List[A] = elem :: seq.toList
+
+    def swap(startIndex: Int, finalIndex: Int): Seq[A] =
+      seq updated(startIndex,  seq(finalIndex)) updated(finalIndex, seq(startIndex))
 
 
   extension (r: Random)

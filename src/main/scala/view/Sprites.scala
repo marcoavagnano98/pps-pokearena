@@ -12,3 +12,4 @@ object Sprites:
   def getSpritePokemonId(id: String): String = "sprites/pokedex/" + id + ".png"
 
   def getBattleSprite(id: String): String = "sprites/pokedex/battle/" + id + ".png"
+

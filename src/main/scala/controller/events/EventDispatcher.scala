@@ -1,10 +1,11 @@
 package controller.events
 
+import com.badlogic.gdx.graphics.VertexAttribute.Position
 import controller.{BattleController, GameController, MenuController}
 import controller.events.Event
-import model.battle.{Battle, BattleOption}
-import model.entities.pokemon.Pokemon
-import model.entities.{Entity, Player, Trainer}
+import model.battle.{Battle, BattleChoice}
+import model.entities.pokemon.{Pokemon, PokemonFactory}
+import model.entities.{Entity, Player, Trainer, World}
 import pokearena.PokeArena
 import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
 
@@ -15,6 +16,7 @@ import scala.collection.mutable.Queue
 
 object EventDispatcher:
   val eventQueue: mutable.Queue[Event] = mutable.Queue.empty
+  BattleController.startBattle(Player(World.Position(0,0), "", PokemonFactory(4)), Trainer(World.Position(0,0), "", PokemonFactory(4)))
 
   def addEvent(events: Event*): Unit =
     eventQueue.addAll(events)

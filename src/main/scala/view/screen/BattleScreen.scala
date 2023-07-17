@@ -13,13 +13,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling}
-import model.battle.Battle
+import model.battle.{Battle, BattleChoice}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import controller.events.{EventDispatcher, OptionChosen}
-import model.battle.BattleOption.*
+import model.battle.BattleChoice.*
 import model.entities.World.Position
 import model.entities.pokemon.PokemonFactory
 import pokearena.PokeArena
@@ -45,7 +45,11 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head,skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y,200,100))
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head,skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y,200,100))
 
-  def updateView: Unit = ???
+  def updateView: Unit =
+    fightLayout.update(battle.pokemonInBattle._1.get)
+    pPlayerInfoLayout.update(battle.pokemonInBattle._1.get)
+    pOpponentLayout.update(battle.pokemonInBattle._2.get)
+    
 
 
   private def pBRegion: Rectangle = Rectangle(
@@ -59,7 +63,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
     Gdx.graphics.getWidth / 4, 50, Gdx.graphics.getWidth / 2, 200
   )
 
-  def menuLayoutAction(option: BattleMenuOption): Unit =
+  private def menuLayoutAction(option: BattleMenuOption): Unit =
     option match
       case FightOption => fightLayout.setVisible(true)
       case _ => bagLayout.setVisible(true)
@@ -68,7 +72,9 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   private def fightLayoutAction(moveIndex: Int): Unit =
     fightLayout.setVisible(false)
     battleMenuLayout.setVisible(true)
-    //EventDispatcher.addEvent(OptionChosen(Attack()))
+    val fightOption: BattleChoice = Attack(battle.player.pokemonTeam.head.moves(moveIndex))
+    EventDispatcher.addEvent(OptionChosen(fightOption))
+    
   private def bagLayoutAction(itemIndex: Int): Unit =
     bagLayout.setVisible(false)
     battleMenuLayout.setVisible(true)
