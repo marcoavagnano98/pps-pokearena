@@ -1,6 +1,6 @@
 package view
 
-import model.entities.{Potion, Trainer, VisibleEntity}
+import model.entities.{Door, Potion, Trainer, VisibleEntity}
 import model.entities.pokemon.Pokemon
 
 import scala.util.Random
@@ -12,6 +12,7 @@ object Sprites:
   def getEntitySprite(entity: VisibleEntity): String = entity match
     case trainer: Trainer => "assets/trainers/"+ trainer.id+ ".png"
     case potion: Potion => "assets/items/"+ potion.id+ ".png"
+    case door: Door => "assets/doors/"+ door.id +".png"
 
   def getMapSprite(id: String): String = "assets/rooms/" + id + Random.between(0, numberOfMaps) + ".png"
   def getSpritePokemonId(id: String): String = "sprites/pokedex/" + id + ".png"

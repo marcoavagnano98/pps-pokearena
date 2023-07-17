@@ -50,6 +50,7 @@ object EntityDefaultValues:
     case _: Pokemon => 5
     case _: Trainer => 100
     case _: Potion => 50
+    case _: Door => 100
     case _ => 0
 
   /**
@@ -59,4 +60,5 @@ object EntityDefaultValues:
     case _: Pokemon => 5
     case _: Trainer => 100
     case _: Potion => 50
+    case _: Door => 100
     case _ => 0
