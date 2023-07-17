@@ -22,7 +22,6 @@ abstract class BasicScreen extends ScreenAdapter:
   private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/fnt_white.fnt"))
   private val sr: ShapeRenderer = ShapeRenderer()
 
-
    override def render(delta: Float): Unit =
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -43,7 +42,6 @@ abstract class BasicScreen extends ScreenAdapter:
     stage.draw()
     stage.act(delta)
 
-
   private def scaleFont(height: Float): Unit =
     font.getData.setScale(height * 2 * font.getScaleY / font.getLineHeight)
 
@@ -58,7 +56,6 @@ abstract class BasicScreen extends ScreenAdapter:
 
   final override def dispose(): Unit =
     stage.dispose()
-
 
 trait Drawable:
   /**
