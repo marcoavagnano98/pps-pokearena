@@ -1,102 +1,84 @@
 package view.screen
 
-import com.badlogic.gdx.graphics.{Color, GL20, Texture}
+import com.badlogic.gdx.graphics.{Color, GL20, Pixmap, Texture}
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, Sprite, SpriteBatch, TextureRegion}
 import com.badlogic.gdx.{Gdx, ScreenAdapter}
 import com.badlogic.gdx.math.{Rectangle, Vector2}
-import com.badlogic.gdx.scenes.scene2d.ui.{HorizontalGroup, Image, Label, Skin, Table, TextButton, TextField}
-import com.badlogic.gdx.scenes.scene2d.{Actor, Stage, utils}
+import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
+import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, utils}
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
-import model.entities.Entity
-import com.badlogic.gdx.scenes.scene2d.utils.{Drawable, TextureRegionDrawable}
+import model.entities.{Entity, Potion}
+import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, Drawable, TextureRegionDrawable}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling}
 import model.battle.Battle
-import view.Sprites
+import view.{Sprites, screen}
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import controller.events.{EventDispatcher, OptionChosen}
+import model.battle.BattleOption.*
+import model.entities.World.Position
+import model.entities.pokemon.PokemonFactory
+import pokearena.PokeArena
+import view.battle.DialogueBox
+import view.battle.layout.BattleMenuOption.{BagOption, FightOption}
+import view.battle.layout.{BagLayout, BattleMenuLayout, BattleMenuOption, FightLayout, PokemonInfoLayout}
+import view.screen.Drawable
 
 
-case class BattleScreen(var model: Battle) extends BasicScreen:
-
+class BattleScreen(battle: Battle) extends BasicScreen :
+  val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
   override def viewport = new ScreenViewport()
 
-  def renderBattle(model: Battle): Unit =  this.model = model
+  override def background: Option[TextureRegion] = Some(TextureRegion(Texture("assets/pokemon_grass.png"), 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight));
 
-  private val shapeRenderer = new ShapeRenderer()
-  extension(sr: ShapeRenderer)
-    def roundedRect(x: Float,y:Float,width: Float, height: Float, radius: Float): Unit =
-      sr.rect(x + radius, y + radius, width - 2*radius, height - 2*radius)
-      sr.rect(x + radius, y, width - 2*radius, radius)
-      sr.rect(x + width - radius, y + radius, radius, height - 2*radius);
-      sr.rect(x + radius, y + height - radius, width - 2*radius, radius);
-      sr.rect(x, y + radius, radius, height - 2*radius);
+  val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(battle.player.pokemonTeam.head.name, skin, battleMenuRegion,menuLayoutAction)
+  val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin,battleMenuRegion, fightLayoutAction)
+  fightLayout.setVisible(false)
+  val bagLayout: BagLayout = BagLayout(Seq(Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione"),
+    Potion("",Position(0,0),"Pozione"),
+      Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione")), skin,battleMenuRegion, bagLayoutAction)
+  bagLayout.setVisible(false)
+  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head,skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y,200,100))
+  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head,skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y,200,100))
 
-      // Four arches, clockwise too
-      sr.arc(x + radius, y + radius, radius, 180f, 90f);
-      sr.arc(x + width - radius, y + radius, radius, 270f, 90f);
-      sr.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
-      sr.arc(x + radius, y + height - radius, radius, 90f, 90f);
+  def updateView: Unit = ???
 
 
-  val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
-  val image1 = new Image(new TextureRegion(new Texture(Sprites.getSpritePokemonId("1"))))
-  val region = new TextureRegion(new Texture(Sprites.getSpritePokemonId("4")))
-  region.flip(true, false)
-  val image2 = new Image(region)
-  import com.badlogic.gdx.Gdx
+  private def pBRegion: Rectangle = Rectangle(
+    Gdx.graphics.getWidth / 5, Gdx.graphics.getHeight / 2, 150, 150)
 
-  var table: Table = Table()
-  //table.defaults().pad(10F)
-  table.setFillParent(true)
+  private def oBRegion: Rectangle = Rectangle(
+    Gdx.graphics.getWidth - (Gdx.graphics.getWidth / 4),
+    Gdx.graphics.getHeight - (Gdx.graphics.getHeight / 4), 150, 150)
 
-  var label: Label = Label("PLAYER NAME", skin)
+  private def battleMenuRegion: Rectangle = Rectangle(
+    Gdx.graphics.getWidth / 4, 50, Gdx.graphics.getWidth / 2, 200
+  )
 
-  label.setAlignment(Align.center);
+  def menuLayoutAction(option: BattleMenuOption): Unit =
+    option match
+      case FightOption => fightLayout.setVisible(true)
+      case _ => bagLayout.setVisible(true)
+    battleMenuLayout.setVisible(false)
 
-  var first_table: Table = Table()
-  image1.setScaling(Scaling.fit)
-  image2.setScaling(Scaling.fit)
+  private def fightLayoutAction(moveIndex: Int): Unit =
+    fightLayout.setVisible(false)
+    battleMenuLayout.setVisible(true)
+    //EventDispatcher.addEvent(OptionChosen(Attack()))
+  private def bagLayoutAction(itemIndex: Int): Unit =
+    bagLayout.setVisible(false)
+    battleMenuLayout.setVisible(true)
 
-  first_table.add(image1)
+  override def actors: Seq[Actor] =
+    Seq(battleMenuLayout, fightLayout, bagLayout, pPlayerInfoLayout, pOpponentLayout)
 
-  val second_table: Table = Table()
-  //second_table.setDebug(true)
-  second_table.add(image2)
-  table.row()
-  table.add(first_table).pad(150)
-  table.add(second_table).pad(150)
-  var third_table: Table = Table()
-  third_table.defaults().pad(10F)
-  val buttonStart = new TextButton("First Move", skin)
-
-  third_table.add(buttonStart).expand()
-  third_table.add(Label("SECOND BUTTON", skin))
-  third_table.row()
-  third_table.add(Label("THIRD BUTTON", skin))
-  third_table.add(Label("FOURTH BUTTON", skin))
-  table.row()
-  table.add(third_table)
-  //stage.addActor(table)
-  val group: HorizontalGroup = HorizontalGroup()
-
-  override def actors: Seq[Actor] = Seq(table)
-  //stage.setDebugAll(true)
-/*
-  override def render(delta: Float): Unit =
-    Gdx.gl.glClearColor(0, 0, 0, 1)
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-    batch.begin()
-    shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix);
-    shapeRenderer.begin(ShapeType.Filled)
-    shapeRenderer.setColor(Color.WHITE)
-
-    shapeRenderer.roundedRect(150,100,250,50,10)
-
-    stage.draw()
-    stage.act(delta)
-    batch.setProjectionMatrix(camera.combined)
-
-    batch.end()
-    shapeRenderer.end()*/
+  override def drawables: Seq[view.screen.Drawable] =
+    val pPlayerId = battle.player.pokemonTeam.head.id
+    val pOpponentId = battle.opponent.pokemonTeam.head.id
+    Seq(
+      view.screen.Drawable(Sprites.getBattleSprite(pPlayerId), pBRegion.x, pBRegion.y, pBRegion.width, pBRegion.height),
+      view.screen.Drawable(Sprites.getBattleSprite(pOpponentId), oBRegion.x, oBRegion.y, oBRegion.width, oBRegion.height))

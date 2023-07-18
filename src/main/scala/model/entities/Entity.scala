@@ -28,7 +28,6 @@ trait VisibleEntity extends Entity :
    */
   def position: Position
 
-
 trait MovingAbility:
   /**
    * @param position the new position of the entity
@@ -50,6 +49,8 @@ object EntityDefaultValues:
   val width: Entity => Float =
     case _: Pokemon => 5
     case _: Trainer => 100
+    case _: Potion => 50
+    case _: Door => 100
     case _ => 0
 
   /**
@@ -58,4 +59,6 @@ object EntityDefaultValues:
   val height: Entity => Float =
     case _: Pokemon => 5
     case _: Trainer => 100
+    case _: Potion => 50
+    case _: Door => 100
     case _ => 0

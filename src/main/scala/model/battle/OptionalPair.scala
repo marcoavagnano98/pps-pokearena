@@ -19,14 +19,14 @@ trait OptionalPair[A]:
 
 object BattlePair:
 
-  def apply(first: BattleUnit, second: BattleUnit): OptionalPair[BattleUnit] = OptionalPairImpl(first withLife, second withLife)
+  def apply(first: BattleUnit, second: BattleUnit): OptionalPair[BattleUnit] = BattlePairImpl(first withLife, second withLife)
 
   def apply(seq: Seq[BattleUnit]): OptionalPair[BattleUnit] =
     seq match
       case Seq(first, second) => BattlePair(first, second)
       case _ => throw IllegalArgumentException("Seq must has exactly two arguments of BattleUnit type")
 
-  private case class OptionalPairImpl(override val first: Option[BattleUnit], override val second: Option[BattleUnit]) extends OptionalPair[BattleUnit] :
+  private case class BattlePairImpl(override val first: Option[BattleUnit], override val second: Option[BattleUnit]) extends OptionalPair[BattleUnit]:
     override def withFirstUpdated(first: BattleUnit): OptionalPair[BattleUnit] = copy(first = first withLife)
 
     override def withSecondUpdated(second: BattleUnit): OptionalPair[BattleUnit] = copy(second = second withLife)
