@@ -17,6 +17,7 @@ abstract class BasicScreen extends ScreenAdapter:
   def actors: Seq[Actor] = Seq.empty
   def viewport: Viewport
   def background:Option[TextureRegion] = Option.empty
+  def updateView() : Unit = {}
 
   private val stage:Stage = Stage(viewport)
   private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/fnt_white.fnt"))
@@ -25,6 +26,7 @@ abstract class BasicScreen extends ScreenAdapter:
    override def render(delta: Float): Unit =
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    updateView()
     val batch = stage.getBatch
     batch.begin()
     background match
