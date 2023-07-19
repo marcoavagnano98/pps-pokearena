@@ -16,7 +16,6 @@ abstract class BasicScreen extends ScreenAdapter:
   def writables: Seq[Writable] = Seq.empty
   def actors: Seq[Actor] = Seq.empty
   def viewport: Viewport
-  def background:Option[TextureRegion] = Option.empty
   def updateView() : Unit = {}
 
   private val stage:Stage = Stage(viewport)
@@ -29,9 +28,7 @@ abstract class BasicScreen extends ScreenAdapter:
     updateView()
     val batch = stage.getBatch
     batch.begin()
-    background match
-      case Some(b) => batch.draw(b, 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-      case _ =>
+
     drawables.foreach(d =>
       batch.draw(getTexture(d.path), d.bounds.x, d.bounds.y, d.bounds.width, d.bounds.height)
     )

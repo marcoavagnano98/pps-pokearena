@@ -78,4 +78,5 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
     Seq(rootTable)
 
   override def viewport: Viewport = ScreenViewport()
-  override def background: Option[TextureRegion] = Some(TextureRegion(Texture("assets/pokemon_grass.png"), 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight));
+
+  override def drawables: Seq[Drawable] = Seq(Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
