@@ -47,6 +47,16 @@ trait Pokemon extends Entity :
   def status: PokemonStatus
 
   /**
+   * @return the maxHp of the [[Pokemon]]
+   */
+  def maxHp: Int
+
+  /**
+   * @return the base stats total of the [[Pokemon]]
+   */
+  def bst: Int = hp + attack + defense + speed
+
+  /**
    * @param hp The new hp of the [[Pokemon]].
    * @return The same [[Pokemon]] with the hp updated.
    */

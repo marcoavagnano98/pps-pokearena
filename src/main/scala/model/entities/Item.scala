@@ -14,7 +14,7 @@ trait Item extends VisibleEntity :
    * @param pokemon The [[Pokemon]] to which the [[Item]] was used on.
    * @return The new [[Pokemon]] after the [[Item]] was applied.
    */
-  def use(p: Pokemon): Pokemon
+  def use(pokemon: Pokemon): Pokemon
 
 private case class Potion(override val id: String = "Item_01", override val position: Position, override val name: String = "Potion") extends Item with ChangeHpEffect :
   override def hpToChange: Int = 20
