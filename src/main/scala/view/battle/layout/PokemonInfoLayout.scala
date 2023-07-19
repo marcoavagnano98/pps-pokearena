@@ -14,7 +14,7 @@ class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, rect: Rectangle, ac
   def infoBox: DialogueBox =
     val infoBox = DialogueBox(Seq(
       layoutData.name + " [" + layoutData.elementType.elemType + "]",
-      layoutData.hp + "/" + layoutData.hp,
+      layoutData.hp + "/" + layoutData.maxHp,
       {
         layoutData.status match
           case _: HealthyStatus => ""
