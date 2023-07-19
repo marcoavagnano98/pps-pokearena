@@ -8,24 +8,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, Im
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, utils}
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
 import model.entities.{Entity, ItemFactory, ItemId, Potion}
-import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, Drawable, TextureRegionDrawable}
+import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, TextureRegionDrawable}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, BattleAction, BattleUnit, Pair}
+import model.battle.{Battle, BattleTurnEvent, BattleUnit, Pair}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import controller.events.{EndBattle, EventDispatcher, OptionChosen}
-import model.battle.BattleAction.*
+import model.battle.BattleTurnEvent.*
 import model.entities.World.Position
 import model.entities.pokemon.{Move, PokemonFactory}
 import pokearena.PokeArena
 import view.battle.DialogueBox
 import view.battle.layout.BattleMenuOption.{BagOption, FightOption}
-import view.battle.layout.{BagLayout, BattleMenuLayout, BattleMenuOption, FightLayout, PokemonInfoLayout}
+import view.battle.layout.{BagLayout, BattleMenuBaseLayout, BattleMenuOption, FightLayout, PokemonInfoLayout}
 import view.screen.Drawable
 
 import scala.language.postfixOps
@@ -33,38 +33,38 @@ import scala.language.postfixOps
 
 class BattleScreen(battle: Battle) extends BasicScreen :
   val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
-  override def viewport = new ScreenViewport()
-  val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(Seq("Cosa deve fare " + battle.player.pokemonTeam.head.name), skin, battleMenuRegion,menuLayoutAction)
 
-  val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin,battleMenuRegion, fightLayoutAction)
-  fightLayout.setVisible(false)
-  val bagLayout: BagLayout =  BagLayout(Seq(ItemFactory(ItemId.Potion)), skin, battleMenuRegion, bagLayoutAction)
-  bagLayout.setVisible(false)
-  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head,skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y,200,100))
-  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head,skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y,200,100))
+  override def viewport = new ScreenViewport()
+
+  val battleMenuLayout: BattleMenuBaseLayout = BattleMenuBaseLayout(Seq("Cosa deve fare " + battle.player.pokemonTeam.head.name), skin, battleMenuRegion, menuLayoutAction)
+  val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin, battleMenuRegion, fightLayoutAction)
+  val bagLayout: BagLayout = BagLayout(Seq(ItemFactory(ItemId.Potion)), skin, battleMenuRegion, bagLayoutAction)
+  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y, 200, 100))
+  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y, 200, 100))
 
   def battleScreenUpdate(turnData: Pair[BattleUnit]): Unit =
-      fightLayout.setVisible(false)
-      bagLayout.setVisible(false)
-      battleMenuLayout.setVisible(true)
-      battleMenuLayout.hideButtonMenu
-      battleMenuLayout.update(
-        Seq(
-        turnData.first.pokemon.name + " " + turnData.first.battleOption.description,
-        turnData.second.pokemon.name +  " " + turnData.second.battleOption.description
+    fightLayout.setVisible(false)
+    bagLayout.setVisible(false)
+    battleMenuLayout.setVisible(true)
+    battleMenuLayout.hideButtonMenu
+    battleMenuLayout.update(
+      Seq(
+        turnData.first.pokemon.name + " " + turnData.first.battleTurnEvent.description,
+        turnData.second.pokemon.name + " " + turnData.second.battleTurnEvent.description
       ))
-      com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
-        override def run(): Unit = {
-          battle.pokemonInBattle match
-            case (Some(playerPokemon), Some(opponentPokemon)) =>
-              fightLayout.update(playerPokemon)
-              battleMenuLayout.update(Seq("Cosa deve fare " + playerPokemon.name + "?"))
-              pPlayerInfoLayout.update(playerPokemon)
-              pOpponentLayout.update(opponentPokemon)
-              battleMenuLayout.showButtonMenu
-            case _ =>
-        }
-      }, 2)
+    com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
+      override def run(): Unit = {
+        battle.pokemonInBattle match
+          case (Some(playerPokemon), Some(opponentPokemon)) =>
+            fightLayout.update(playerPokemon)
+            battleMenuLayout.update(Seq("Cosa deve fare " + playerPokemon.name + "?"))
+            pPlayerInfoLayout.update(playerPokemon)
+            pOpponentLayout.update(opponentPokemon)
+            battleMenuLayout.showButtonMenu
+          case (Some(_), None) => EventDispatcher.addEvent(EndBattle(battle.opponent.id))
+          case _ => EventDispatcher.addEvent(EndBattle(battle.player.id))
+      }
+    }, 2)
 
   private def pBRegion: Rectangle = Rectangle(
     Gdx.graphics.getWidth / 5, Gdx.graphics.getHeight / 2, 150, 150)
@@ -89,15 +89,15 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   private def fightLayoutAction(moveIndex: Int): Unit =
     val pokemon = battle.pokemonInBattle._1.get
     val move: Move = pokemon.moves(moveIndex)
-    val fightOption: BattleAction = Attack(move)
+    val fightOption: BattleTurnEvent = Attack(move)
     EventDispatcher.addEvent(OptionChosen(fightOption))
 
   private def bagLayoutAction(itemIndex: Int): Unit = {}
 
-  private def pokemonDrawables: Seq[view.screen.Drawable] =
+  private def pokemonDrawables: Seq[Drawable] =
     battle.pokemonInBattle match
-      case (Some(pPokemon), Some(oPokemon)) => Seq(view.screen.Drawable(Sprites.getBattleSprite(pPokemon.id), pBRegion.x, pBRegion.y, pBRegion.width, pBRegion.height),
-                               view.screen.Drawable(Sprites.getBattleSprite(oPokemon.id), oBRegion.x, oBRegion.y, oBRegion.width, oBRegion.height))
+      case (Some(pPokemon), Some(oPokemon)) => Seq(Drawable(Sprites.getBattleSprite(pPokemon.id), pBRegion.x, pBRegion.y, pBRegion.width, pBRegion.height),
+        Drawable(Sprites.getBattleSprite(oPokemon.id), oBRegion.x, oBRegion.y, oBRegion.width, oBRegion.height))
       case _ => Seq()
 
   override def actors: Seq[Actor] =
@@ -107,5 +107,5 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pPlayerInfoLayout,
       pOpponentLayout)
 
-  override def drawables: Seq[view.screen.Drawable] =
-    Seq(view.screen.Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight)) concat pokemonDrawables
+  override def drawables: Seq[Drawable] =
+    Seq(Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight)) concat pokemonDrawables

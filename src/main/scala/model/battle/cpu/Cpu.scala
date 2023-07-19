@@ -1,6 +1,6 @@
 package model.battle.cpu
 
-import model.battle.BattleAction
+import model.battle.BattleTurnEvent
 import model.entities.pokemon.{ComparatorTypeElement, Move, Pokemon}
 import util.Utilities
 
@@ -14,9 +14,9 @@ case class Cpu(playerPokemon: Pokemon, cpuPokemon: Pokemon):
   /*
   * 30 % probability to use a best move against the player pokemon
   * */
-  def optionChosen: BattleAction =
+  def optionChosen: BattleTurnEvent =
     import Utilities.dice
-    BattleAction.Attack(
+    BattleTurnEvent.Attack(
       if Random.dice(30) then
       damageBonusScore(movesMap).toSeq.sortWith((x, y) => x._2 > y._2)
         .map(t => t._1)

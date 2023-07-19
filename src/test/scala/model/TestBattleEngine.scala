@@ -11,7 +11,7 @@ import model.battle.*
 
 import scala.language.postfixOps
 import model.entities.World.Position
-class TestBattle extends AnyFlatSpec with should.Matchers:
+class TestBattleEngine extends AnyFlatSpec with should.Matchers:
 
   val bulbasaur: Pokemon = PokemonFactory.getPokemonById("1").get
   val charmender: Pokemon = PokemonFactory.getPokemonById("4").get
@@ -19,8 +19,8 @@ class TestBattle extends AnyFlatSpec with should.Matchers:
   val lethalMove: Move = Move(9999, 10, "azione", Normal, None)
   val player: Player = Player(Position(0,0),"",PokemonFactory(3))
   val opponent: Trainer = Trainer(Position(0,0),"",PokemonFactory(3))
-  val slowestBt: BattleUnit = BattleUnit(player.id, bulbasaur, BattleAction.Attack(actionMove))
-  val fastestBt: BattleUnit = BattleUnit(opponent.id,charmender, BattleAction.Attack(actionMove))
+  val slowestBt: BattleUnit = BattleUnit(player.id, bulbasaur, BattleTurnEvent.Attack(actionMove))
+  val fastestBt: BattleUnit = BattleUnit(opponent.id,charmender, BattleTurnEvent.Attack(actionMove))
 
   "A BattleEngine " should " return the fastest Pokemon in battle first" in{
    BattleEngine(slowestBt, fastestBt).head.pokemon.id shouldBe charmender.id
@@ -29,12 +29,12 @@ class TestBattle extends AnyFlatSpec with should.Matchers:
   "A BattleEngine " should " return damaged battle units after attacks" in{
     BattleEngine(slowestBt, fastestBt) shouldBe Seq(BattleEngine.unitAfterAttack(slowestBt, fastestBt,actionMove), BattleEngine.unitAfterAttack(fastestBt, slowestBt, actionMove))
   }
-  val lethalBt: BattleUnit = BattleUnit(player.id, bulbasaur , BattleAction.Attack(lethalMove))
+  val lethalBt: BattleUnit = BattleUnit(player.id, bulbasaur , BattleTurnEvent.Attack(lethalMove))
 
-  "A BattleEngine " should " return only alive battle units" in{
-    BattleEngine(lethalBt, fastestBt) shouldBe Seq(BattleEngine.unitAfterAttack(fastestBt,lethalBt ,actionMove))
+  "A BattleEngine " should "return defeated pokemon with turn event Defeat" in{
+    BattleEngine(lethalBt, fastestBt).head.battleTurnEvent shouldBe BattleTurnEvent.Defeat
   }
-
+/*
   "A Battle engine " should " return healed battle units after potion used" in {
     BattleEngine.unitAfterAttack(fastestBt, slowestBt, actionMove)
-  }
+  }*/

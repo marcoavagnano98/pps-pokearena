@@ -11,14 +11,13 @@ import view.battle.DialogueBox
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuLayout(var layoutInfo: Seq[String], skin: Skin, rect: Rectangle, actionPerformed: BattleMenuOption => Unit) extends Table with Layout[Seq[String]]:
-
+class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, rect: Rectangle,  actionPerformed: BattleMenuOption => Unit) extends BaseLayout[Seq[String], BattleMenuOption](layoutData, actionPerformed):
   import BattleMenuOption.*
-  val startInfoBox: DialogueBox = generateInfoBox(layoutInfo)
+  val startInfoBox: DialogueBox = generateInfoBox(layoutData)
   val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
-  bagButton.addListener(buttonListener(BagOption))
+  bagButton.addListener(listener(BagOption))
   val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
-  fightButton.addListener(buttonListener(FightOption))
+  fightButton.addListener(listener(FightOption))
   add(startInfoBox).colspan(2)
   row()
   add(bagButton).fill().pad(10).minHeight(50)
@@ -36,16 +35,8 @@ class BattleMenuLayout(var layoutInfo: Seq[String], skin: Skin, rect: Rectangle,
     bagButton.setVisible(true)
     fightButton.setVisible(true)
 
-  private def buttonListener(action: BattleMenuOption): ClickListener =
-    new ClickListener() {
-      override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-        super.touchDown(event, x, y, pointer, button)
-        actionPerformed(action)
-        true
-    }
-    
   override def update(newLayoutInfo: Seq[String]): Unit =
-    layoutInfo = newLayoutInfo
+    layoutData = newLayoutInfo
     getCells.items(0).getActor match
       case _: DialogueBox =>  getCells.items(0).setActor(generateInfoBox(newLayoutInfo))
       case _ =>  

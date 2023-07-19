@@ -69,8 +69,8 @@ object BattleController extends Controller:
     e match
       case e: OptionChosen =>
           screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.takeTurn(e.battleOption))
-          model.pokemonInBattle match
-            case (Some(_), None) => GameController.removeTrainer(model.opponent.id)
-            case (None, Some(_)) =>
-            case _ =>
-      case e: EndBattle => GameController.removeTrainer(e.trainerId); handleScreenChange(GameController.screen)
+      case e: EndBattle =>
+        if e.trainerId == model.player.id then
+          {/*todo call gameOver from gameController*/}
+        else
+          GameController.removeTrainer(e.trainerId)
