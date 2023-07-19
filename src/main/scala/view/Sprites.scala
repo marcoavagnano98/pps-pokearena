@@ -14,7 +14,7 @@ object Sprites:
     case trainer: Trainer => "assets/trainers/"+ trainer.id+ ".png"
     case item: Item => "assets/items/"+ item.id+ ".png"
     case door: Door => "assets/doors/"+ door.id +".png"
-
+  def getGenericItem = "assets/items/Item_00.png"
   def getMapSprite(id: String): String = "assets/rooms/" + id + Random.between(0, numberOfMaps) + ".png"
   def getSpritePokemonId(id: String): String = "sprites/pokedex/" + id + ".png"
   def getBattleSprite(id: String): String = "sprites/pokedex/battle/" + id + ".png"

@@ -57,11 +57,15 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
 
     buttonStart.addListener(new ClickListener() {
       override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-        import controller.events.StartGame
-        EventDispatcher.addEvent(StartGame(listPokemonChose))
+        if listPokemonChose.length > 3 then
+          import controller.events.StartGame
+          EventDispatcher.addEvent(StartGame(listPokemonChose))
         true
     })
-
+    import view.battle.DialogueBox
+    val infoBox = DialogueBox(Seq("Choose 4 Pokemon and then press Start!"),mySkin)
+    rootTable.add(infoBox).height(100).width(500)
+    rootTable.row()
     rootTable.add(table)
     rootTable.row()
     val blackline: Image = Image(Texture(Gdx.files.internal("assets/blackline.png")))
