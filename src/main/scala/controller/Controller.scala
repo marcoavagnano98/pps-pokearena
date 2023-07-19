@@ -49,11 +49,10 @@ protected object GameController extends Controller:
   def removeTrainer(id: String): Unit = ??? /* TODO: remove the current trainer from the visible entities list */
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
-    model.generate(pokemonList)
+    model.createMap("map_")
+    model.generateEntities(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
-
-
 
 object BattleController extends Controller:
   override type T = Battle
@@ -62,11 +61,10 @@ object BattleController extends Controller:
     screen = BattleScreen(model)
     handleScreenChange(screen)
 
-  override def eventHandler(e: Event): Unit = e match
-    case e: OptionChosen =>
-      model.takeTurn(e.battleOption, Cpu(model.pokemonInBattle._1.get, model.pokemonInBattle._2.get).optionChosen)
-    case e: EndBattle => GameController.removeTrainer(e.trainerId); handleScreenChange(GameController.screen)
-    case _ =>{}
-    if screen != null then
-      println("Updatee")
-      screen.asInstanceOf[BattleScreen].updateView
+  override def eventHandler(e: Event): Unit =
+    e match
+      case e: OptionChosen => model.takeTurn(e.battleOption, Cpu(model.pokemonInBattle._1.get, model.pokemonInBattle._2.get).optionChosen)
+      case e: EndBattle => GameController.removeTrainer(e.trainerId); handleScreenChange(GameController.screen)
+
+    screen match
+      case bs : BattleScreen => screen.asInstanceOf[BattleScreen].updateView

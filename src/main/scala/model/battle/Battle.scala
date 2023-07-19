@@ -75,6 +75,8 @@ object Battle:
     import BattleChoice.*
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
+    var lastPlayerChoice: BattleChoice = _
+    var lastOpponentChoice: BattleChoice = _
     
     override def takeTurn(playerChoice: BattleChoice, opponentChoice: BattleChoice): Unit =
       val t1 = selectPlayerPokemon(playerTeam,playerChoice)

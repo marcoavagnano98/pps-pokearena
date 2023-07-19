@@ -15,6 +15,7 @@ object Trainer:
 trait Player extends Trainer with MovingAbility:
   def withPokemon(pokemonTeam : Seq[Pokemon]) : Player
   def withPosition(position : Position) : Player
+  def movesTo(direction: String): Player
 
 object Player:
 
@@ -22,6 +23,6 @@ object Player:
     PlayerImpl(pos, id, pokemonList)
   private case class PlayerImpl(override val position: Position, override val id: String, override val pokemonTeam: Seq[Pokemon]) extends Player:
     override def updatePosition(position: Position): VisibleEntity = copy(position = position)
-
     override def withPokemon(pokemonTeam: Seq[Pokemon]): Player = copy(pokemonTeam=pokemonTeam)
-    override def  withPosition(position : Position) : Player =  copy(position=position)
+    override def  withPosition(position : Position) : Player = copy(position=position)
+    override def movesTo(direction: String): Player = copy(id=direction)

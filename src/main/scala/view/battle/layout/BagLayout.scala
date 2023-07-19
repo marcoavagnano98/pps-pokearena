@@ -25,7 +25,7 @@ class BagLayout(var layoutInfo: Seq[Item], skin: Skin, rect:Rectangle, actionPer
         actionPerformed(itemIndex)
         true
     }
-
+ 
   private def generateItemList: Seq[(Int,TextField)] =
     for
       i <- layoutInfo.indices

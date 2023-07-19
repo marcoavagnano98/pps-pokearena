@@ -3,7 +3,7 @@ package model.battle
 import model.battle.{BattlePair, OptionalPair}
 import model.entities.{Item, Potion, Trainer}
 import model.entities.pokemon.ElementType.Fire
-import model.entities.pokemon.{Move, Pokemon}
+import model.entities.pokemon.{ComparatorTypeElement, Move, Pokemon, StatusEffects}
 
 import scala.Tuple2
 import scala.annotation.tailrec
@@ -22,7 +22,7 @@ object BattleEngine:
   def apply(t: (BattleUnit, BattleUnit)): Seq[BattleUnit] =
     for
       battleUnit <- performTurn(t).toSeq
-      battleUnitAlive <- battleUnit
+      battleUnitAlive <-  battleUnit
       battleUnitUpdated <- battleUnitAlive.withDamageStatusApplied.withLife
     yield battleUnitUpdated
 
@@ -41,8 +41,8 @@ object BattleEngine:
 
   def unitAfterAttack(b1: BattleUnit, b2: BattleUnit, move: Move): BattleUnit =
 
-    val computeTotalDamage: (Int, Int, Int) => Int = (power, attack, defense) => (4 * power * (attack / defense)) / 50
-
+    val computeTotalDamage: (Int, Int, Int) => Int = (power, attack, defense) =>
+      ((4 * power * (attack / defense)) / 50 * ComparatorTypeElement(move.elementType, b2.pokemon.elementType)).toInt
     b2.withPokemonUpdate(
       move.applyStatus(
         b2.pokemon.withHp(

@@ -16,8 +16,7 @@ class DialogueBox(var text: Seq[String], dSkin: Skin) extends Table:
       label =  Label(textLine, dSkin)
     do
       label.setColor(Color.BLACK)
-     // label.setAlignment(Align.center)
-      add(label)//.align(Align.center)
+      add(label)
       row()
 
 

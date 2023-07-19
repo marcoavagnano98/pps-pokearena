@@ -11,13 +11,11 @@ import view.battle.DialogueBox
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuLayout(val layoutInfo: String, skin: Skin, rect: Rectangle, actionPerformed: BattleMenuOption => Unit) extends Table with Layout[String]:
+class BattleMenuLayout(var layoutInfo: String, skin: Skin, rect: Rectangle, actionPerformed: BattleMenuOption => Unit) extends Table with Layout[String]:
 
   import BattleMenuOption.*
 
-  val box: DialogueBox = DialogueBox(Seq("Cosa deve fare " + layoutInfo + "?"), skin)
-  add(box).colspan(2)
-  box.setDebug(true)
+  add(generateInfoBox).colspan(2)
   row()
   val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
   bagButton.addListener(buttonListener(BagOption))
@@ -28,6 +26,8 @@ class BattleMenuLayout(val layoutInfo: String, skin: Skin, rect: Rectangle, acti
   setSize(rect.width, rect.height)
   setPosition(rect.x, rect.y)
 
+  private def generateInfoBox : DialogueBox = DialogueBox(Seq("Cosa deve fare " + layoutInfo + "?"), skin)
+
   private def buttonListener(action: BattleMenuOption): ClickListener =
     new ClickListener() {
       override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
@@ -36,7 +36,11 @@ class BattleMenuLayout(val layoutInfo: String, skin: Skin, rect: Rectangle, acti
         true
     }
 
-  override def update(newLayoutInfo: String): Unit = {}
+  override def update(newLayoutInfo: String): Unit =
+    layoutInfo = newLayoutInfo
+    getCells.items(0).getActor match
+      case _: DialogueBox =>  getCells.items(0).setActor(generateInfoBox)
+      case _ =>
   
 
 

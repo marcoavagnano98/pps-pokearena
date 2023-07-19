@@ -2,7 +2,8 @@ package view.screen
 
 import com.badlogic.gdx.{Gdx, ScreenAdapter}
 import com.badlogic.gdx.graphics.g2d.{Batch, BitmapFont, TextureRegion}
-import com.badlogic.gdx.graphics.{GL20, Texture}
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.{Color, GL20, Texture}
 import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -19,6 +20,7 @@ abstract class BasicScreen extends ScreenAdapter:
 
   private val stage:Stage = Stage(viewport)
   private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/fnt_white.fnt"))
+  private val sr: ShapeRenderer = ShapeRenderer()
 
 
    override def render(delta: Float): Unit =

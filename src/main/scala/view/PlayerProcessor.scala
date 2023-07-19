@@ -6,20 +6,31 @@ import model.entities.World.Position
 import com.badlogic.gdx
 
 class PlayerProcessor(world: World) extends InputAdapter:
+  private var x = world.player.position.x
+  private var y = world.player.position.y
+  private val playerSpeed = world.playerSpeed
 
-  private var x = 0
-  private var y = 0
-  private val playerSpeed = 2
-  private def updatePlayerPosition(): Unit =
-    world.player = world.player withPosition Position(world.player.position.x+x,world.player.position.y+y)
+  private def updatePlayerPosition(newX: Double, newY: Double): Unit =
+    world.player = world.player withPosition Position(newX, newY)
 
+  private def updateSpritePlayer(direction:String): Unit = world.player = world.player movesTo direction
 
   override def keyDown(keycode: Int): Boolean =
     keycode match
-      case Keys.RIGHT => x = playerSpeed;
-      case Keys.LEFT =>  x = -playerSpeed;
-      case Keys.UP => y = playerSpeed;
-      case Keys.DOWN => y = -playerSpeed;
+      case Keys.RIGHT => {x = playerSpeed; y = 0; updateSpritePlayer("right")}
+      case Keys.LEFT =>  {x = -playerSpeed; y = 0; updateSpritePlayer("left")}
+      case Keys.UP => {y = playerSpeed; x = 0; updateSpritePlayer("up")}
+      case Keys.DOWN => {y = -playerSpeed; x = 0; updateSpritePlayer("player")}
       case _ =>
-    updatePlayerPosition()
+    canMove
     true
+
+  private def canMove: Unit =
+    val newX = world.player.position.x+x
+    val newY = world.player.position.y+y
+    val withinXBounds = newX >= 0 && newX + world.player.width <= world.gameMap.bounds.width
+    val withinYBounds = newY >= 0 && newY + world.player.height <= world.gameMap.bounds.height
+
+    // Se entrambe le coordinate sono all'interno della griglia, aggiorna la posizione
+    if (withinXBounds && withinYBounds)
+      updatePlayerPosition(newX, newY)
