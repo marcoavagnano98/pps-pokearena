@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, utils}
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
-import model.entities.{Entity, Potion}
+import model.entities.{Entity, ItemFactory, Potion}
 import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, Drawable, TextureRegionDrawable}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -38,15 +38,13 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(battle.player.pokemonTeam.head.name, skin, battleMenuRegion,menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin,battleMenuRegion, fightLayoutAction)
   fightLayout.setVisible(false)
-  val bagLayout: BagLayout = BagLayout(Seq(Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione"),
-    Potion("",Position(0,0),"Pozione"),
-      Potion("",Position(0,0),"Pozione"),Potion("",Position(0,0),"Pozione")), skin,battleMenuRegion, bagLayoutAction)
+  val bagLayout: BagLayout =  BagLayout(Seq(ItemFactory("",4))
   bagLayout.setVisible(false)
   val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head,skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y,200,100))
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head,skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y,200,100))
 
   def updateView: Unit =
-    
+
     com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
       override def run(): Unit = {
         battle.pokemonInBattle match
