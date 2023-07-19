@@ -28,9 +28,8 @@ class PlayerProcessor(world: World) extends InputAdapter:
   private def canMove: Unit =
     val newX = world.player.position.x+x
     val newY = world.player.position.y+y
-    val withinXBounds = newX >= 0 && newX + world.player.width <= world.gameMap.bounds.width
-    val withinYBounds = newY >= 0 && newY + world.player.height <= world.gameMap.bounds.height
+    val withinXBounds = newX >= 0 && newX <= world.gridWidth-1
+    val withinYBounds = newY >= 0 && newY <= world.gridHeight-1
 
-    // Se entrambe le coordinate sono all'interno della griglia, aggiorna la posizione
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)

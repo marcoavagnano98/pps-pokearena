@@ -11,17 +11,26 @@ import model.entities.pokemon.*
 import model.entities.{Map, Player, Trainer}
 import util.Screen.ScreenBehavior
 import view.screen
-import view.Sprites.{getMapSprite, getEntitySprite}
+import view.Sprites.{getMapPath, getEntitySprite}
 import view.screen.Drawable
 import view.PlayerProcessor
 
-class GameScreen(world: World) extends BasicScreen:
-  override def viewport: Viewport = FitViewport(1000,1000)
+object ViewportUtil:
+  val viewportHeight: Float = 100
+  val viewportWidth: Float = 100
 
-  override def show(): Unit = 
+class GameScreen(world: World) extends BasicScreen:
+
+  override def viewport: Viewport = FitViewport(ViewportUtil.viewportWidth, ViewportUtil.viewportHeight)
+
+  override def show(): Unit =
     super.show()
     Gdx.input.setInputProcessor(PlayerProcessor(world))
 
   override def drawables: Seq[Drawable] =
-    Drawable(world.gameMap.background, world.gameMap.bounds.x, world.gameMap.bounds.y, world.gameMap.bounds.width, world.gameMap.bounds.height) +:
-    world.visibleEntities.map(o => Drawable(getEntitySprite(o), o.position.x.toFloat, o.position.y.toFloat, o.height, o.width))
+    Drawable(world.gameMap.background, world.gameMap.bounds.x, world.gameMap.bounds.y, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
+      world.visibleEntities.map(o => Drawable(getEntitySprite(o),
+        o.position.x.toFloat * ViewportUtil.viewportWidth/world.gridWidth,
+        o.position.y.toFloat * ViewportUtil.viewportHeight/world.gridHeight,
+        o.height,
+        o.width))

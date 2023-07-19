@@ -35,7 +35,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
   override def viewport = new ScreenViewport()
 
-  override def background: Option[TextureRegion] = Some(TextureRegion(Texture("assets/pokemon_grass.png"), 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight));
+  //override def background: Option[TextureRegion] = Some(TextureRegion(Texture("assets/pokemon_grass.png"), 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight));
 
   val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(battle.player.pokemonTeam.head.name, skin, battleMenuRegion,menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin,battleMenuRegion, fightLayoutAction)

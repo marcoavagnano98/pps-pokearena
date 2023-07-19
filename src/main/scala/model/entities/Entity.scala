@@ -48,9 +48,9 @@ object EntityDefaultValues:
    */
   val width: Entity => Float =
     case _: Pokemon => 5
-    case _: Trainer => 100
-    case _: Potion => 50
-    case _: Door => 100
+    case _: Trainer => 10
+    case _: Item => 5
+    case _: Door => 10
     case _ => 0
 
   /**
@@ -58,7 +58,7 @@ object EntityDefaultValues:
    */
   val height: Entity => Float =
     case _: Pokemon => 5
-    case _: Trainer => 100
-    case _: Potion => 50
-    case _: Door => 100
+    case _: Trainer => 10
+    case _: Item => 5
+    case _: Door => 10
     case _ => 0
