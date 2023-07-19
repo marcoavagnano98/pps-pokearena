@@ -3,13 +3,11 @@ package model.parser
 import model.entities.pokemon.{ElementType, Move, Pokemon}
 
 import scala.io.{Codec, Source}
+import io.circe.parser
+import io.circe.HCursor
+import io.circe.Decoder
 
 object PokedexParser:
-
-  import io.circe.parser
-  import io.circe.HCursor
-  import io.circe.Decoder
-
   private val pokedexFileName = "data/pokedex.json"
 
   def getAllPokemon: Seq[Pokemon] =
@@ -31,7 +29,6 @@ object PokedexParser:
     decodingResult match
       case Right(l) => l
       case _ => List()
-
 
   object givenConversionStringElementType:
     given Conversion[String, ElementType] with
