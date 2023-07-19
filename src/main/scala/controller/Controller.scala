@@ -67,4 +67,4 @@ object BattleController extends Controller:
       case e: EndBattle => GameController.removeTrainer(e.trainerId); handleScreenChange(GameController.screen)
 
     screen match
-      case bs : BattleScreen => screen.asInstanceOf[BattleScreen].updateView
+      case _: BattleScreen => screen.asInstanceOf[BattleScreen].viewUpdate

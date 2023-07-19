@@ -4,13 +4,11 @@ import model.entities.pokemon.{ElementType, Move, Pokemon, PokemonStatus}
 import model.entities.pokemon.AllPokemonStatus.*
 
 import scala.io.{Codec, Source}
+import io.circe.parser
+import io.circe.HCursor
+import io.circe.Decoder
 
 object MoveParser:
-
-  import io.circe.parser
-  import io.circe.HCursor
-  import io.circe.Decoder
-
   private val movesFileName = "data/moves.json"
 
   def getAllMoves: Seq[Move] =

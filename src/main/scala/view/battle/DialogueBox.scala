@@ -20,6 +20,3 @@ class DialogueBox(var text: Seq[String], dSkin: Skin) extends Table:
       row()
 
 
-
-
-

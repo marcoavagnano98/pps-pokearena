@@ -15,7 +15,7 @@ class BattleMenuLayout(var layoutInfo: String, skin: Skin, rect: Rectangle, acti
 
   import BattleMenuOption.*
 
-  add(generateInfoBox).colspan(2)
+  add(generateInfoBox("Cosa deve fare " + layoutInfo + "?")).colspan(2)
   row()
   val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
   bagButton.addListener(buttonListener(BagOption))
@@ -26,8 +26,10 @@ class BattleMenuLayout(var layoutInfo: String, skin: Skin, rect: Rectangle, acti
   setSize(rect.width, rect.height)
   setPosition(rect.x, rect.y)
 
-  private def generateInfoBox : DialogueBox = DialogueBox(Seq("Cosa deve fare " + layoutInfo + "?"), skin)
-
+  private def generateInfoBox(text: String) : DialogueBox = DialogueBox(Seq(text), skin)
+  def hideMenu: Unit =
+    bagButton.setVisible(false)
+    fightButton.setVisible(false)
   private def buttonListener(action: BattleMenuOption): ClickListener =
     new ClickListener() {
       override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
@@ -39,7 +41,7 @@ class BattleMenuLayout(var layoutInfo: String, skin: Skin, rect: Rectangle, acti
   override def update(newLayoutInfo: String): Unit =
     layoutInfo = newLayoutInfo
     getCells.items(0).getActor match
-      case _: DialogueBox =>  getCells.items(0).setActor(generateInfoBox)
+      case _: DialogueBox =>  getCells.items(0).setActor(generateInfoBox(newLayoutInfo))
       case _ =>
   
 
