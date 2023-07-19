@@ -1,10 +1,10 @@
 package controller
 
-import controller.events.{EndBattle, Event, OptionChosen, StartGame}
+import controller.events.{EndBattle, Event, OptionChosen, StartGame,CollisionEvent}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
-import model.entities.{Entity, Player, Trainer, VisibleEntity, World}
+import model.entities.{Entity, Player, Trainer, VisibleEntity, World, Item, Door}
 import pokearena.PokeArena
 import view.screen.{BasicScreen, BattleScreen, GameScreen}
 
@@ -44,7 +44,11 @@ protected object GameController extends Controller:
 
   model = World()
 
-  override def eventHandler(e: Event): Unit = ???
+  override def eventHandler(e: Event): Unit = e match
+    case visibleEntity:CollisionEvent => visibleEntity.entity match
+      case trainer: Trainer => BattleController.startBattle(model.player, trainer)
+      case item: Item => model.itemCollision(item)
+      case door: Door => println("Collision with Door") // check se gli opp == 0 e nextLevel()
 
   def removeTrainer(id: String): Unit = println("Terminato"); handleScreenChange(screen)
 
@@ -70,6 +74,3 @@ object BattleController extends Controller:
             case (None, Some(_)) =>
             case _ =>
       case e: EndBattle => GameController.removeTrainer(e.trainerId); handleScreenChange(GameController.screen)
-
-    screen match
-      case _: BattleScreen =>

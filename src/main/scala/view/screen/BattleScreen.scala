@@ -35,6 +35,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
   override def viewport = new ScreenViewport()
   val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(Seq("Cosa deve fare " + battle.player.pokemonTeam.head.name), skin, battleMenuRegion,menuLayoutAction)
+
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin,battleMenuRegion, fightLayoutAction)
   fightLayout.setVisible(false)
   val bagLayout: BagLayout =  BagLayout(Seq(ItemFactory(ItemId.Potion)), skin, battleMenuRegion, bagLayoutAction)
