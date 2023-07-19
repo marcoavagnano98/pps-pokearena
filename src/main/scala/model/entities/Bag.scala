@@ -9,8 +9,8 @@ object Bag:
   def apply() : Bag = BagImpl()
 
   private class BagImpl() extends Bag:
-    override val items: Seq[Item] = _items
     private var _items: Seq[Item] = List.empty
+    override def items: Seq[Item] = _items
 
     override def addItem(item: Item): Unit =
       _items = _items :+ item

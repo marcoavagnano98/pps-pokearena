@@ -12,6 +12,7 @@ class PlayerProcessor(world: World) extends InputAdapter:
 
   private def updatePlayerPosition(newX: Double, newY: Double): Unit =
     world.player = world.player withPosition Position(newX, newY)
+    world.checkCollision
 
   private def updateSpritePlayer(direction:String): Unit = world.player = world.player movesTo direction
 
@@ -33,3 +34,4 @@ class PlayerProcessor(world: World) extends InputAdapter:
 
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)
+

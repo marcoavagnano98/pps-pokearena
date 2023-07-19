@@ -4,6 +4,7 @@ import model.entities.pokemon.{Pokemon, PokemonFactory}
 import util.Drawable
 import view.Sprites.getMapPath
 import com.badlogic.gdx.Gdx
+import controller.events.{CollisionEvent, EventDispatcher}
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -21,6 +22,8 @@ trait World:
   def visibleEntities:Seq[VisibleEntity] = Seq[VisibleEntity](door) ++: opponents ++: items :+ player
   def gridWidth : Int
   def gridHeight : Int
+  def checkCollision: Unit
+  def itemCollision(item: Item): Unit
 
 object World:
   def apply(): World = WorldImpl()
@@ -64,6 +67,7 @@ object World:
     private var generatedOpponents: Set[Int] = Set.empty
     private val opponentsNumber = 22
 
+    /*TODO: update method without while*/
     def randomOpponent: Int =
       val totalGenerated = generatedOpponents.size
       if (totalGenerated == opponentsNumber)
@@ -97,6 +101,19 @@ object World:
             findValidPosition(remainingPositions.filterNot(_ == randomPosition))
 
       findValidPosition(allPositions.toList)
+
+    override def checkCollision: Unit =
+      visibleEntities.find(e => e.position == player.position && e != player) match
+        case Some(e) => EventDispatcher.addEvent(CollisionEvent(e))
+        case _ =>
+      //if entity.nonEmpty then EventDispatcher.addEvent(CollisionEvent(entity.get))
+
+    override def itemCollision(item: Item): Unit =
+      player.bag.addItem(item)
+      _items = _items.filter(_ != item)
+      print(player.bag.items)
+
+
 
   /**
    *  Position class represents the coordinates x,y in the World
