@@ -21,7 +21,7 @@ class PlayerProcessor(world: World) extends InputAdapter:
       case Keys.LEFT =>  {x = -playerSpeed; y = 0; updateSpritePlayer("left")}
       case Keys.UP => {y = playerSpeed; x = 0; updateSpritePlayer("up")}
       case Keys.DOWN => {y = -playerSpeed; x = 0; updateSpritePlayer("player")}
-      case _ =>
+      case _ => return true
     canMove
     true
 

@@ -30,16 +30,16 @@ object StatusEffects:
     def hpToChange: Int
 
     override def applyChangeStat(pokemon: Pokemon): Pokemon =
-      pokemon withHp hpToChange
+      pokemon withHp pokemon.hp + hpToChange
 
   trait ChangeAtkEffect extends ChangeStatsEffect :
     def atkToChange: Int
 
     override def applyChangeStat(pokemon: Pokemon): Pokemon =
-      pokemon withAtk atkToChange
+      pokemon withAtk pokemon.attack + atkToChange
 
   trait ChangeSpeedEffect extends ChangeStatsEffect :
     def speedToChange: Int
 
     override def applyChangeStat(pokemon: Pokemon): Pokemon =
-      pokemon withSpeed speedToChange
+      pokemon withSpeed pokemon.speed + speedToChange

@@ -11,7 +11,7 @@ import model.entities.pokemon.*
 import model.entities.{Map, Player, Trainer}
 import util.Screen.ScreenBehavior
 import view.screen
-import view.Sprites.{getMapSprite, getPlayerSprite}
+import view.Sprites.{getMapSprite, getEntitySprite}
 import view.screen.Drawable
 import view.PlayerProcessor
 
@@ -24,4 +24,4 @@ class GameScreen(world: World) extends BasicScreen:
 
   override def drawables: Seq[Drawable] =
     Drawable(world.gameMap.background, world.gameMap.bounds.x, world.gameMap.bounds.y, world.gameMap.bounds.width, world.gameMap.bounds.height) +:
-    world.visibleEntities.map(o => Drawable(getPlayerSprite(o), o.position.x.toFloat, o.position.y.toFloat, o.height, o.width))
+    world.visibleEntities.map(o => Drawable(getEntitySprite(o), o.position.x.toFloat, o.position.y.toFloat, o.height, o.width))
