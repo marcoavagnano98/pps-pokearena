@@ -35,3 +35,4 @@ class PlayerProcessor(world: World) extends InputAdapter:
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)
 
+  

@@ -7,6 +7,7 @@ import controller.{BattleController, GameController}
 import model.entities.{Player, Trainer}
 import model.battle.Battle
 import model.entities.World.Position
+
 object PokeArena extends Game:
   override def create(): Unit =
     setScreen(PokemonChoiceScreen(PokemonFactory(12)))
@@ -21,4 +22,3 @@ object PokeArena extends Game:
 
   override def render(): Unit =
     super.render()
-    EventDispatcher.dispatch()

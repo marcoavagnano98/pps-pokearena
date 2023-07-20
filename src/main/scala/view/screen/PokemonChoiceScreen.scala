@@ -59,7 +59,7 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
       override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
         if listPokemonChose.length > 3 then
           import controller.events.StartGame
-          EventDispatcher.addEvent(StartGame(listPokemonChose))
+          sendEvent(StartGame(listPokemonChose))
         true
     })
     import view.battle.DialogueBox

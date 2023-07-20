@@ -1,6 +1,6 @@
 package controller
 
-import controller.events.{EndBattle, Event, OptionChosen, StartGame,CollisionEvent}
+import controller.events.{CollisionEvent, EndBattle, Event, OptionChosen, StartGame}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
@@ -58,7 +58,7 @@ protected object GameController extends Controller:
     screen = GameScreen(model)
     handleScreenChange(screen)
 
-object BattleController extends Controller:
+protected object BattleController extends Controller:
   override type T = Battle
 
   def startBattle(player: Player, opponent: Trainer): Unit =

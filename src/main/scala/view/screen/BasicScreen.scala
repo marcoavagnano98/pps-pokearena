@@ -11,7 +11,7 @@ import controller.events.EventDispatcher
 
 import scala.language.postfixOps
 
-abstract class BasicScreen extends ScreenAdapter:
+abstract class BasicScreen extends ScreenAdapter with EventDispatcher:
   def drawables: Seq[Drawable] = Seq.empty
   def writables: Seq[Writable] = Seq.empty
   def actors: Seq[Actor] = Seq.empty
@@ -37,6 +37,7 @@ abstract class BasicScreen extends ScreenAdapter:
       scaleFont(w.height)
         font.draw(batch, w.s, w.pos.x, w.pos.y)
     )
+    dispatch()
     batch.end()
     stage.draw()
     stage.act(delta)

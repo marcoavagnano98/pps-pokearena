@@ -104,7 +104,7 @@ object World:
 
     override def checkCollision: Unit =
       visibleEntities.find(e => e.position == player.position && e != player) match
-        case Some(e) => EventDispatcher.addEvent(CollisionEvent(e))
+        case Some(e) => //sendEvent(CollisionEvent(e))
         case _ =>
       //if entity.nonEmpty then EventDispatcher.addEvent(CollisionEvent(entity.get))
 

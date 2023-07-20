@@ -31,7 +31,7 @@ trait Battle:
    * @return an instance of new [[BattleEngine]]
    */
 
-  def takeTurn(playerChoice: BattleTurnEvent): (BattleUnit, BattleUnit)
+  def takeTurn(playerChoice: BattleTurnEvent): (Turn, Turn)
 
   /**
    *
@@ -48,7 +48,6 @@ enum BattleTurnEvent(val description: String):
   case Defeat extends BattleTurnEvent("e' stato sconfitto")
 
 
-
 object Battle:
   def apply(player: Trainer, opponent: Trainer): Battle =
     BattleImpl(player, opponent)
@@ -63,19 +62,19 @@ object Battle:
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
 
-    override def takeTurn(playerChoice: BattleTurnEvent): (BattleUnit, BattleUnit) =
+    override def takeTurn(playerChoice: BattleTurnEvent): (Turn, Turn) =
 
-      val playerUnit: BattleUnit = BattleUnit(player.id, playerTeam.head, playerChoice)
-      val opponentUnit: BattleUnit = BattleUnit(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
+      val playerUnit: Turn = Turn(player.id, playerTeam.head, playerChoice)
+      val opponentUnit: Turn = Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
 
-      var seqBattleUnit: Seq[BattleUnit] = BattleEngine(playerUnit, opponentUnit)
+      var seqBattleUnit: Seq[Turn] = BattleEngine(playerUnit, opponentUnit)
       if seqBattleUnit.head.trainerRef != player.id then
         seqBattleUnit = seqBattleUnit swap(0, 1)
       seqBattleUnit.foreach(updatePokemonList)
       seqBattleUnit match
         case Seq(t1, t2) => (t1, t2)
 
-    def updatePokemonList(updatedUnit: BattleUnit): Unit =
+    def updatePokemonList(updatedUnit: Turn): Unit =
       updatedUnit.battleTurnEvent match
         case Defeat if updatedUnit.trainerRef == player.id => playerTeam = playerTeam.tail
         case Defeat => opponentTeam = opponentTeam.tail

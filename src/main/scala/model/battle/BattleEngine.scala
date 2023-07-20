@@ -12,31 +12,31 @@ object BattleEngine:
 
   import BattleTurnEvent.*
 
-  given Ordering[BattleUnit] = Ordering.by[BattleUnit, Int](_.pokemon.speed).reverse
+  given Ordering[Turn] = Ordering.by[Turn, Int](_.pokemon.speed).reverse
 
-  def apply(t: (BattleUnit, BattleUnit)): Seq[BattleUnit] =
+  def apply(t: (Turn, Turn)): Seq[Turn] =
     for
       battlePair <- Seq(turnLoop(turnOrder(t)))
       seqWithDamageStatusApplied <- Seq(battlePair._1 withDamageStatusApplied, battlePair._2 withDamageStatusApplied)
     yield seqWithDamageStatusApplied
 
-  def turnOrder(t: (BattleUnit, BattleUnit)): (BattleUnit, BattleUnit) =
+  def turnOrder(t: (Turn, Turn)): (Turn, Turn) =
     Seq(t._1, t._2).sorted match
       case Seq(t1, t2) => (t1, t2)
 
-  def turnLoop(battlePair: (BattleUnit, BattleUnit)): (BattleUnit, BattleUnit) =
+  def turnLoop(battlePair: (Turn, Turn)): (Turn, Turn) =
     @tailrec
-    def _loop(battlePair: (BattleUnit, BattleUnit), turnLife: Int): (BattleUnit, BattleUnit) =
-      (battlePair._1.checkSkipStatus, battlePair._2) match
+    def _loop(turnPair: (Turn, Turn), turnLife: Int): (Turn, Turn) =
+      (turnPair._1.checkSkipStatus, turnPair._2) match
         case pair if turnLife > 0 =>
           pair._1.battleTurnEvent match
             case Attack(move) => _loop((pair._1, unitAfterAttack(pair._1, pair._2, move)).swap, turnLife - 1)
             case Bag(item) => _loop((unitAfterHeal(pair._1, item), pair._2).swap, turnLife - 1)
             case _ => _loop(pair.swap, turnLife - 1)
-        case _ => battlePair
+        case _ => turnPair
     _loop(battlePair, 2)
 
-  def unitAfterAttack(b1: BattleUnit, b2: BattleUnit, move: Move): BattleUnit =
+  def unitAfterAttack(b1: Turn, b2: Turn, move: Move): Turn =
     val stab = ComparatorTypeElement(move.elementType, b2.pokemon.elementType)
     val computeTotalDamage: (Int, Int, Int) => Int =
       (power, attack, defense) => ((2 + (((42 * power * attack) / defense) / 50)) * stab).toInt
@@ -47,10 +47,5 @@ object BattleEngine:
         b2.pokemon.withHp(
           b2.pokemon.hp - totDamage)))
 
-  def unitAfterHeal(b1: BattleUnit, item: Item): BattleUnit =
+  def unitAfterHeal(b1: Turn, item: Item): Turn =
     b1.withPokemonUpdate(item.use(b1.pokemon))
-
-
-
-
-
