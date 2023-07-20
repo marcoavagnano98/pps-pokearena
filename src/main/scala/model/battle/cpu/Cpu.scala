@@ -16,11 +16,10 @@ case class Cpu(playerPokemon: Pokemon, cpuPokemon: Pokemon):
   * */
   def optionChosen: BattleTurnEvent =
     import Utilities.dice
+    
     BattleTurnEvent.Attack(
       if Random.dice(30) then
-      damageBonusScore(movesMap).toSeq.sortWith((x, y) => x._2 > y._2)
-        .map(t => t._1)
-        .head
+        damageBonusScore(movesMap).toSeq.sortWith((x, y) => x._2 > y._2).map(t => t._1).head
       else
         val randomIndex = Random.between(0,4)
         cpuPokemon.moves(randomIndex)

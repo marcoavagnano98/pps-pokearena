@@ -47,28 +47,7 @@ enum BattleTurnEvent(val description: String):
   case Skip extends BattleTurnEvent("salta il turno")
   case Defeat extends BattleTurnEvent("e' stato sconfitto")
 
-case class BattleUnit(trainerRef: String, pokemon: Pokemon, battleTurnEvent: BattleTurnEvent):
 
-  import BattleTurnEvent.*
-
-  def withPokemonUpdate(pokemon: Pokemon): BattleUnit =
-    copy(pokemon = pokemon) withDefeatChecked
-
-  def checkSkipStatus: BattleUnit =
-    pokemon.status match
-      case s: SkipTurnEffect if s applyEffect pokemon => copy(battleTurnEvent = Skip)
-      case _ => copy()
-
-  def withDamageStatusApplied: BattleUnit =
-    pokemon.status match
-      case s: DealDamageEffect => withPokemonUpdate(s.applyEffect(pokemon)) withDefeatChecked
-      case _ => copy()
-
-
-  private def withDefeatChecked: BattleUnit =
-    pokemon.hp match
-      case value: Int if value <= 0 => copy(battleTurnEvent = Defeat)
-      case _ => copy()
 
 object Battle:
   def apply(player: Trainer, opponent: Trainer): Battle =

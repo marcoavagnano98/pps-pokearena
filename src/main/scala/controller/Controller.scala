@@ -50,7 +50,7 @@ protected object GameController extends Controller:
       case item: Item => model.itemCollision(item)
       case door: Door => println("Collision with Door") // check se gli opp == 0 e nextLevel()
 
-  def removeTrainer(id: String): Unit = println("Terminato"); handleScreenChange(screen)
+  def removeTrainer(id: String): Unit = ???
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
     model.createMap("map_")
@@ -60,6 +60,7 @@ protected object GameController extends Controller:
 
 object BattleController extends Controller:
   override type T = Battle
+
   def startBattle(player: Player, opponent: Trainer): Unit =
     model = Battle(player, opponent)
     screen = BattleScreen(model)
@@ -69,6 +70,7 @@ object BattleController extends Controller:
     e match
       case e: OptionChosen =>
           screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.takeTurn(e.battleOption))
+          
       case e: EndBattle =>
         if e.trainerId == model.player.id then
           {/*todo call gameOver from gameController*/}
