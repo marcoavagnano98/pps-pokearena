@@ -50,7 +50,7 @@ protected object GameController extends Controller:
       case item: Item => model.itemCollision(item)
       case door: Door => model.doorCollision(door) // check se gli opp == 0 e nextLevel()
 
-  def removeTrainer(id: String): Unit = ??? /* TODO: remove the current trainer from the visible entities list */
+  def removeTrainer(id: String): Unit = ???
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
     model.createMap("map_")
@@ -60,6 +60,7 @@ protected object GameController extends Controller:
 
 object BattleController extends Controller:
   override type T = Battle
+
   def startBattle(player: Player, opponent: Trainer): Unit =
     model = Battle(player, opponent)
     screen = BattleScreen(model)
@@ -67,8 +68,11 @@ object BattleController extends Controller:
 
   override def eventHandler(e: Event): Unit =
     e match
-      case e: OptionChosen => model.takeTurn(e.battleOption, Cpu(model.pokemonInBattle._1.get, model.pokemonInBattle._2.get).optionChosen)
-      case e: EndBattle => GameController.removeTrainer(e.trainerId); handleScreenChange(GameController.screen)
-
-    screen match
-      case _: BattleScreen => screen.asInstanceOf[BattleScreen].viewUpdate
+      case e: OptionChosen =>
+          screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.takeTurn(e.battleOption))
+          
+      case e: EndBattle =>
+        if e.trainerId == model.player.id then
+          {/*todo call gameOver from gameController*/}
+        else
+          GameController.removeTrainer(e.trainerId)

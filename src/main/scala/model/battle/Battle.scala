@@ -1,9 +1,9 @@
 package model.battle
 
+import model.battle.cpu.Cpu
 import model.entities.Trainer
 import model.entities.pokemon.Pokemon
-
-import model.entities.{Player, Trainer, Item}
+import model.entities.{Item, Player, Trainer}
 import model.entities.pokemon.StatusEffects.{DealDamageEffect, SkipTurnEffect}
 import model.entities.pokemon.ElementType.Fire
 import model.entities.pokemon.{Move, Pokemon}
@@ -31,8 +31,8 @@ trait Battle:
    * @return an instance of new [[BattleEngine]]
    */
 
-  def takeTurn(playerChoice: BattleChoice, opponentChoice: BattleChoice): Unit
-  
+  def takeTurn(playerChoice: BattleTurnEvent): (BattleUnit, BattleUnit)
+
   /**
    *
    * @return optionally both pokemon in battle of player and opponent
@@ -40,28 +40,14 @@ trait Battle:
   def pokemonInBattle: (Option[Pokemon], Option[Pokemon])
 
 
-enum BattleChoice:
-  case Attack(move: Move)
-  case Bag(item: Item)
-  case Change(pos: Int)
+enum BattleTurnEvent(val description: String):
+  case Attack(move: Move) extends BattleTurnEvent("usa " + move.name)
+  case Bag(item: Item) extends BattleTurnEvent("usa lo strumento " + item.name)
+  case Change(pos: Int) extends BattleTurnEvent("viene sostituito")
+  case Skip extends BattleTurnEvent("salta il turno")
+  case Defeat extends BattleTurnEvent("e' stato sconfitto")
 
-case class BattleUnit(trainerRef: String,pokemon: Pokemon, battleOption: BattleChoice):
-  def withPokemonUpdate(pokemon: Pokemon): BattleUnit = copy(pokemon = pokemon)
 
-  def skipEffect: Boolean =
-    pokemon.status match
-      case s: SkipTurnEffect => s applyEffect pokemon
-      case _ => false
-
-  def withDamageStatusApplied: BattleUnit =
-    pokemon.status match
-      case s: DealDamageEffect => withPokemonUpdate(s.applyEffect(pokemon))
-      case _ => this
-
-  def withLife: Option[BattleUnit] =
-    pokemon.hp match
-      case value: Int if value > 0 => Some(copy())
-      case _ => None
 
 object Battle:
   def apply(player: Trainer, opponent: Trainer): Battle =
@@ -69,34 +55,38 @@ object Battle:
 
   private case class BattleImpl(override val player: Trainer,
                                 override val opponent: Trainer,
-                               ) extends Battle:
+                               ) extends Battle :
 
-    import util.Utilities.{pop, push, swap}
-    import BattleChoice.*
+    import util.Utilities.swap
+    import BattleTurnEvent.*
+
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
-    var lastPlayerChoice: BattleChoice = _
-    var lastOpponentChoice: BattleChoice = _
-    
-    override def takeTurn(playerChoice: BattleChoice, opponentChoice: BattleChoice): Unit =
-      val t1 = selectPlayerPokemon(playerTeam,playerChoice)
-      val t2 = opponentTeam.pop
-      playerTeam = t1._2
-      opponentTeam = t2._2
-      for
-        updatedUnit <- BattleEngine(BattleUnit(player.id,t1._1, playerChoice),  BattleUnit(opponent.id, t2._1, opponentChoice))
-      do updatePokemonList(updatedUnit)
-    
+
+    override def takeTurn(playerChoice: BattleTurnEvent): (BattleUnit, BattleUnit) =
+
+      val playerUnit: BattleUnit = BattleUnit(player.id, playerTeam.head, playerChoice)
+      val opponentUnit: BattleUnit = BattleUnit(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
+
+      var seqBattleUnit: Seq[BattleUnit] = BattleEngine(playerUnit, opponentUnit)
+      if seqBattleUnit.head.trainerRef != player.id then
+        seqBattleUnit = seqBattleUnit swap(0, 1)
+      seqBattleUnit.foreach(updatePokemonList)
+      seqBattleUnit match
+        case Seq(t1, t2) => (t1, t2)
+
     def updatePokemonList(updatedUnit: BattleUnit): Unit =
-        if updatedUnit.trainerRef == player.id then
-          playerTeam = playerTeam push updatedUnit.pokemon
-        else
-          opponentTeam = opponentTeam push updatedUnit.pokemon
-          
-    def selectPlayerPokemon(pokemonList: Seq[Pokemon], battleChoice: BattleChoice): (Pokemon, Seq[Pokemon]) =
+      updatedUnit.battleTurnEvent match
+        case Defeat if updatedUnit.trainerRef == player.id => playerTeam = playerTeam.tail
+        case Defeat => opponentTeam = opponentTeam.tail
+        case _ if updatedUnit.trainerRef == player.id => playerTeam = playerTeam updated(0, updatedUnit.pokemon)
+        case _ => opponentTeam = opponentTeam updated(0, updatedUnit.pokemon)
+
+/*
+    def selectPlayerPokemon(pokemonList: Seq[Pokemon], battleChoice: BattleTurnEvent): (Pokemon, Seq[Pokemon]) =
       battleChoice match
-        case Change(pos) => pokemonList swap(0, pos) pop
-        case _ =>  pokemonList pop
-    
+        case Change(pos) => pokemonList swap(0, pos)
+        case _ => pokemonList*/
+
     override def pokemonInBattle: (Option[Pokemon], Option[Pokemon]) =
       (playerTeam.headOption, opponentTeam.headOption)

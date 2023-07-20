@@ -11,25 +11,20 @@ import view.battle.DialogueBox
 
 import scala.io.Source
 
-class FightLayout(var layoutInfo: Pokemon, skin: Skin, rect: Rectangle, actionPerformed: Int => Unit) extends Table with Layout[Pokemon]:
+class FightLayout(var layoutData: Pokemon, skin: Skin, rect: Rectangle, actionPerformed: Int => Unit) extends BaseLayout[Pokemon, Int](layoutData, actionPerformed):
   val box: DialogueBox = DialogueBox(Seq("Scegli una mossa"), skin)
   add(box).colspan(2)
   row()
   generateTable
   setSize(rect.width, rect.height)
   setPosition(rect.x, rect.y)
+  setVisible(false)
 
-  private def moveButtonListener(index: Int): ClickListener= new ClickListener(){
-    override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-      super.touchDown(event, x, y, pointer, button)
-      actionPerformed(index)
-      true
-  }
   def generateButtons: Seq[(Int, ImageTextButton)] =
       for
-        i <- layoutInfo.moves.indices
-        b = ImageTextButton(layoutInfo.moves(i).name, skin)
-        checkedButton = {b.addListener(moveButtonListener(i)); checkPP(b, layoutInfo.moves(i))}
+        i <- layoutData.moves.indices
+        b = ImageTextButton(layoutData.moves(i).name, skin)
+        checkedButton = {b.addListener(listener(i)); checkPP(b, layoutData.moves(i))}
       yield (i, checkedButton)
 
   def checkPP(button: ImageTextButton, move: Move): ImageTextButton =
@@ -46,11 +41,12 @@ class FightLayout(var layoutInfo: Pokemon, skin: Skin, rect: Rectangle, actionPe
         row()
 
   override def update(newLayoutInfo: Pokemon): Unit =
-    layoutInfo = newLayoutInfo
+    layoutData = newLayoutInfo
     for
       (index,button) <- generateButtons
-      cell = getCells.items(index)
+      cell = getCells.items(index+1)
     do
       cell.getActor match
-        case _: ImageTextButton => cell.setActor(button)
+        case _: ImageTextButton =>  cell.setActor(button)
         case _ =>
+

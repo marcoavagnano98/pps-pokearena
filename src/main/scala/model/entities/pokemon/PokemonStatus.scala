@@ -21,26 +21,26 @@ object AllPokemonStatus:
 
   case class BurnStatus(override val name:String = "Burn",
                         override val description:String = "Lose 30 hp every turn and reduce the atk") extends PokemonStatusWithEffect with DealDamageEffect with ChangeAtkEffect :
-    override def atkToChange: Int = 10
+    override def atkToChange: Int = -10
 
     override def damageOverTime: Int = 30
 
     override def probabilityToApplyStatus: Int = 30
 
     override def applyStatus(pokemon: Pokemon): Pokemon =
-      if (Random.dice(probabilityToApplyStatus))
+      if Random.dice(probabilityToApplyStatus) then
         applyChangeStat(pokemon) withStatus this
       else
         pokemon
 
   case class ParalyzeStatus(override val name:String = "Paralyze",
                             override val description:String = "Possibility to skip the turn and decrease speed") extends PokemonStatusWithEffect with SkipTurnEffect with ChangeSpeedEffect :
-    override def speedToChange: Int = 10
+    override def speedToChange: Int = -10
     override def probabilityToApplyStatus: Int = 30
     override def probabilityToApplySkipTurn: Int = 30
 
     override def applyStatus(pokemon: Pokemon): Pokemon =
-      if (Random.dice(probabilityToApplyStatus))
+      if Random.dice(probabilityToApplyStatus) then
         applyChangeStat(pokemon) withStatus this
       else
         pokemon

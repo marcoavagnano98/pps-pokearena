@@ -48,13 +48,10 @@ object Move:
                               override val status: Option[PokemonStatus],
                              ) extends Move :
 
-    override def applyStatus(p: Pokemon): Pokemon =
-      if p.status != status && status.nonEmpty then
-        status.get match
-          case s: PokemonStatusWithEffect => p withStatus s
-          case _ => p
-      else
-        p
+    override def applyStatus(p: Pokemon): Pokemon = status match
+      case Some(s:PokemonStatusWithEffect) if p.status != s => s applyStatus p
+      case _ => p
+
 
 
 
