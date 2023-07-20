@@ -25,6 +25,7 @@ trait World:
   def checkCollision: Option[VisibleEntity]
   def itemCollision(item: Item): Unit
   def doorCollision(door: Door): Unit
+  def removeTrainer(idTrainer: String): Unit
 
 object World:
   def apply(): World = WorldImpl()
@@ -111,7 +112,10 @@ object World:
       _items = _items.filter(_ != item)
 
     override def doorCollision(door: Door): Unit =
-      if _opponents.length == 3 then println("Create new Level")
+      if _opponents.isEmpty then println("Create new Level")
+
+    override def removeTrainer(idTrainer: String): Unit =
+      _opponents = _opponents.filterNot(_.id == idTrainer)
 
   /**
    *  Position class represents the coordinates x,y in the World

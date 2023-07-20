@@ -50,7 +50,10 @@ protected object GameController extends Controller:
       case item: Item => model.itemCollision(item)
       case door: Door => model.doorCollision(door) // check se gli opp == 0 e nextLevel()
 
-  def removeTrainer(id: String): Unit = ???
+  def removeTrainer(id: String): Unit =
+    model.removeTrainer(id)
+    handleScreenChange(screen)
+
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
     model.createMap("map_")
