@@ -22,7 +22,7 @@ trait World:
   def visibleEntities:Seq[VisibleEntity] = Seq[VisibleEntity](door) ++: opponents ++: items :+ player
   def gridWidth : Int
   def gridHeight : Int
-  def checkCollision: Unit
+  def checkCollision: Option[VisibleEntity]
   def itemCollision(item: Item): Unit
   def doorCollision(door: Door): Unit
 
@@ -103,10 +103,8 @@ object World:
 
       findValidPosition(allPositions.toList)
 
-    override def checkCollision: Unit =
-      visibleEntities.find(e => e.position == player.position && e != player) match
-        case Some(e) => EventDispatcher.addEvent(CollisionEvent(e))
-        case _ =>
+    override def checkCollision: Option[VisibleEntity] =
+      visibleEntities.find(e => e.position == player.position && e != player)
 
     override def itemCollision(item: Item): Unit =
       player.bag.addItem(item)
