@@ -6,10 +6,10 @@ import model.entities.pokemon.AllPokemonStatus.HealthyStatus
 import view.battle.DialogueBox
 import model.entities.pokemon.Pokemon
 
-class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, rect: Rectangle, actionPerformed: Unit => Unit = (_: Unit) => {}) extends BaseLayout[Pokemon, Unit](layoutData, actionPerformed) :
+class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, actionPerformed: Unit => Unit = (_: Unit) => {}) extends BaseLayout[Pokemon, Unit](layoutData, boundary, actionPerformed) :
   add(infoBox)
-  setSize(rect.width, rect.height)
-  setPosition(rect.x, rect.y)
+  setSize(boundary.width, boundary.height)
+  setPosition(boundary.x, boundary.y)
 
   def infoBox: DialogueBox =
     val infoBox = DialogueBox(Seq(

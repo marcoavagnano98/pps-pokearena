@@ -48,5 +48,5 @@ class GameScreen(world: World) extends BasicScreen:
 
   override def updateView(): Unit =
     world.checkCollision match
-      case Some(e:VisibleEntity) => EventDispatcher.addEvent(CollisionEvent(e))
+      case Some(e:VisibleEntity) => sendEvent(CollisionEvent(e))
       case _ =>

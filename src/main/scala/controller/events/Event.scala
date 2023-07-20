@@ -1,6 +1,5 @@
 package controller.events
 
-
 import model.battle.BattleTurnEvent
 import model.entities.VisibleEntity
 import model.entities.pokemon.Pokemon

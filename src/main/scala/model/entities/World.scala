@@ -104,8 +104,10 @@ object World:
 
       findValidPosition(allPositions.toList)
 
+
     override def checkCollision: Option[VisibleEntity] =
       visibleEntities.find(e => e.position == player.position && e != player)
+
 
     override def itemCollision(item: Item): Unit =
       player.bag.addItem(item)

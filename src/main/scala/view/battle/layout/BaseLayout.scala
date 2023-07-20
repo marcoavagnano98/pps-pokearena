@@ -1,10 +1,12 @@
 package view.battle.layout
 
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import model.entities.World.Position
 
-abstract class BaseLayout[T, S](layoutData: T, actionPerformed: S => Unit) extends Table:
+abstract class BaseLayout[T, S](layoutData: T, boundary: Rectangle, actionPerformed: S => Unit) extends Table:
   
   def update(newLayoutInfo: T) : Unit
   

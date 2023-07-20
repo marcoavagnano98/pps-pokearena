@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.{Color, GL20, Pixmap, Texture}
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, Sprite, SpriteBatch, TextureRegion}
 import com.badlogic.gdx.{Gdx, ScreenAdapter}
 import com.badlogic.gdx.math.{Rectangle, Vector2}
-import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
+import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageButton, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, utils}
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
 import model.entities.{Entity, ItemFactory, ItemId, Potion}
@@ -13,7 +13,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, BattleTurnEvent, BattleUnit}
+import model.battle.{Battle, BattleTurnEvent, Turn}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
@@ -38,14 +38,28 @@ class BattleScreen(battle: Battle) extends BasicScreen :
 
   val battleMenuLayout: BattleMenuBaseLayout = BattleMenuBaseLayout(Seq("Cosa deve fare " + battle.player.pokemonTeam.head.name), skin, battleMenuRegion, menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin, battleMenuRegion, fightLayoutAction)
-  val bagLayout: BagLayout = BagLayout(Seq(ItemFactory(ItemId.Potion)), skin, battleMenuRegion, bagLayoutAction)
+  val bagLayout: BagLayout = BagLayout(battle.player.bag, skin, battleMenuRegion, bagLayoutAction)
   val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y, 200, 100))
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y, 200, 100))
 
-  def battleScreenUpdate(turnData:(BattleUnit, BattleUnit)): Unit =
+  def backButton: ImageButton =
+    val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
+    backButton.setPosition(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2))
+    backButton.setSize(100, 100)
+    backButton.addListener(new ClickListener(){
+      override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
+        showBattleMenu
+        true
+    })
+    backButton
+
+  private def showBattleMenu: Unit =
     fightLayout.setVisible(false)
     bagLayout.setVisible(false)
     battleMenuLayout.setVisible(true)
+
+  def battleScreenUpdate(turnData:(Turn, Turn)): Unit =
+    showBattleMenu
     battleMenuLayout.hideButtonMenu
     battleMenuLayout.update(
       Seq(
@@ -58,11 +72,12 @@ class BattleScreen(battle: Battle) extends BasicScreen :
           case (Some(playerPokemon), Some(opponentPokemon)) =>
             fightLayout.update(playerPokemon)
             battleMenuLayout.update(Seq("Cosa deve fare " + playerPokemon.name + "?"))
+            bagLayout.update(battle.player.bag)
             pPlayerInfoLayout.update(playerPokemon)
             pOpponentLayout.update(opponentPokemon)
             battleMenuLayout.showButtonMenu
-          case (Some(_), None) => EventDispatcher.addEvent(EndBattle(battle.opponent.id))
-          case _ => EventDispatcher.addEvent(EndBattle(battle.player.id))
+          case (Some(_), None) => sendEvent(EndBattle(battle.opponent.id))
+          case _ => sendEvent(EndBattle(battle.player.id))
       }
     }, 2)
 
@@ -90,9 +105,13 @@ class BattleScreen(battle: Battle) extends BasicScreen :
     val pokemon = battle.pokemonInBattle._1.get
     val move: Move = pokemon.moves(moveIndex)
     val fightOption: BattleTurnEvent = Attack(move)
-    EventDispatcher.addEvent(OptionChosen(fightOption))
+    sendEvent(OptionChosen(fightOption))
 
-  private def bagLayoutAction(itemIndex: Int): Unit = {}
+  private def bagLayoutAction(itemIndex: Int): Unit =
+    val item = battle.player.bag.items(itemIndex)
+    battle.player.bag.removeItem(item)
+    sendEvent(OptionChosen(BattleTurnEvent.Bag(item)))
+
 
   private def pokemonDrawables: Seq[Drawable] =
     battle.pokemonInBattle match
@@ -104,6 +123,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
     Seq(battleMenuLayout,
       fightLayout,
       bagLayout,
+      backButton,
       pPlayerInfoLayout,
       pOpponentLayout)
 
