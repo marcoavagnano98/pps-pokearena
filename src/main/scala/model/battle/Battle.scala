@@ -18,7 +18,7 @@ trait Battle:
    *
    * @return player of the game of type [[Trainer]]
    */
-  def player: Trainer
+  def player: Player
 
   /**
    *
@@ -49,10 +49,10 @@ enum BattleTurnEvent(val description: String):
 
 
 object Battle:
-  def apply(player: Trainer, opponent: Trainer): Battle =
+  def apply(player: Player, opponent: Trainer): Battle =
     BattleImpl(player, opponent)
 
-  private case class BattleImpl(override val player: Trainer,
+  private case class BattleImpl(override val player: Player,
                                 override val opponent: Trainer,
                                ) extends Battle :
 

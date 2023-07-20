@@ -22,8 +22,9 @@ trait World:
   def visibleEntities:Seq[VisibleEntity] = Seq[VisibleEntity](door) ++: opponents ++: items :+ player
   def gridWidth : Int
   def gridHeight : Int
-  def checkCollision: Unit
+  def checkCollision: Option[VisibleEntity]
   def itemCollision(item: Item): Unit
+  def doorCollision(door: Door): Unit
 
 object World:
   def apply(): World = WorldImpl()
@@ -53,11 +54,11 @@ object World:
 
     override def generateEntities(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
-      val (opps, itms): (Seq[Trainer], Seq[Potion]) = generateTrainer(3)
+      val (opps, itms): (Seq[Trainer], Seq[Potion]) = generateTrainersAndItems(3)
       _opponents = opps
       _items = itms
 
-    private def generateTrainer(numberOfTrainer: Int): (Seq[Trainer], Seq[Item]) =
+    private def generateTrainersAndItems(numberOfTrainer: Int): (Seq[Trainer], Seq[Item]) =
       @tailrec
       def _generateTrainersAndPotions(trainerList: List[Trainer], itemList: List[Item], numberOfTrainer: Int): (Seq[Trainer], Seq[Item]) = (trainerList, itemList) match
         case (t, p) if numberOfTrainer > 0 => _generateTrainersAndPotions(t :+ Trainer(id = "op" + randomOpponent, pos = randomPos, pokemonList = PokemonFactory(2)), p :+ ItemFactory.getRandomItem(pos = randomPos), numberOfTrainer - 1)
@@ -67,14 +68,14 @@ object World:
     private var generatedOpponents: Set[Int] = Set.empty
     private val opponentsNumber = 22
 
-    /*TODO: update method without while*/
-    def randomOpponent: Int =
-      val totalGenerated = generatedOpponents.size
-      if (totalGenerated == opponentsNumber)
-        generatedOpponents = Set.empty
-      var randomOp = Random.between(0, opponentsNumber)
-      while (generatedOpponents.contains(randomOp))
-        randomOp = Random.between(0, opponentsNumber)
+    private def randomOpponent: Int =
+      generatedOpponents.size match
+        case `opponentsNumber` =>
+          generatedOpponents = Set.empty
+        case _ =>
+
+      val availableOpponents = (0 until opponentsNumber).filterNot(generatedOpponents.contains)
+      val randomOp = availableOpponents(Random.between(0, availableOpponents.length))
       generatedOpponents += randomOp
       randomOp
 
@@ -102,18 +103,17 @@ object World:
 
       findValidPosition(allPositions.toList)
 
-    override def checkCollision: Unit =
-      visibleEntities.find(e => e.position == player.position && e != player) match
-        case Some(e) => //sendEvent(CollisionEvent(e))
-        case _ =>
-      //if entity.nonEmpty then EventDispatcher.addEvent(CollisionEvent(entity.get))
+
+    override def checkCollision: Option[VisibleEntity] =
+      visibleEntities.find(e => e.position == player.position && e != player)
+
 
     override def itemCollision(item: Item): Unit =
       player.bag.addItem(item)
       _items = _items.filter(_ != item)
-      print(player.bag.items)
 
-
+    override def doorCollision(door: Door): Unit =
+      if _opponents.length == 3 then println("Create new Level")
 
   /**
    *  Position class represents the coordinates x,y in the World

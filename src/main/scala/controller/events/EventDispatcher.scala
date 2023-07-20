@@ -18,7 +18,6 @@ trait EventDispatcher:
 
   def sendEvent(events: Event*): Unit =
     eventQueue.addAll(events)
-    println("sdafd")
 
   def dispatch(): Unit =
     if eventQueue.nonEmpty then

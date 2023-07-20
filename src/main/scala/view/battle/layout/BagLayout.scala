@@ -8,21 +8,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.{ImageTextButton, Label, ScrollPane, S
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import view.battle.DialogueBox
-import model.entities.{Item, Potion, World}
+import model.entities.{Bag, Item, Potion, World}
 
-class BagLayout(var layoutData: Seq[Item], skin: Skin, rect: Rectangle, actionPerformed: Int => Unit) extends BaseLayout[Seq[Item], Int](layoutData, actionPerformed) :
+class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, actionPerformed: Int => Unit) extends BaseLayout[Bag, Int](layoutData,boundary, actionPerformed) :
   val box: DialogueBox = DialogueBox(Seq("Seleziona uno strumento di cura"), skin)
   add(box)
-  box.setDebug(true)
   generateScrollableTable
   setVisible(false)
-  setSize(rect.width, rect.height)
-  setPosition(rect.x, rect.y)
+  setSize(boundary.width, boundary.height)
+  setPosition(boundary.x, boundary.y)
 
   private def generateItemList: Seq[(Int, TextField)] =
     for
-      i <- layoutData.indices
-      label = new TextField(layoutData(i).name, skin)
+      i <- layoutData.items.indices
+      label = new TextField(layoutData.items(i).name, skin)
     yield (i, {
       label.setAlignment(Align.center)
       label.addListener(listener(i))
@@ -31,20 +30,19 @@ class BagLayout(var layoutData: Seq[Item], skin: Skin, rect: Rectangle, actionPe
 
   private def generateScrollableTable: Unit =
     val table = Table()
-    table.setDebug(true)
     row()
     for
     ((index, label) <- generateItemList)
       table.add(label).pad(5)
-      if index != (layoutData.length - 1) then
+      if index != (layoutData.items.length - 1) then
         table.row()
     val scrollPane: ScrollPane = ScrollPane(table)
     scrollPane.setFadeScrollBars(false)
     scrollPane.setDebug(true)
     add(scrollPane).fill().minHeight(100)
 
-  override def update(newItemList: Seq[Item]): Unit =
-    layoutData = newItemList
+  override def update(updatedBag: Bag): Unit =
+    layoutData = updatedBag
     cleanItemTable
     generateScrollableTable
 

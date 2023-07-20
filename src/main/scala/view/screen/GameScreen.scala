@@ -6,14 +6,15 @@ import com.badlogic.gdx.graphics.{GL20, OrthographicCamera, Texture}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.{ExtendViewport, FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, ScreenAdapter}
-import model.entities.World
+import controller.events.EventDispatcher
+import model.entities.{Map, Player, Trainer, VisibleEntity, World}
 import model.entities.pokemon.*
-import model.entities.{Map, Player, Trainer}
 import util.Screen.ScreenBehavior
 import view.screen
 import view.Sprites.{getEntitySprite, getMapPath}
 import view.screen.Drawable
 import view.PlayerProcessor
+import controller.events.CollisionEvent
 
 object ViewportUtil:
   val viewportHeight: Float = 100
@@ -44,3 +45,8 @@ class GameScreen(world: World) extends BasicScreen:
         o.position.y.toFloat * ViewportUtil.viewportHeight/world.gridHeight,
         o.height,
         o.width))
+
+  override def updateView(): Unit =
+    world.checkCollision match
+      case Some(e:VisibleEntity) => sendEvent(CollisionEvent(e))
+      case _ =>

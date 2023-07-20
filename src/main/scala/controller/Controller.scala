@@ -45,10 +45,10 @@ protected object GameController extends Controller:
   model = World()
 
   override def eventHandler(e: Event): Unit = e match
-    case visibleEntity:CollisionEvent => visibleEntity.entity match
+    case visibleEntity: CollisionEvent => visibleEntity.entity match
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
       case item: Item => model.itemCollision(item)
-      case door: Door => println("Collision with Door") // check se gli opp == 0 e nextLevel()
+      case door: Door => model.doorCollision(door) // check se gli opp == 0 e nextLevel()
 
   def removeTrainer(id: String): Unit = ???
 
