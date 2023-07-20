@@ -13,7 +13,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, BattleTurnEvent, BattleUnit, Pair}
+import model.battle.{Battle, BattleTurnEvent, BattleUnit}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
@@ -42,15 +42,15 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y, 200, 100))
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y, 200, 100))
 
-  def battleScreenUpdate(turnData: Pair[BattleUnit]): Unit =
+  def battleScreenUpdate(turnData:(BattleUnit, BattleUnit)): Unit =
     fightLayout.setVisible(false)
     bagLayout.setVisible(false)
     battleMenuLayout.setVisible(true)
     battleMenuLayout.hideButtonMenu
     battleMenuLayout.update(
       Seq(
-        turnData.first.pokemon.name + " " + turnData.first.battleTurnEvent.description,
-        turnData.second.pokemon.name + " " + turnData.second.battleTurnEvent.description
+        turnData._1.pokemon.name + " " + turnData._1.battleTurnEvent.description,
+        turnData._2.pokemon.name + " " + turnData._2.battleTurnEvent.description
       ))
     com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
       override def run(): Unit = {
