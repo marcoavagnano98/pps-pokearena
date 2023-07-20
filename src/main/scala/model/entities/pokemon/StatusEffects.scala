@@ -14,7 +14,7 @@ object StatusEffects:
 
     def probabilityToApplySkipTurn: Int
 
-    override def applyEffect(pokemon: Pokemon): Result = Random.dice(100)
+    override def applyEffect(pokemon: Pokemon): Result = Random.dice(30)
 
   trait DealDamageEffect extends StatusEffect :
     def damageOverTime: Int
