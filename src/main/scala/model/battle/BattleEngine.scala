@@ -10,9 +10,9 @@ import scala.language.postfixOps
 
 object BattleEngine:
 
-  import BattleTurnEvent.*
+  import TurnEvent.*
 
-  given Ordering[Turn] = Ordering.by[Turn, Int](_.pokemon.speed).reverse
+  given Ordering[Turn] = Ordering.by[Turn, (Int, Int)](t => (t.battleTurnEvent.priority, t.pokemon.speed)).reverse
 
   def apply(t: (Turn, Turn)): Seq[Turn] =
     for
@@ -30,13 +30,13 @@ object BattleEngine:
       (turnPair._1.checkSkipStatus, turnPair._2) match
         case pair if turnLife > 0 =>
           pair._1.battleTurnEvent match
-            case Attack(move) => _loop((pair._1, unitAfterAttack(pair._1, pair._2, move)).swap, turnLife - 1)
-            case Bag(item) => _loop((unitAfterHeal(pair._1, item), pair._2).swap, turnLife - 1)
+            case Attack(move) => _loop((pair._1, turnAfterAttack(pair._1, pair._2, move)).swap, turnLife - 1)
+            case UseBag(item) => _loop((turnAfterHeal(pair._1, item), pair._2).swap, turnLife - 1)
             case _ => _loop(pair.swap, turnLife - 1)
         case _ => turnPair
     _loop(battlePair, 2)
 
-  def unitAfterAttack(b1: Turn, b2: Turn, move: Move): Turn =
+  def turnAfterAttack(b1: Turn, b2: Turn, move: Move): Turn =
     val stab = ComparatorTypeElement(move.elementType, b2.pokemon.elementType)
     val computeTotalDamage: (Int, Int, Int) => Int =
       (power, attack, defense) => ((2 + (((42 * power * attack) / defense) / 50)) * stab).toInt
@@ -47,5 +47,5 @@ object BattleEngine:
         b2.pokemon.withHp(
           b2.pokemon.hp - totDamage)))
 
-  def unitAfterHeal(b1: Turn, item: Item): Turn =
+  def turnAfterHeal(b1: Turn, item: Item): Turn =
     b1.withPokemonUpdate(item.use(b1.pokemon))

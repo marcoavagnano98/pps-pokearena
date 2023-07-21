@@ -60,7 +60,7 @@ protected object GameController extends Controller:
     screen = GameScreen(model)
     handleScreenChange(screen)
 
-protected object BattleController extends Controller:
+object BattleController extends Controller:
   override type T = Battle
 
   def startBattle(player: Player, opponent: Trainer): Unit =

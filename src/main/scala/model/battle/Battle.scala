@@ -31,22 +31,13 @@ trait Battle:
    * @return an instance of new [[BattleEngine]]
    */
 
-  def takeTurn(playerChoice: BattleTurnEvent): (Turn, Turn)
+  def takeTurn(playerChoice: TurnEvent): Seq[Turn]
 
   /**
    *
    * @return optionally both pokemon in battle of player and opponent
    */
   def pokemonInBattle: (Option[Pokemon], Option[Pokemon])
-
-
-enum BattleTurnEvent(val description: String):
-  case Attack(move: Move) extends BattleTurnEvent("usa " + move.name)
-  case Bag(item: Item) extends BattleTurnEvent("usa lo strumento " + item.name)
-  case Change(pos: Int) extends BattleTurnEvent("viene sostituito")
-  case Skip extends BattleTurnEvent("salta il turno")
-  case Defeat extends BattleTurnEvent("e' stato sconfitto")
-
 
 object Battle:
   def apply(player: Player, opponent: Trainer): Battle =
@@ -57,22 +48,17 @@ object Battle:
                                ) extends Battle :
 
     import util.Utilities.swap
-    import BattleTurnEvent.*
+    import TurnEvent.*
 
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
 
-    override def takeTurn(playerChoice: BattleTurnEvent): (Turn, Turn) =
-
-      val playerUnit: Turn = Turn(player.id, playerTeam.head, playerChoice)
-      val opponentUnit: Turn = Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
-
-      var seqBattleUnit: Seq[Turn] = BattleEngine(playerUnit, opponentUnit)
-      if seqBattleUnit.head.trainerRef != player.id then
-        seqBattleUnit = seqBattleUnit swap(0, 1)
-      seqBattleUnit.foreach(updatePokemonList)
-      seqBattleUnit match
-        case Seq(t1, t2) => (t1, t2)
+    override def takeTurn(playerChoice: TurnEvent): Seq[Turn] =
+      val playerTurn: Turn = Turn(player.id, playerTeam.head, playerChoice)
+      val opponentTurn: Turn = Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
+      val updatedTurnSequence: Seq[Turn] = BattleEngine(playerTurn, opponentTurn)
+      updatedTurnSequence.foreach(updatePokemonList)
+      updatedTurnSequence
 
     def updatePokemonList(updatedUnit: Turn): Unit =
       updatedUnit.battleTurnEvent match
@@ -80,12 +66,6 @@ object Battle:
         case Defeat => opponentTeam = opponentTeam.tail
         case _ if updatedUnit.trainerRef == player.id => playerTeam = playerTeam updated(0, updatedUnit.pokemon)
         case _ => opponentTeam = opponentTeam updated(0, updatedUnit.pokemon)
-
-/*
-    def selectPlayerPokemon(pokemonList: Seq[Pokemon], battleChoice: BattleTurnEvent): (Pokemon, Seq[Pokemon]) =
-      battleChoice match
-        case Change(pos) => pokemonList swap(0, pos)
-        case _ => pokemonList*/
-
+    
     override def pokemonInBattle: (Option[Pokemon], Option[Pokemon]) =
       (playerTeam.headOption, opponentTeam.headOption)
