@@ -11,7 +11,6 @@ import model.entities.World.Position
 object PokeArena extends Game:
   override def create(): Unit =
     setScreen(PokemonChoiceScreen(PokemonFactory(12)))
-    //BattleController.startBattle(Player(Position(0,0), "p", PokemonFactory(4)), Trainer(Position(0,0), "t", PokemonFactory(4)))
   /**
    * Change screen to one using the given behavior.
    */

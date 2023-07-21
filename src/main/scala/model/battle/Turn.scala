@@ -1,15 +1,22 @@
 package model.battle
-import model.entities.pokemon.Pokemon
-import model.entities.pokemon.StatusEffects.{SkipTurnEffect,DealDamageEffect}
+import model.entities.Item
+import model.entities.pokemon.{Move, Pokemon}
+import model.entities.pokemon.StatusEffects.{DealDamageEffect, SkipTurnEffect}
 
 import scala.language.postfixOps
+
+enum TurnEvent(val description: String, val priority: Int):
+  case Attack(move: Move) extends TurnEvent("usa " + move.name, 0)
+  case UseBag(item: Item) extends TurnEvent("usa lo strumento " + item.name, 1)
+  case Skip extends TurnEvent("salta il turno", 0)
+  case Defeat extends TurnEvent("e' stato sconfitto", 0)
 
 trait Turn:
   def trainerRef: String
 
   def pokemon: Pokemon
 
-  def battleTurnEvent: BattleTurnEvent
+  def battleTurnEvent: TurnEvent
 
   /**
    *
@@ -38,13 +45,13 @@ trait Turn:
 
 object Turn:
 
-  def apply(trainerRef: String, pokemon: Pokemon, battleTurnEvent: BattleTurnEvent): Turn =
-    TurnImpl(trainerRef: String, pokemon: Pokemon, battleTurnEvent: BattleTurnEvent)
+  def apply(trainerRef: String, pokemon: Pokemon, battleTurnEvent: TurnEvent): Turn =
+    TurnImpl(trainerRef: String, pokemon: Pokemon, battleTurnEvent: TurnEvent)
 
   private case class TurnImpl(override val trainerRef: String, override val pokemon: Pokemon,
-                              override val battleTurnEvent: BattleTurnEvent) extends Turn:
+                              override val battleTurnEvent: TurnEvent) extends Turn:
 
-    import BattleTurnEvent.*
+    import TurnEvent.*
 
     override def withPokemonUpdate(pokemon: Pokemon): Turn =
       copy(pokemon = pokemon) withDefeatChecked

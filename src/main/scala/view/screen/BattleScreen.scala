@@ -13,13 +13,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, BattleTurnEvent, Turn}
+import model.battle.{Battle, TurnEvent, Turn}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import controller.events.{EndBattle, EventDispatcher, OptionChosen}
-import model.battle.BattleTurnEvent.*
+import model.battle.TurnEvent.*
 import model.entities.World.Position
 import model.entities.pokemon.{Move, PokemonFactory}
 import pokearena.PokeArena
@@ -39,33 +39,31 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val battleMenuLayout: BattleMenuBaseLayout = BattleMenuBaseLayout(Seq("Cosa deve fare " + battle.player.pokemonTeam.head.name), skin, battleMenuRegion, menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin, battleMenuRegion, fightLayoutAction)
   val bagLayout: BagLayout = BagLayout(battle.player.bag, skin, battleMenuRegion, bagLayoutAction)
-  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x + (pBRegion.width + 50), pBRegion.y, 200, 100))
-  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x - (oBRegion.width + 100), oBRegion.y, 200, 100))
+  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y, Gdx.graphics.getWidth / 2, 100))
+  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, Gdx.graphics.getWidth / 2, 100))
 
   def backButton: ImageButton =
     val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
     backButton.setPosition(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2))
     backButton.setSize(100, 100)
-    backButton.addListener(new ClickListener(){
+    backButton.addListener(new ClickListener() {
       override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-        showBattleMenu
+        showBattleMenu()
         true
     })
     backButton
 
-  private def showBattleMenu: Unit =
-    fightLayout.setVisible(false)
-    bagLayout.setVisible(false)
-    battleMenuLayout.setVisible(true)
+  private val showBattleMenu: () => Unit =
+    () =>
+      fightLayout.setVisible(false)
+      bagLayout.setVisible(false)
+      battleMenuLayout.setVisible(true)
 
-  def battleScreenUpdate(turnData:(Turn, Turn)): Unit =
-    showBattleMenu
+
+  def battleScreenUpdate(turnData: Seq[Turn]): Unit =
+    showBattleMenu()
     battleMenuLayout.hideButtonMenu
-    battleMenuLayout.update(
-      Seq(
-        turnData._1.pokemon.name + " " + turnData._1.battleTurnEvent.description,
-        turnData._2.pokemon.name + " " + turnData._2.battleTurnEvent.description
-      ))
+    battleMenuLayout.update(turnData.map(turn => turn.pokemon.name + " " + turn.battleTurnEvent.description))
     com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
       override def run(): Unit = {
         battle.pokemonInBattle match
@@ -81,12 +79,15 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       }
     }, 2)
 
-  private def pBRegion: Rectangle = Rectangle(
-    Gdx.graphics.getWidth / 5, Gdx.graphics.getHeight / 2, 150, 150)
+  private def pBRegion: Rectangle =
+    val width = Gdx.graphics.getWidth
+    val height = Gdx.graphics.getHeight
+    Rectangle(width / 5, (height / 2.5).toInt, 150, 150)
 
-  private def oBRegion: Rectangle = Rectangle(
-    Gdx.graphics.getWidth - (Gdx.graphics.getWidth / 4),
-    Gdx.graphics.getHeight - (Gdx.graphics.getHeight / 4), 150, 150)
+  private def oBRegion: Rectangle =
+    val width = Gdx.graphics.getWidth
+    val height = Gdx.graphics.getHeight
+    Rectangle(width / 3, height - (height / 4), 150, 150)
 
   private def battleMenuRegion: Rectangle = Rectangle(
     Gdx.graphics.getWidth / 4, 50, Gdx.graphics.getWidth / 2, 200
@@ -98,26 +99,16 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       case _ => bagLayout.setVisible(true)
     battleMenuLayout.setVisible(false)
 
-  /*
-  * We are sure player pokemon is present
-  * */
   private def fightLayoutAction(moveIndex: Int): Unit =
     val pokemon = battle.pokemonInBattle._1.get
     val move: Move = pokemon.moves(moveIndex)
-    val fightOption: BattleTurnEvent = Attack(move)
+    val fightOption: TurnEvent = Attack(move)
     sendEvent(OptionChosen(fightOption))
 
   private def bagLayoutAction(itemIndex: Int): Unit =
     val item = battle.player.bag.items(itemIndex)
     battle.player.bag.removeItem(item)
-    sendEvent(OptionChosen(BattleTurnEvent.Bag(item)))
-
-
-  private def pokemonDrawables: Seq[Drawable] =
-    battle.pokemonInBattle match
-      case (Some(pPokemon), Some(oPokemon)) => Seq(Drawable(Sprites.getBattleSprite(pPokemon.id), pBRegion.x, pBRegion.y, pBRegion.width, pBRegion.height),
-        Drawable(Sprites.getBattleSprite(oPokemon.id), oBRegion.x, oBRegion.y, oBRegion.width, oBRegion.height))
-      case _ => Seq()
+    sendEvent(OptionChosen(TurnEvent.UseBag(item)))
 
   override def actors: Seq[Actor] =
     Seq(battleMenuLayout,
@@ -128,4 +119,4 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pOpponentLayout)
 
   override def drawables: Seq[Drawable] =
-    Seq(Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight)) concat pokemonDrawables
+    Seq(Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
