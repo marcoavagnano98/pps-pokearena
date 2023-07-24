@@ -8,7 +8,7 @@ import com.badlogic.gdx
 class PlayerProcessor(world: World) extends InputAdapter:
   private var x = world.player.position.x
   private var y = world.player.position.y
-  private val playerSpeed = world.playerSpeed
+  private val playerSpeed = world.level.playerSpeed
 
   private def updatePlayerPosition(newX: Double, newY: Double): Unit =
     world.player = world.player withPosition Position(newX, newY)
@@ -28,8 +28,8 @@ class PlayerProcessor(world: World) extends InputAdapter:
   private def canMove: Unit =
     val newX = world.player.position.x+x
     val newY = world.player.position.y+y
-    val withinXBounds = newX >= 0 && newX <= world.gridWidth-1
-    val withinYBounds = newY >= 0 && newY <= world.gridHeight-1
+    val withinXBounds = newX >= 0 && newX <= world.level.gridWidth-1
+    val withinYBounds = newY >= 0 && newY <= world.level.gridHeight-1
 
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)

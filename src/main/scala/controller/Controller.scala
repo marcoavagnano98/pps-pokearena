@@ -54,10 +54,9 @@ protected object GameController extends Controller:
     model.removeTrainer(id)
     handleScreenChange(screen)
 
-
   def startGame(pokemonList: Seq[Pokemon]): Unit =
-    model.createMap("map_")
-    model.generateEntities(pokemonList)
+    model.createLevel(pokemonList)
+    //model.generateEntities(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
 

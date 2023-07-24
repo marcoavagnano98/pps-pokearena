@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.{ExtendViewport, FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, ScreenAdapter}
 import controller.events.EventDispatcher
-import model.entities.{Map, Player, Trainer, VisibleEntity, World}
+import model.entities.{Level, Player, Trainer, VisibleEntity, World}
 import model.entities.pokemon.*
 import util.Screen.ScreenBehavior
 import view.screen
@@ -39,12 +39,12 @@ class GameScreen(world: World) extends BasicScreen:
     Gdx.input.setInputProcessor(PlayerProcessor(world))
 
   override def drawables: Seq[Drawable] =
-    Drawable(world.gameMap.background, world.gameMap.bounds.x, world.gameMap.bounds.y, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
-      world.visibleEntities.map(o => Drawable(getEntitySprite(o),
-        o.position.x.toFloat * ViewportUtil.viewportWidth/world.gridWidth,
-        o.position.y.toFloat * ViewportUtil.viewportHeight/world.gridHeight,
-        o.height,
-        o.width))
+    Drawable(world.level.background, world.level.levelXPos, world.level.levelYPos, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
+      world.visibleEntities.map(e => Drawable(getEntitySprite(e),
+        e.position.x.toFloat * ViewportUtil.viewportWidth/world.level.gridWidth,
+        e.position.y.toFloat * ViewportUtil.viewportHeight/world.level.gridHeight,
+        e.height,
+        e.width))
 
   override def updateView(): Unit =
     world.checkCollision match
