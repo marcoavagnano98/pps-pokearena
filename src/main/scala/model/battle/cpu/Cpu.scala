@@ -7,6 +7,7 @@ import util.Utilities
 import scala.language.postfixOps
 import scala.util.Random
 
+/** Represent the engine of [[Cpu]] responsible to choose the opponent option for the [[Battle]] */
 trait Cpu:
   /**
    *
@@ -26,7 +27,7 @@ trait Cpu:
    *
    * @return the event chosen for that turn, there's 30 % of probability to chose the best move
    */
-  
+
   def optionChosen: TurnEvent
 
 

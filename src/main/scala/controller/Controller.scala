@@ -71,7 +71,7 @@ object BattleController extends Controller:
   override def eventHandler(e: Event): Unit =
     e match
       case e: OptionChosen =>
-          screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.takeTurn(e.battleOption))
+          screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.playRound(e.battleOption))
           
       case e: EndBattle =>
         if e.trainerId == model.player.id then

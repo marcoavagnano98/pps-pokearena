@@ -28,14 +28,14 @@ trait Battle:
 
   /**
    *
-   * @return an instance of new [[BattleEngine]]
+   * @return a sequence of turn: [[Battle]] results
    */
 
-  def takeTurn(playerChoice: TurnEvent): Seq[Turn]
+  def playRound(playerChoice: TurnEvent): Seq[Turn]
 
   /**
    *
-   * @return optionally both pokemon in battle of player and opponent
+   * @return optionally both [[Pokemon]] in [[Battle]] of [[player]] and opponent [[Trainer]]
    */
   def pokemonInBattle: (Option[Pokemon], Option[Pokemon])
 
@@ -53,7 +53,7 @@ object Battle:
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
 
-    override def takeTurn(playerChoice: TurnEvent): Seq[Turn] =
+    override def playRound(playerChoice: TurnEvent): Seq[Turn] =
       val playerTurn: Turn = Turn(player.id, playerTeam.head, playerChoice)
       val opponentTurn: Turn = Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
       val updatedTurnSequence: Seq[Turn] = BattleEngine(playerTurn, opponentTurn)
@@ -66,6 +66,6 @@ object Battle:
         case Defeat => opponentTeam = opponentTeam.tail
         case _ if updatedUnit.trainerRef == player.id => playerTeam = playerTeam updated(0, updatedUnit.pokemon)
         case _ => opponentTeam = opponentTeam updated(0, updatedUnit.pokemon)
-    
+
     override def pokemonInBattle: (Option[Pokemon], Option[Pokemon]) =
       (playerTeam.headOption, opponentTeam.headOption)

@@ -5,18 +5,30 @@ import model.entities.pokemon.StatusEffects.{DealDamageEffect, SkipTurnEffect}
 
 import scala.language.postfixOps
 
+/** Active and passive events that pokemon perform or suffers during the [[Turn]] */
 enum TurnEvent(val description: String, val priority: Int):
   case Attack(move: Move) extends TurnEvent("usa " + move.name, 0)
   case UseBag(item: Item) extends TurnEvent("usa lo strumento " + item.name, 1)
   case Skip extends TurnEvent("salta il turno", 0)
   case Defeat extends TurnEvent("e' stato sconfitto", 0)
 
-/** Maintains the information of pokemon during the [[Battle]] and keeps track of the events that happens during the [[Turn]]*/
+/** Dynamic structure that maintains the information of pokemon during the [[Battle]] and keeps track of the events that happens during the [[Turn]]*/
 trait Turn:
+  /**
+   * 
+   * @return trainer id
+   */
   def trainerRef: String
-
+  /**
+   *
+   * @return pokemon in [[Turn]]
+   */
   def pokemon: Pokemon
-
+  
+  /**
+   *
+   * @return [[TurnEvent]] pokemon should do or suffer during the [[Turn]]
+   */
   def battleTurnEvent: TurnEvent
 
   /**

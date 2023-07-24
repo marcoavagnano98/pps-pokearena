@@ -22,7 +22,7 @@ object BattleEngine:
    */
   def apply(t: (Turn, Turn)): Seq[Turn] =
     for
-      battlePair <- Seq(turnLoop(turnOrder(t)))
+      battlePair <- Seq(roundLoop(turnOrder(t)))
       seqWithDamageStatusApplied <- Seq(battlePair._1 withDamageStatusApplied, battlePair._2 withDamageStatusApplied)
     yield seqWithDamageStatusApplied
 
@@ -40,15 +40,15 @@ object BattleEngine:
    * @param turnPair a data structure who will update during the battle
    * @return updated pair after the battle
    */
-  def turnLoop(turnPair: (Turn, Turn)): (Turn, Turn) =
+  def roundLoop(turnPair: (Turn, Turn)): (Turn, Turn) =
     @tailrec
-    def _loop(turnPair: (Turn, Turn), turnLife: Int): (Turn, Turn) =
+    def _loop(turnPair: (Turn, Turn), nTurn: Int): (Turn, Turn) =
       (turnPair._1.checkSkipStatus, turnPair._2) match
-        case pair if turnLife > 0 =>
+        case pair if nTurn > 0 =>
           pair._1.battleTurnEvent match
-            case Attack(move) => _loop((pair._1, turnAfterAttack(pair._1, pair._2, move)).swap, turnLife - 1)
-            case UseBag(item) => _loop((turnAfterHeal(pair._1, item), pair._2).swap, turnLife - 1)
-            case _ => _loop(pair.swap, turnLife - 1)
+            case Attack(move) => _loop((pair._1, turnAfterAttack(pair._1, pair._2, move)) swap, nTurn - 1)
+            case UseBag(item) => _loop((turnAfterHeal(pair._1, item), pair._2) swap, nTurn - 1)
+            case _ => _loop(pair.swap, nTurn - 1)
         case _ => turnPair
     _loop(turnPair, 2)
 
