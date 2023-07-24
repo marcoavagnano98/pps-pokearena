@@ -11,6 +11,7 @@ enum TurnEvent(val description: String, val priority: Int):
   case Skip extends TurnEvent("salta il turno", 0)
   case Defeat extends TurnEvent("e' stato sconfitto", 0)
 
+/** Maintains the information of pokemon during the [[Battle]] and keeps track of the events that happens during the [[Turn]]*/
 trait Turn:
   def trainerRef: String
 
