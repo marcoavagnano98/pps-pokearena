@@ -6,22 +6,20 @@ import scala.util.Random
 
 object PokemonFactory:
   private val listOfAllPokemon: Seq[Pokemon] = PokedexParser.getAllPokemon
-  private val listOfAllMoves: Seq[Move] = MoveParser.getAllMoves
+  private val listOfAllMoves: Seq[Move] = MoveParser.getAllMoves.filter(_.damage > 0)
   private val random: Random = Random()
   private val numberOfMovesForPokemon = 4
 
-  def apply(numberOfPokemon: Int) : Seq[Pokemon] =
-    (1 to numberOfPokemon).foldLeft(Seq[Pokemon]())((p,i) => p :+ getRandomPokemon)
+  def apply(numberOfPokemon: Int): Seq[Pokemon] =
+    getRandomPokemon(numberOfPokemon)
 
-  private def getRandomPokemon: Pokemon =
-    val moves = for
-      i <- 0 until 4
-      move = getRandomElement(listOfAllMoves,random)
-    yield move
-    val p = getRandomElement(listOfAllPokemon,random)
-    p withMoves moves
-  
+  private def getRandomPokemon(numberOfPokemon: Int): Seq[Pokemon] =
+    getNRandomElement(listOfAllPokemon, numberOfPokemon, random).map(p => p withMoves getNRandomElement(listOfAllMoves, numberOfMovesForPokemon, random))
+
   def getPokemonById(id: String): Option[Pokemon] = listOfAllPokemon.find(_.id == id)
 
-  private def getRandomElement[A](seq: Seq[A], random: Random): A =
-    seq(random.nextInt(seq.length))
+  def getPokemonByBstRange(range: (Int, Int)): Seq[Pokemon] =
+    getNRandomElement(listOfAllPokemon.filter(p => p.bst >= range._1 && p.bst <= range._2), 4, random)
+
+  private def getNRandomElement[A](seq: Seq[A], numberOfElements: Int, random: Random): Seq[A] =
+    random.shuffle(seq).take(numberOfElements)

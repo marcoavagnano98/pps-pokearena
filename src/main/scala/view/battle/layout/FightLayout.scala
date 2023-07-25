@@ -11,13 +11,12 @@ import view.battle.DialogueBox
 
 import scala.io.Source
 
-class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, actionPerformed: Int => Unit) extends BaseLayout[Pokemon, Int](layoutData, boundary, actionPerformed):
+class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout[Int](boundary, callback):
+  override type T = Pokemon
   val box: DialogueBox = DialogueBox(Seq("Scegli una mossa"), skin)
   add(box).colspan(2)
   row()
   generateTable
-  setSize(boundary.width, boundary.height)
-  setPosition(boundary.x, boundary.y)
   setVisible(false)
 
   def generateButtons: Seq[(Int, ImageTextButton)] =

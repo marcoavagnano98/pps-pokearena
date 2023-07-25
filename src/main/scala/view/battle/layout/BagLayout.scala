@@ -10,13 +10,13 @@ import com.badlogic.gdx.utils.Align
 import view.battle.DialogueBox
 import model.entities.{Bag, Item, Potion, World}
 
-class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, actionPerformed: Int => Unit) extends BaseLayout[Bag, Int](layoutData,boundary, actionPerformed) :
+class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout[Int](boundary, callback) :
+  override type T = Bag
   val box: DialogueBox = DialogueBox(Seq("Seleziona uno strumento di cura"), skin)
   add(box)
   generateScrollableTable
   setVisible(false)
-  setSize(boundary.width, boundary.height)
-  setPosition(boundary.x, boundary.y)
+
 
   private def generateItemList: Seq[(Int, TextField)] =
     for

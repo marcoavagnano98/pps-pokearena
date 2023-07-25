@@ -31,7 +31,7 @@ trait Battle:
    * @return a sequence of turn: [[Battle]] results
    */
 
-  def playRound(playerChoice: TurnEvent): Seq[Turn]
+  def playRound(playerChoice: TrainerChoice): Seq[Turn]
 
   /**
    *
@@ -48,12 +48,12 @@ object Battle:
                                ) extends Battle :
 
     import util.Utilities.swap
-    import TurnEvent.*
+    import Status.*
 
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
 
-    override def playRound(playerChoice: TurnEvent): Seq[Turn] =
+    override def playRound(playerChoice: TrainerChoice): Seq[Turn] =
       val playerTurn: Turn = Turn(player.id, playerTeam.head, playerChoice)
       val opponentTurn: Turn = Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
       val updatedTurnSequence: Seq[Turn] = BattleEngine(playerTurn, opponentTurn)
@@ -61,7 +61,7 @@ object Battle:
       updatedTurnSequence
 
     def updatePokemonList(updatedUnit: Turn): Unit =
-      updatedUnit.battleTurnEvent match
+      updatedUnit.turnStatus match
         case Defeat if updatedUnit.trainerRef == player.id => playerTeam = playerTeam.tail
         case Defeat => opponentTeam = opponentTeam.tail
         case _ if updatedUnit.trainerRef == player.id => playerTeam = playerTeam updated(0, updatedUnit.pokemon)

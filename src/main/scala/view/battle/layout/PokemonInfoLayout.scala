@@ -10,11 +10,11 @@ import view.Sprites
 
 
 
-class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, actionPerformed: Unit => Unit = (_: Unit) => {}) extends BaseLayout[Pokemon, Unit](layoutData, boundary, actionPerformed) :
+class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle) extends NoCallbackLayout(boundary):
+  override type T = Pokemon
   add(pokemonImage).padRight(30).height(150).width(150)
   add(infoBox)
-  setSize(boundary.width, boundary.height)
-  setPosition(boundary.x, boundary.y)
+
 
   def infoBox: DialogueBox =
     val infoBox = DialogueBox(Seq(

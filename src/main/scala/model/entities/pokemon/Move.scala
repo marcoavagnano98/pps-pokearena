@@ -42,18 +42,19 @@ object Move:
     MoveImpl(damage, powerPoint, name, elementType, status)
 
   private case class MoveImpl(override val damage: Int,
-                              override val powerPoint: Int,
+                              private var _powerpoint: Int,
                               override val name: String,
                               override val elementType: ElementType,
                               override val status: Option[PokemonStatus],
                              ) extends Move :
-
-    override def applyStatus(p: Pokemon): Pokemon = status match
-      case Some(s:PokemonStatusWithEffect) if p.status != s => s applyStatus p
-      case _ => p
-
-
-
+    
+    override def powerPoint: Int = _powerpoint
+    
+    override def applyStatus(pokemon: Pokemon): Pokemon =
+      _powerpoint = _powerpoint - 1
+      status match
+      case Some(status:PokemonStatusWithEffect) if pokemon.status != status => status applyStatus pokemon
+      case _ => pokemon
 
 
 

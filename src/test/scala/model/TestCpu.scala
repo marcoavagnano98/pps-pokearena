@@ -3,9 +3,9 @@ import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
 import model.entities.pokemon.*
-import model.entities.pokemon.ElementType.{Normal, *}
+import model.entities.pokemon.ElementType.*
 import model.battle.*
-import model.battle.TurnEvent.*
+import model.battle.TrainerChoice.*
 import model.battle.cpu.Cpu
 
 import scala.language.postfixOps
