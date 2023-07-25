@@ -11,6 +11,6 @@ object Launcher:
     config.setWindowIcon("assets/icon/pokearena.png")
     config.setWindowSizeLimits(size._1, size._2, 9999,9999);
     config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode.refreshRate)
-   // config.setResizable(System.getProperty("os.arch") != "aarch64")
-   // config.setWindowedMode(size._1, size._2)
+    config.setResizable(System.getProperty("os.arch") != "aarch64")
+    config.setWindowedMode(size._1, size._2)
     Lwjgl3Application(PokeArena, config)
