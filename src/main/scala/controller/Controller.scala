@@ -48,7 +48,7 @@ protected object GameController extends Controller:
     case visibleEntity: CollisionEvent => visibleEntity.entity match
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
       case item: Item => model.itemCollision(item)
-      case door: Door => model.doorCollision(door) // check se gli opp == 0 e nextLevel()
+      case door: Door => model.doorCollision(door)
 
   def removeTrainer(id: String): Unit =
     model.removeTrainer(id)
@@ -56,7 +56,6 @@ protected object GameController extends Controller:
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
     model.createLevel(pokemonList)
-    //model.generateEntities(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
 
