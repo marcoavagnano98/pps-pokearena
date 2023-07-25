@@ -46,7 +46,7 @@ object World:
       _level.removeItem(item)
 
     override def doorCollision(door: Door): Unit =
-      if _level.opponents.isEmpty then
+      if _level.door.state.equals(DoorState.Open) then
         createLevel(player.pokemonTeam)
         _player = _player withPosition Position(0, 0)
 

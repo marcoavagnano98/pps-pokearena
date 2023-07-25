@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.{ExtendViewport, FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, ScreenAdapter}
 import controller.events.EventDispatcher
-import model.entities.{Level, Player, Trainer, VisibleEntity, World}
+import model.entities.{DoorState, Level, Player, Trainer, VisibleEntity, World}
 import model.entities.pokemon.*
 import util.Screen.ScreenBehavior
 import view.screen
@@ -47,6 +47,9 @@ class GameScreen(world: World) extends BasicScreen:
         e.width))
 
   override def updateView(): Unit =
+    if world.level.opponents.isEmpty then
+      world.level.door = world.level.door.updateDoor("door_open", DoorState.Open)
+
     world.checkCollision match
       case Some(e:VisibleEntity) => sendEvent(CollisionEvent(e))
       case _ =>
