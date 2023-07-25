@@ -11,7 +11,7 @@ import view.battle.DialogueBox
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout[BattleMenuOption](boundary, callback):
+class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout[BattleMenuOption](boundary, callback):
   import BattleMenuOption.*
   override type T = Seq[String]
   val startInfoBox: DialogueBox = generateInfoBox(layoutData)
@@ -23,7 +23,7 @@ class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, boundary: Re
   row()
   add(bagButton).fill().pad(10).minHeight(50)
   add(fightButton).fill().pad(10).minHeight(50)
-
+  bagEnabled(Touchable.disabled)
 
   private def generateInfoBox(text: Seq[String]) : DialogueBox = DialogueBox(text, skin)
 
@@ -35,15 +35,12 @@ class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, boundary: Re
     bagButton.setVisible(true)
     fightButton.setVisible(true)
 
+  def bagEnabled(touchable: Touchable): Unit =
+    bagButton.setTouchable(touchable)
+    bagButton.setDisabled(true)
+
   override def update(newLayoutInfo: Seq[String]): Unit =
     layoutData = newLayoutInfo
     getCells.items(0).getActor match
       case _: DialogueBox =>  getCells.items(0).setActor(generateInfoBox(newLayoutInfo))
-      case _ =>  
-    
-  
-
-
-
-
-
+      case _ =>

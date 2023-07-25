@@ -46,8 +46,6 @@ object Battle:
   private case class BattleImpl(override val player: Player,
                                 override val opponent: Trainer,
                                ) extends Battle :
-
-    import util.Utilities.swap
     import Status.*
 
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
