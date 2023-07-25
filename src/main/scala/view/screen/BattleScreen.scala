@@ -36,7 +36,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
 
   override def viewport = new ScreenViewport()
 
-  val battleMenuLayout: BattleMenuBaseLayout = BattleMenuBaseLayout(Seq("Cosa deve fare " + battle.player.pokemonTeam.head.name), skin, battleMenuRegion, menuLayoutAction)
+  val battleMenuLayout: BattleMenuBaseLayout = BattleMenuBaseLayout(Seq(menuTitle(battle.player.pokemonTeam.head.name)), skin, battleMenuRegion, menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin, battleMenuRegion, fightLayoutAction)
   val bagLayout: BagLayout = BagLayout(battle.player.bag, skin, battleMenuRegion, bagLayoutAction)
   val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y, Gdx.graphics.getWidth / 2, 100))
@@ -59,6 +59,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       bagLayout.setVisible(false)
       battleMenuLayout.setVisible(true)
 
+  private def menuTitle(pokemonName: String): String = "Cosa deve fare " +  pokemonName + "?"
 
   def battleScreenUpdate(turnData: Seq[Turn]): Unit =
     showBattleMenu()
@@ -69,7 +70,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
         battle.pokemonInBattle match
           case (Some(playerPokemon), Some(opponentPokemon)) =>
             fightLayout.update(playerPokemon)
-            battleMenuLayout.update(Seq("Cosa deve fare " + playerPokemon.name + "?"))
+            battleMenuLayout.update(Seq(menuTitle(playerPokemon.name)))
             bagLayout.update(battle.player.bag)
             pPlayerInfoLayout.update(playerPokemon)
             pOpponentLayout.update(opponentPokemon)
@@ -119,4 +120,4 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pOpponentLayout)
 
   override def drawables: Seq[Drawable] =
-    Seq(Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
+    Seq(Drawable("assets/battle-screen.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
