@@ -11,9 +11,10 @@ import scala.language.postfixOps
 /** Represent the engine of [[Pokemon]] battle */
 object BattleEngine:
 
-  import TurnEvent.*
+  import Status.*
+  import TrainerChoice.*
 
-  given Ordering[Turn] = Ordering.by[Turn, (Int, Int)](t => (t.battleTurnEvent.priority, t.pokemon.speed)).reverse
+  given Ordering[Turn] = Ordering.by[Turn, (Int, Int)](t => (t.trainerChoice.priority, t.pokemon.speed)).reverse
 
   /**
    *
@@ -22,8 +23,8 @@ object BattleEngine:
    */
   def apply(t: (Turn, Turn)): Seq[Turn] =
     for
-      battlePair <- Seq(roundLoop(turnOrder(t)))
-      seqWithDamageStatusApplied <- Seq(battlePair._1 withDamageStatusApplied, battlePair._2 withDamageStatusApplied)
+      turn <- Seq(roundLoop(turnOrder(t)))
+      seqWithDamageStatusApplied <- Seq(turn._1 withDamageStatusApplied, turn._2 withDamageStatusApplied)
     yield seqWithDamageStatusApplied
 
   /**
@@ -45,10 +46,11 @@ object BattleEngine:
     def _loop(turnPair: (Turn, Turn), nTurn: Int): (Turn, Turn) =
       (turnPair._1.checkSkipStatus, turnPair._2) match
         case pair if nTurn > 0 =>
-          pair._1.battleTurnEvent match
-            case Attack(move) => _loop((pair._1, turnAfterAttack(pair._1, pair._2, move)) swap, nTurn - 1)
-            case UseBag(item) => _loop((turnAfterHeal(pair._1, item), pair._2) swap, nTurn - 1)
-            case _ => _loop(pair.swap, nTurn - 1)
+          pair._1.turnStatus match
+            case Alive => pair._1.trainerChoice match
+              case Attack(move) => _loop((pair._1 withTurnPerformed, turnAfterAttack(pair._1, pair._2, move)) swap, nTurn - 1)
+              case UseBag(item) => _loop((turnAfterHeal(pair._1, item) withTurnPerformed, pair._2) swap, nTurn - 1)
+            case _ => pair
         case _ => turnPair
     _loop(turnPair, 2)
 

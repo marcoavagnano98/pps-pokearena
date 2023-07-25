@@ -1,6 +1,6 @@
 package model.battle.cpu
 
-import model.battle.TurnEvent
+import model.battle.{Status, TrainerChoice}
 import model.entities.pokemon.{ComparatorTypeElement, Move, Pokemon}
 import util.Utilities
 
@@ -28,19 +28,20 @@ trait Cpu:
    * @return the event chosen for that turn, there's 30 % of probability to chose the best move
    */
 
-  def optionChosen: TurnEvent
+  def optionChosen: TrainerChoice
 
 
 object Cpu:
+  import TrainerChoice.*
   def apply(playerPokemon: Pokemon, cpuPokemon: Pokemon): Cpu =
     CpuImpl(playerPokemon, cpuPokemon)
 
   private case class CpuImpl(override val playerPokemon: Pokemon, override val opponentPokemon: Pokemon) extends Cpu :
     private val movesMap: Map[Move, Double] = opponentPokemon.moves.filter(_.powerPoint > 0).map(move => (move -> 0.0)).toMap
 
-    override def optionChosen: TurnEvent =
+    override def optionChosen: TrainerChoice =
       import Utilities.dice
-      TurnEvent.Attack(
+      Attack(
         if Random.dice(30) then
           damageBonusScore(movesMap).toSeq.sortWith((x, y) => x._2 > y._2).map(t => t._1).head
         else
