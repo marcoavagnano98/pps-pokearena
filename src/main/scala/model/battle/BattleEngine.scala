@@ -67,10 +67,12 @@ object BattleEngine:
       (power, attack, defense) => ((2 + (((42 * power * attack) / defense) / 50)) * stab).toInt
 
     val totDamage = computeTotalDamage(move.damage, b1.pokemon.attack, b2.pokemon.defense)
+    println(b1.pokemon.toString + move.powerPoint)
     b2.withPokemonUpdate(
       move.applyStatus(
         b2.pokemon.withHp(
           b2.pokemon.hp - totDamage)))
+
 
   /**
    *

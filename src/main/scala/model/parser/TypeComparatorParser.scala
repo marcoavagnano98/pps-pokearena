@@ -22,4 +22,6 @@ object TypeComparatorParser:
     }
 
     val decodingResult = parser.decode[List[(String,String,Double)]](inputString)
-    decodingResult.toOption.get
+    decodingResult match
+      case Right(l) => l
+      case _ => List()
