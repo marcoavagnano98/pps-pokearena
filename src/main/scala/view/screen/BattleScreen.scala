@@ -6,7 +6,7 @@ import com.badlogic.gdx.{Gdx, ScreenAdapter}
 import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageButton, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, utils}
-import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
+import com.badlogic.gdx.utils.viewport.{FitViewport, ScreenViewport, Viewport}
 import model.entities.{Entity, ItemFactory, ItemId, Potion}
 import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, TextureRegionDrawable}
 import com.badlogic.gdx.Gdx
@@ -32,16 +32,17 @@ import view.screen.Drawable
 import scala.language.postfixOps
 
 
+
 class BattleScreen(battle: Battle) extends BasicScreen :
   val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
-
-  override def viewport = new ScreenViewport()
+  private def viewPortSize: (Float, Float) = (1000, 1000)
+  override def viewport: FitViewport = FitViewport(viewPortSize._1, viewPortSize._2)
 
   val battleMenuLayout: BattleMenuBaseLayout = BattleMenuBaseLayout(Seq(menuTitle(battle.player.pokemonTeam.head.name)), skin, battleMenuRegion, menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin, battleMenuRegion, fightLayoutAction)
   val bagLayout: BagLayout = BagLayout(battle.player.bag, skin, battleMenuRegion, bagLayoutAction)
-  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y, Gdx.graphics.getWidth / 2, 100))
-  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, Gdx.graphics.getWidth / 2, 100))
+  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y,viewPortSize._1 / 2, 100))
+  val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, viewPortSize._1 / 2, 100))
 
   def backButton: ImageButton =
     val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
@@ -66,13 +67,13 @@ class BattleScreen(battle: Battle) extends BasicScreen :
     showBattleMenu()
     battleMenuLayout.hideButtonMenu
 
-    var titles: Seq[String] = Seq.from(
+    val titles: Seq[String] = Seq.from(
       for
         turn <- turnData
         description = turn.trainerChoice.description if turn.performed
         title = turn.pokemon.name + " " + description
       yield title
-    ) concat(
+    ) concat (
       for
         turn <- turnData
         description <- turn.turnStatus.description
@@ -97,17 +98,17 @@ class BattleScreen(battle: Battle) extends BasicScreen :
     }, 2)
 
   private def pBRegion: Rectangle =
-    val width = Gdx.graphics.getWidth
-    val height = Gdx.graphics.getHeight
+    val width = viewPortSize._1
+    val height = viewPortSize._2
     Rectangle(width / 5, (height / 2.5).toInt, 150, 150)
 
   private def oBRegion: Rectangle =
-    val width = Gdx.graphics.getWidth
-    val height = Gdx.graphics.getHeight
+    val width = viewPortSize._1
+    val height = viewPortSize._2
     Rectangle(width / 3, height - (height / 4), 150, 150)
 
   private def battleMenuRegion: Rectangle = Rectangle(
-    Gdx.graphics.getWidth / 4, 50, Gdx.graphics.getWidth / 2, 200
+    viewPortSize._1 / 4, 50, viewPortSize._1 / 2, 200
   )
 
   private def menuLayoutAction(option: BattleMenuOption): Unit =
@@ -137,7 +138,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pOpponentLayout)
   private def background: Image =
     val image = Image(Texture("assets/battle-screen.png"))
-    image.setSize(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+    image.setSize(viewPortSize._1,viewPortSize._2)
     image.setPosition(0,0)
     image
   override def drawables: Seq[Drawable] = Seq()

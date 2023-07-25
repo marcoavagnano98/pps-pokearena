@@ -14,8 +14,7 @@ class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle
   override type T = Pokemon
   add(pokemonImage).padRight(30).height(150).width(150)
   add(infoBox)
-  setSize(boundary.width, boundary.height)
-  setPosition(boundary.x, boundary.y)
+
 
   def infoBox: DialogueBox =
     val infoBox = DialogueBox(Seq(
