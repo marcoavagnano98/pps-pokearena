@@ -1,7 +1,6 @@
 package model.entities
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Rectangle
-import util.Drawable
 import model.entities.World.Position
 import model.entities.pokemon.{Pokemon, PokemonFactory}
 

@@ -2,7 +2,6 @@ package model.entities
 import model.entities.pokemon.Pokemon
 import com.badlogic.gdx.math.Rectangle
 import model.entities.World.Position
-import util.Drawable
 
 trait Trainer extends VisibleEntity:
   def pokemonTeam: Seq[Pokemon]

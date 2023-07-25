@@ -9,7 +9,6 @@ import com.badlogic.gdx.{Gdx, Input, ScreenAdapter}
 import controller.events.EventDispatcher
 import model.entities.{DoorState, Level, Player, Trainer, VisibleEntity, World}
 import model.entities.pokemon.*
-import util.Screen.ScreenBehavior
 import view.screen
 import view.Sprites.{getEntitySprite, getMapPath}
 import view.screen.Drawable

@@ -1,7 +1,6 @@
 package model.entities
 
 import model.entities.pokemon.{Pokemon, PokemonFactory}
-import util.Drawable
 import view.Sprites.getMapPath
 import com.badlogic.gdx.Gdx
 import controller.events.{CollisionEvent, EventDispatcher}
