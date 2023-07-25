@@ -21,3 +21,4 @@ case class OptionChosen(battleOption: TurnEvent) extends BattleEvent
 
 case class CollisionEvent(entity: VisibleEntity) extends GameEvent
 
+case class EndGame() extends GameEvent

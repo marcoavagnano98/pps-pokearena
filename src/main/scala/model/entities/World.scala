@@ -19,6 +19,11 @@ trait World:
   def itemCollision(item: Item): Unit
   def doorCollision(door: Door): Unit
   def removeTrainer(idTrainer: String): Unit
+  def difficulty: Int
+  def difficulty_=(difficulty: Int): Unit
+  def room: Int
+  def gameEnded: Boolean
+
 
 object World:
   def apply(): World = WorldImpl()
@@ -27,11 +32,14 @@ object World:
     private final val idLevel = "map_"
     private var _level: Level = _
     private var _player: Player = Player(Position(0, 0), "player", Seq.empty)
+    private var _difficulty = 0
+    private var _levelRoom = 1
+    private var _gameEnded = false
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
       _level = Level(getMapPath(idLevel))
-      _level.generateEntities()
+      _level.generateEntities(_levelRoom)
 
     override def level: Level = _level
     override def player_=(player: Player ): Unit = _player = player
@@ -47,11 +55,25 @@ object World:
 
     override def doorCollision(door: Door): Unit =
       if _level.door.state.equals(DoorState.Open) then
-        createLevel(player.pokemonTeam)
-        _player = _player withPosition Position(0, 0)
+        _levelRoom += 1
+        if _levelRoom <=4 then
+          createLevel(player.pokemonTeam)
+          _player = _player withPosition Position(0, 0)
+        else
+          _gameEnded = true
+
 
     override def removeTrainer(idTrainer: String): Unit =
       _level.removeOpponent(idTrainer)
+
+    override def difficulty: Int = _difficulty
+
+    override def difficulty_=(difficulty: Int): Unit =
+      _difficulty = difficulty
+
+    override def room: Int = _levelRoom
+
+    override def gameEnded: Boolean = _gameEnded
 
   /**
    *  Position class represents the coordinates x,y in the World

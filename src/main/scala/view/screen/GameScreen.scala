@@ -14,7 +14,7 @@ import view.screen
 import view.Sprites.{getEntitySprite, getMapPath}
 import view.screen.Drawable
 import view.PlayerProcessor
-import controller.events.CollisionEvent
+import controller.events.{CollisionEvent, EndGame}
 
 object ViewportUtil:
   val viewportHeight: Float = 100
@@ -49,6 +49,9 @@ class GameScreen(world: World) extends BasicScreen:
   override def updateView(): Unit =
     if world.level.opponents.isEmpty then
       world.level.door = world.level.door.updateDoor("door_open", DoorState.Open)
+
+    if world.gameEnded then
+      sendEvent(EndGame())
 
     world.checkCollision match
       case Some(e:VisibleEntity) => sendEvent(CollisionEvent(e))

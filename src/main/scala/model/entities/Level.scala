@@ -22,11 +22,7 @@ trait Level:
   def removeOpponent(idTrainer: String): Unit
   def door: Door
   def door_=(door: Door): Unit
-  def generateEntities(): Unit
-  def difficulty: Int
-  def difficulty_=(difficulty: Int): Unit
-  def room: Int
-  def room_=(room: Int): Unit
+  def generateEntities(levelRoom: Int): Unit
 
 object Level:
   def apply(path: String): Level =
@@ -45,8 +41,6 @@ object Level:
     private var _door: Door = Door(DoorState.Close, Position(4, 9))
     private final val playerPosition = Position(0,0) //???
     private final val numberOfEntitiesToGenerate = 3
-    private var _difficulty = 0
-    private var _levelRoom = 1
 
     override def opponents: Seq[Trainer] = _opponents
     override def items: Seq[Item] = _items
@@ -62,10 +56,12 @@ object Level:
     override def door_=(door: Door): Unit =
       _door = door
 
-    override def generateEntities(): Unit =
-      val (opps, itms): (Seq[Trainer], Seq[Potion]) = generateTrainersAndItems(numberOfEntitiesToGenerate)
-      _opponents = opps
-      _items = itms
+    override def generateEntities(levelRoom: Int): Unit = levelRoom match
+      case 4 => val boss: Trainer = generateBoss
+        _opponents = Seq(boss)
+      case _ => val (opps, itms): (Seq[Trainer], Seq[Potion]) = generateTrainersAndItems(numberOfEntitiesToGenerate)
+        _opponents = opps
+        _items = itms
 
     private def generateTrainersAndItems(numberOfEntities: Int): (Seq[Trainer], Seq[Item]) =
       @tailrec
@@ -74,6 +70,8 @@ object Level:
         case _ => (trainerList, itemList)
 
       _generateTAndI(List[Trainer](), List[Item](), numberOfEntities)
+
+    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonFactory(4))
 
     private var generatedOpponents: Set[Int] = Set.empty
     private val opponentsNumber = 22
@@ -113,14 +111,5 @@ object Level:
 
       findValidPosition(allPositions.toList)
 
-    override def difficulty: Int = _difficulty
-
-    override def difficulty_=(difficulty: Int): Unit =
-      _difficulty = difficulty
-
-    override def room: Int = _levelRoom
-
-    override def room_=(room: Int): Unit =
-      _levelRoom = room
 
 

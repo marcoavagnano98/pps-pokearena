@@ -1,10 +1,10 @@
 package controller
 
-import controller.events.{CollisionEvent, EndBattle, Event, OptionChosen, StartGame}
+import controller.events.{CollisionEvent, EndBattle, EndGame, Event, OptionChosen, StartGame}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
-import model.entities.{Entity, Player, Trainer, VisibleEntity, World, Item, Door}
+import model.entities.{Door, Entity, Item, Player, Trainer, VisibleEntity, World}
 import pokearena.PokeArena
 import view.screen.{BasicScreen, BattleScreen, GameScreen}
 
@@ -34,8 +34,6 @@ protected object MenuController extends Controller:
   override def eventHandler(e: Event): Unit = e match
     case e: StartGame =>
       GameController.startGame(e.list)
-    /* TODO: Create GameScreen and pass it the model and call handleScreenChange*/
-    /* TODO: generate game model, list of Trainer and Items on the map*/
     case _ =>
 
 protected object GameController extends Controller:
@@ -49,6 +47,7 @@ protected object GameController extends Controller:
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
       case item: Item => model.itemCollision(item)
       case door: Door => model.doorCollision(door)
+    case _  => endGame()
 
   def removeTrainer(id: String): Unit =
     model.removeTrainer(id)
@@ -58,6 +57,11 @@ protected object GameController extends Controller:
     model.createLevel(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
+
+  def endGame(): Unit =
+    /*screen = GameScreen(model) /*TODO: change to StatsScreen*/
+    handleScreenChange(screen)*/
+    println("Fine gioco")
 
 object BattleController extends Controller:
   override type T = Battle
@@ -74,6 +78,7 @@ object BattleController extends Controller:
           
       case e: EndBattle =>
         if e.trainerId == model.player.id then
-          {/*todo call gameOver from gameController*/}
+          GameController.endGame()
+          //println("FIne gioco")
         else
           GameController.removeTrainer(e.trainerId)
