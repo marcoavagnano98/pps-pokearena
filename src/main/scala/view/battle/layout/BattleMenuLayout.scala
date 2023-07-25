@@ -11,8 +11,9 @@ import view.battle.DialogueBox
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, actionPerformed: BattleMenuOption => Unit) extends BaseLayout[Seq[String], BattleMenuOption](layoutData,boundary, actionPerformed):
+class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout[BattleMenuOption](boundary, callback):
   import BattleMenuOption.*
+  override type T = Seq[String]
   val startInfoBox: DialogueBox = generateInfoBox(layoutData)
   val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
   bagButton.addListener(listener(BagOption))
@@ -22,8 +23,7 @@ class BattleMenuBaseLayout(var layoutData: Seq[String], skin: Skin, boundary: Re
   row()
   add(bagButton).fill().pad(10).minHeight(50)
   add(fightButton).fill().pad(10).minHeight(50)
-  setSize(boundary.width, boundary.height)
-  setPosition(boundary.x, boundary.y)
+
 
   private def generateInfoBox(text: Seq[String]) : DialogueBox = DialogueBox(text, skin)
 

@@ -13,13 +13,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, TurnEvent, Turn}
+import model.battle.{Battle, Status, TrainerChoice, Turn}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import controller.events.{EndBattle, EventDispatcher, OptionChosen}
-import model.battle.TurnEvent.*
+import model.battle.Status.*
+import model.battle.TrainerChoice.*
 import model.entities.World.Position
 import model.entities.pokemon.{Move, PokemonFactory}
 import pokearena.PokeArena
@@ -64,7 +65,22 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   def battleScreenUpdate(turnData: Seq[Turn]): Unit =
     showBattleMenu()
     battleMenuLayout.hideButtonMenu
-    battleMenuLayout.update(turnData.map(turn => turn.pokemon.name + " " + turn.battleTurnEvent.description))
+
+    var titles: Seq[String] = Seq.from(
+      for
+        turn <- turnData
+        description = turn.trainerChoice.description if turn.performed
+        title = turn.pokemon.name + " " + description
+      yield title
+    ) concat(
+      for
+        turn <- turnData
+        description <- turn.turnStatus.description
+        title = turn.pokemon.name + " " + description
+      yield title
+      )
+
+    battleMenuLayout.update(titles)
     com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
       override def run(): Unit = {
         battle.pokemonInBattle match
@@ -103,21 +119,25 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   private def fightLayoutAction(moveIndex: Int): Unit =
     val pokemon = battle.pokemonInBattle._1.get
     val move: Move = pokemon.moves(moveIndex)
-    val fightOption: TurnEvent = Attack(move)
+    val fightOption: TrainerChoice = Attack(move)
     sendEvent(OptionChosen(fightOption))
 
   private def bagLayoutAction(itemIndex: Int): Unit =
     val item = battle.player.bag.items(itemIndex)
     battle.player.bag.removeItem(item)
-    sendEvent(OptionChosen(TurnEvent.UseBag(item)))
+    sendEvent(OptionChosen(UseBag(item)))
 
   override def actors: Seq[Actor] =
-    Seq(battleMenuLayout,
+    Seq(background,
+      battleMenuLayout,
       fightLayout,
       bagLayout,
       backButton,
       pPlayerInfoLayout,
       pOpponentLayout)
-
-  override def drawables: Seq[Drawable] =
-    Seq(Drawable("assets/battle-screen.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
+  private def background: Image =
+    val image = Image(Texture("assets/battle-screen.png"))
+    image.setSize(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+    image.setPosition(0,0)
+    image
+  override def drawables: Seq[Drawable] = Seq()

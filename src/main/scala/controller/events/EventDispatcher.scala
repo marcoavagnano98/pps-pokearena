@@ -2,7 +2,7 @@ package controller.events
 
 import com.badlogic.gdx.graphics.VertexAttribute.Position
 import controller.{BattleController, GameController, MenuController}
-import model.battle.{Battle, TurnEvent}
+import model.battle.{Battle, Status}
 import model.entities.pokemon.{Pokemon, PokemonFactory}
 import model.entities.{Entity, Player, Trainer, World}
 import pokearena.PokeArena
