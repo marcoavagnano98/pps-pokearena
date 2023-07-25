@@ -46,8 +46,6 @@ object Battle:
   private case class BattleImpl(override val player: Player,
                                 override val opponent: Trainer,
                                ) extends Battle :
-
-    import util.Utilities.swap
     import Status.*
 
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
@@ -60,7 +58,7 @@ object Battle:
       updatedTurnSequence.foreach(updatePokemonList)
       updatedTurnSequence
 
-    def updatePokemonList(updatedUnit: Turn): Unit =
+    private def updatePokemonList(updatedUnit: Turn): Unit =
       updatedUnit.turnStatus match
         case Defeat if updatedUnit.trainerRef == player.id => playerTeam = playerTeam.tail
         case Defeat => opponentTeam = opponentTeam.tail
