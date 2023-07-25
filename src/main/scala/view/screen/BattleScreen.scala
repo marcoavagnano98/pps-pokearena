@@ -18,6 +18,7 @@ import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.utils.Timer.Task
 import controller.events.{EndBattle, EventDispatcher, OptionChosen}
 import model.battle.Status.*
 import model.battle.TrainerChoice.*
@@ -80,22 +81,23 @@ class BattleScreen(battle: Battle) extends BasicScreen :
         title = turn.pokemon.name + " " + description
       yield title
       )
-
     battleMenuLayout.update(titles)
-    com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
-      override def run(): Unit = {
+    Timer.schedule( new Task(){
+      override def run(): Unit =
         battle.pokemonInBattle match
-          case (Some(playerPokemon), Some(opponentPokemon)) =>
-            fightLayout.update(playerPokemon)
-            battleMenuLayout.update(Seq(menuTitle(playerPokemon.name)))
-            bagLayout.update(battle.player.bag)
-            pPlayerInfoLayout.update(playerPokemon)
-            pOpponentLayout.update(opponentPokemon)
-            battleMenuLayout.showButtonMenu
-          case (Some(_), None) => sendEvent(EndBattle(battle.opponent.id))
-          case _ => sendEvent(EndBattle(battle.player.id))
-      }
+        case (Some(playerPokemon), Some(opponentPokemon)) =>
+          fightLayout.update(playerPokemon)
+          battleMenuLayout.update(Seq(menuTitle(playerPokemon.name)))
+          bagLayout.update(battle.player.bag)
+          pPlayerInfoLayout.update(playerPokemon)
+          pOpponentLayout.update(opponentPokemon)
+          battleMenuLayout.showButtonMenu
+        case (Some(_), None) => sendEvent(EndBattle(battle.opponent.id))
+        case _ => sendEvent(EndBattle(battle.player.id))
     }, 2)
+
+
+
 
   private def pBRegion: Rectangle =
     val width = viewPortSize._1
