@@ -32,58 +32,55 @@ import view.screen.Drawable
 
 import scala.language.postfixOps
 import view.battle.layout.LayoutVisibility.*
+import view.GdxUtil.*
 
 
 class BattleScreen(battle: Battle) extends BasicScreen :
   val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
+
   private def viewPortSize: (Float, Float) = (1000, 1000)
+
   override def viewport: FitViewport = FitViewport(viewPortSize._1, viewPortSize._2)
+
   val battleMenuLayout: BattleMenuLayout = BattleMenuLayout(Seq(menuTitle(battle.player.pokemonTeam.head.name)), skin, battleMenuRegion, menuLayoutAction)
   val fightLayout: FightLayout = FightLayout(battle.player.pokemonTeam.head, skin, battleMenuRegion, fightLayoutAction)
   val bagLayout: BagLayout = BagLayout(battle.player.bag, skin, battleMenuRegion, bagLayoutAction)
-  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y,viewPortSize._1 / 2, 100))
+  val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y, viewPortSize._1 / 2, 100))
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, viewPortSize._1 / 2, 100))
   showBattleMenu
 
   def backButton: ImageButton =
     val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
-    backButton.setPosition(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2))
-    backButton.setSize(100, 100)
-    backButton.addListener(new ClickListener() {
-      override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-        showBattleMenu
-        true
-    })
+    backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 100,100)
+    backButton.onTouchDown(_ => showBattleMenu)
     backButton
 
   def showBattleMenu: Unit =
-      fightLayout.setVisible(NotVisible.value)
-      bagLayout.setVisible(NotVisible.value)
-      battleMenuLayout.setVisible(Visible.value)
+    fightLayout.setVisible(NotVisible.value)
+    bagLayout.setVisible(NotVisible.value)
+    battleMenuLayout.setVisible(Visible.value)
 
-  private def menuTitle(pokemonName: String): String = "Cosa deve fare " +  pokemonName + "?"
+  private def menuTitle(pokemonName: String): String = "Cosa deve fare " + pokemonName + "?"
 
   def battleScreenUpdate(turnData: Seq[Turn]): Unit =
     showBattleMenu
-    battleMenuLayout.setAllButtonVisibility(NotVisible)
-
-    val titles: Seq[String] = Seq.from(
-      for
+    battleMenuLayout.setButtonsVisibility(NotVisible)
+    battleMenuLayout.updateLayout(
+      (for
         turn <- turnData
         description = turn.trainerChoice.description if turn.performed
         title = turn.pokemon.name + " " + description
-      yield title
-    ) concat (
-      for
-        turn <- turnData
-        description <- turn.turnStatus.description
-        title = turn.pokemon.name + " " + description
-      yield title
-      )
-    battleMenuLayout.updateLayout(titles)
-    import util.Utilities.GdxUtil
-    
-    GdxUtil.scheduleDelayedAction(2,
+      yield title)
+        ++
+        (for
+          turn <- turnData
+          description <- turn.turnStatus.description
+          title = turn.pokemon.name + " " + description
+        yield title)
+    )
+
+
+    scheduleDelayedAction(2,
       {
         battle.pokemonInBattle match
           case (Some(playerPokemon), Some(opponentPokemon)) =>
@@ -92,16 +89,12 @@ class BattleScreen(battle: Battle) extends BasicScreen :
             bagLayout.updateLayout(battle.player.bag)
             pPlayerInfoLayout.updateLayout(playerPokemon)
             pOpponentLayout.updateLayout(opponentPokemon)
-            battleMenuLayout.setAllButtonVisibility(Visible)
+            battleMenuLayout.setButtonsVisibility(Visible)
             if !(playerPokemon.maxHp == playerPokemon.hp) then battleMenuLayout.bagButtonTouchable(Touchable.enabled) else battleMenuLayout.bagButtonTouchable(Touchable.disabled)
           case (Some(_), None) => sendEvent(EndBattle(battle.opponent.id))
           case _ => sendEvent(EndBattle(battle.player.id))
       }
     )
-
-
-
-
 
 
   private def pBRegion: Rectangle =
@@ -143,9 +136,10 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       backButton,
       pPlayerInfoLayout,
       pOpponentLayout)
+
   private def background: Image =
     val image = Image(Texture("assets/battle-screen.png"))
-    image.setSize(viewPortSize._1,viewPortSize._2)
-    image.setPosition(0,0)
+    image.setBounds(0, 0, viewPortSize._1, viewPortSize._2)
     image
+
   override def drawables: Seq[Drawable] = Seq()

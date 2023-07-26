@@ -9,10 +9,10 @@ import com.badlogic.gdx.utils.Align
 import model.entities.pokemon.{Move, Pokemon, PokemonFactory}
 import view.battle.DialogueBox
 import LayoutVisibility.*
-
+import view.GdxUtil.onTouchDown
 import scala.io.Source
 
-class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout[Int](boundary, callback):
+class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary):
   override type T = Pokemon
   
   add(DialogueBox(Seq("Scegli una mossa"), skin)).colspan(2)
@@ -27,7 +27,7 @@ class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, call
       for
         i <- layoutData.moves.indices
         b = ImageTextButton(layoutData.moves(i).name + " " + layoutData.moves(i).powerPoint + "PP", skin)
-        checkedButton = {b.addListener(listener(i)); checkPP(b, layoutData.moves(i))}
+        checkedButton = {b.onTouchDown(callback, i); checkPP(b, layoutData.moves(i))}
       yield (i, checkedButton)
   
   def checkPP(button: ImageTextButton, move: Move): ImageTextButton =
@@ -46,4 +46,3 @@ class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, call
       cell.getActor match
         case _: ImageTextButton =>  cell.setActor(button)
         case _ =>
-

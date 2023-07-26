@@ -7,11 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.{ImageTextButton, Skin, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import model.entities.pokemon.Pokemon
 import view.battle.DialogueBox
+import view.GdxUtil.onTouchDown
 
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout[BattleMenuOption](boundary, callback) :
+case class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout(boundary) :
 
   import BattleMenuOption.*
   import LayoutVisibility.*
@@ -22,7 +23,7 @@ class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectan
   row()
   for button <- menuButtons
     do add(button).fill().pad(10).minHeight(50)
-  setAllButtonVisibility(Visible)
+  setButtonsVisibility(Visible)
   bagButtonTouchable(Touchable.disabled)
 
   private def infoBox: DialogueBox = DialogueBox(layoutData, skin)
@@ -30,11 +31,11 @@ class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectan
   lazy val menuButtons: Seq[ImageTextButton] =
     val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
     val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
-    fightButton.addListener(listener(FightOption))
-    bagButton.addListener(listener(BagOption))
+    fightButton.onTouchDown(callback, FightOption)
+    bagButton.onTouchDown(callback, BagOption)
     Seq(fightButton, bagButton)
 
-  def setAllButtonVisibility(visibility: LayoutVisibility): Unit =
+  def setButtonsVisibility(visibility: LayoutVisibility): Unit =
     val seq: Seq[ImageTextButton] = menuButtons
     for i <- seq.indices
       do

@@ -9,7 +9,7 @@ import model.entities.pokemon.Pokemon
 import view.Sprites
 
 
-class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle) extends NoCallbackLayout(boundary) :
+class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle) extends BaseLayout(boundary):
   override type T = Pokemon
   add(pokemonImage).padRight(30).height(150).width(150)
   add(infoBox)

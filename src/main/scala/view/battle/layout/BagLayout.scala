@@ -9,8 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import view.battle.DialogueBox
 import model.entities.{Bag, Item, Potion, World}
+import view.GdxUtil.onTouchDown
 
-class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout[Int](boundary, callback):
+class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary):
   override type T = Bag
   val box: DialogueBox = DialogueBox(Seq("Seleziona uno strumento di cura"), skin)
   add(box)
@@ -24,7 +25,7 @@ class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: 
       label = new TextField(layoutData.items(i).name, skin)
     yield (i, {
       label.setAlignment(Align.center)
-      label.addListener(listener(i))
+      label.onTouchDown(callback, i)
       label
     })
 
