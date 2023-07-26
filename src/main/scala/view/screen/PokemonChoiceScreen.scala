@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, InputListener, Stage}
 import com.badlogic.gdx.scenes.scene2d.ui.{Container, Image, Label, Table, TextField}
 import com.badlogic.gdx.graphics.g2d.{Batch, TextureRegion}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.utils.viewport.{ExtendViewport, FillViewport, FitViewport, ScreenViewport, Viewport}
+import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
 import com.badlogic.gdx.{Screen, ScreenAdapter}
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.Gdx
@@ -15,9 +15,13 @@ import view.Sprites.getPokemonSprite
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import controller.events.{EventDispatcher, StartGame}
+import controller.events.StartGame
+import view.GdxUtil.onTouchDown
+import scala.language.postfixOps
+import view.battle.DialogueBox
 
-class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
-
+class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
+  override def viewport: Viewport = ScreenViewport()
   override def actors: Seq[Actor] =
     val rootTable: Table = Table()
     rootTable.setFillParent(true)
@@ -31,7 +35,6 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
     rootTable.setPosition((sw - cw) / 2.0f, (sh - ch) / 2.0f)
 
     var pokemonCells: Seq[Map[Image, String]] = Seq()
-
     var listPokemonChose: Seq[Pokemon] = List()
 
     val table: Table = Table();
@@ -40,43 +43,33 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen:
     for (i <- 1 until 13)
       val pokemonCell = Image(Texture(Gdx.files.internal(getPokemonSprite(pokemonGenerator(i - 1)))))
       pokemonCells = pokemonCells :+ Map(pokemonCell -> i.toString)
-      pokemonCell.addListener(new ClickListener() {
-        override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
+      pokemonCell.onTouchDown(
           if pokemonChosenTable.getColumns < 4 then
             pokemonChosenTable.add(pokemonCell).size(100, 100)
             listPokemonChose = listPokemonChose :+ pokemonGenerator(i - 1)
-          true
-      })
+      )
 
       table.add(pokemonCell).size(100, 100)
       if i % 4 == 0 then
         table.row()
 
-    val mySkin = new Skin(Gdx.files.internal("assets/uiskin.json"))
-    val buttonStart: TextButton = new TextButton("START", mySkin)
-    import view.GdxUtil.onTouchDown
-    buttonStart.addListener(new ClickListener() {
-      override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-        if listPokemonChose.length > 3 then
-          import controller.events.StartGame
-          sendEvent(StartGame(listPokemonChose))
-        true
-    })
-    import view.battle.DialogueBox
-    val infoBox = DialogueBox(Seq("Choose 4 Pokemon and then press Start!"),mySkin)
+    val buttonStart: TextButton = new TextButton("START", skin)
+    buttonStart.onTouchDown(
+      if listPokemonChose.length > 3 then
+        sendEvent(StartGame(listPokemonChose))
+    )
+
+    val infoBox = DialogueBox(Seq("Choose 4 Pokemon and then press Start!"), skin)
     rootTable.add(infoBox).height(100).width(500)
     rootTable.row()
     rootTable.add(table)
     rootTable.row()
-    val blackline: Image = Image(Texture(Gdx.files.internal("assets/blackline.png")))
-
-    rootTable.add(blackline).height(100)
+    val separatorLine: Image = Image(Texture(Gdx.files.internal("assets/blackline.png")))
+    rootTable.add(separatorLine).height(100)
     rootTable.row()
     rootTable.add(pokemonChosenTable)
     rootTable.row()
     rootTable.add(buttonStart).width(200).height(70)
-    Seq(rootTable)
+    val background = Image(Texture(Gdx.files.internal("assets/pokemon_grass.png")))
+    Seq(background,rootTable)
 
-  override def viewport: Viewport = ScreenViewport()
-
-  override def drawables: Seq[Drawable] = Seq(Drawable("assets/pokemon_grass.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
