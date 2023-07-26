@@ -1,6 +1,6 @@
 package model.parser
 
-import model.entities.pokemon.{ElementType, Move, Pokemon, PokemonStatus}
+import model.entities.pokemon.{AllPokemonStatus, ElementType, Move, Pokemon, PokemonStatus}
 import model.entities.pokemon.AllPokemonStatus.*
 
 import scala.io.{Codec, Source}
@@ -31,7 +31,9 @@ object MoveParser:
       case _ => List()
 
   private def convertStringToPokemonStatus(status: Option[String]) : Option[PokemonStatus] = status match {
-    case Some("paralysis") => Some(ParalyzeStatus())
-    case Some("burn") => Some(BurnStatus())
+    case Some(Status.Paralyze.name) => Some(ParalyzeStatus())
+    case Some(Status.Freeze.name) => Some(FreezeStatus())
+    case Some(Status.Poison.name) => Some(PoisonStatus())
+    case Some(Status.Burn.name) => Some(BurnStatus())
     case _ => None
   }
