@@ -14,7 +14,7 @@ class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle
   add(pokemonImage).padRight(30).height(150).width(150)
   add(infoBox)
 
-  def infoBox: DialogueBox =
+  private def infoBox: DialogueBox =
     val infoBox = DialogueBox(Seq(
       layoutData.name + " [" + layoutData.elementType.elemType + "]",
       layoutData.hp + "/" + layoutData.maxHp,
@@ -29,9 +29,9 @@ class PokemonInfoLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle
 
   private def pokemonImage: Image = Image(Texture(Sprites.getBattleSprite(layoutData.id)))
 
-  override def update(newLayoutInfo: Pokemon): Unit =
+  override def updateLayout(newLayoutInfo: Pokemon): Unit =
     layoutData = newLayoutInfo
-    getCells.items(0).setActor(pokemonImage)
-    getCells.items(1).setActor(infoBox)
+    updateActorByIndex(pokemonImage, 0)
+    updateActorByIndex(infoBox, 1)
 
 

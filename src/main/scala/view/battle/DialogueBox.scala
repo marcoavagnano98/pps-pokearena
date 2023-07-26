@@ -7,16 +7,13 @@ import com.badlogic.gdx.utils.Align
 
 class DialogueBox(var text: Seq[String], dSkin: Skin) extends Table:
   val skin: Image = Image(Texture("assets/dialogue-box.png"))
-  generateLines
+  for
+    textLine <- text
+    label =  Label(textLine, dSkin)
+  do
+    label.setColor(Color.BLACK)
+    add(label)
+    row()
   setBackground(skin.getDrawable)
-
-  def generateLines: Unit =
-    for
-      textLine <- text
-      label =  Label(textLine, dSkin)
-    do
-      label.setColor(Color.BLACK)
-      add(label)
-      row()
 
 

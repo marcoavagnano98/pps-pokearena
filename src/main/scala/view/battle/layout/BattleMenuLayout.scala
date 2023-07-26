@@ -11,36 +11,42 @@ import view.battle.DialogueBox
 enum BattleMenuOption:
   case BagOption, FightOption
 
-class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout[BattleMenuOption](boundary, callback):
+class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: Rectangle, callback: BattleMenuOption => Unit) extends BaseLayout[BattleMenuOption](boundary, callback) :
+
   import BattleMenuOption.*
+  import LayoutVisibility.*
+
   override type T = Seq[String]
-  val startInfoBox: DialogueBox = generateInfoBox(layoutData)
-  val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
-  bagButton.addListener(listener(BagOption))
-  val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
-  fightButton.addListener(listener(FightOption))
-  add(startInfoBox).colspan(2)
+
+  add(infoBox).colspan(2)
   row()
-  add(bagButton).fill().pad(10).minHeight(50)
-  add(fightButton).fill().pad(10).minHeight(50)
-  bagEnabled(Touchable.disabled)
+  for button <- menuButtons
+    do add(button).fill().pad(10).minHeight(50)
+  setAllButtonVisibility(Visible)
+  bagButtonTouchable(Touchable.disabled)
 
-  private def generateInfoBox(text: Seq[String]) : DialogueBox = DialogueBox(text, skin)
+  private def infoBox: DialogueBox = DialogueBox(layoutData, skin)
 
-  def hideButtonMenu: Unit =
-    bagButton.setVisible(false)
-    fightButton.setVisible(false)
+  lazy val menuButtons: Seq[ImageTextButton] =
+    val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
+    val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
+    fightButton.addListener(listener(FightOption))
+    bagButton.addListener(listener(BagOption))
+    Seq(fightButton, bagButton)
 
-  def showButtonMenu: Unit =
-    bagButton.setVisible(true)
-    fightButton.setVisible(true)
+  def setAllButtonVisibility(visibility: LayoutVisibility): Unit =
+    val seq: Seq[ImageTextButton] = menuButtons
+    for i <- seq.indices
+      do
+      seq(i).setVisible(visibility.value)
+      updateActorByIndex(seq(i), i + 1)
 
-  def bagEnabled(touchable: Touchable): Unit =
+  def bagButtonTouchable(touchable: Touchable): Unit =
+    val bagButton: ImageTextButton = menuButtons(1)
     bagButton.setTouchable(touchable)
-    bagButton.setDisabled(true)
+    updateActorByIndex(bagButton, 2)
 
-  override def update(newLayoutInfo: Seq[String]): Unit =
+
+  override def updateLayout(newLayoutInfo: Seq[String]): Unit =
     layoutData = newLayoutInfo
-    getCells.items(0).getActor match
-      case _: DialogueBox =>  getCells.items(0).setActor(generateInfoBox(newLayoutInfo))
-      case _ =>
+    updateActorByIndex(infoBox, 0)

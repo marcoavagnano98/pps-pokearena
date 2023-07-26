@@ -8,41 +8,39 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import model.entities.pokemon.{Move, Pokemon, PokemonFactory}
 import view.battle.DialogueBox
+import LayoutVisibility.*
 
 import scala.io.Source
 
 class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout[Int](boundary, callback):
   override type T = Pokemon
-  val box: DialogueBox = DialogueBox(Seq("Scegli una mossa"), skin)
-  add(box).colspan(2)
+  
+  add(DialogueBox(Seq("Scegli una mossa"), skin)).colspan(2)
   row()
-  generateTable
-  setVisible(false)
+  for (elem <- movesButtons)
+    add(elem._2).fill().pad(10)
+    if (elem._1 + 1) % 2 == 0 then
+      row()
+  setVisible(NotVisible.value)
 
-  def generateButtons: Seq[(Int, ImageTextButton)] =
+  def movesButtons: Seq[(Int, ImageTextButton)] =
       for
         i <- layoutData.moves.indices
         b = ImageTextButton(layoutData.moves(i).name + " " + layoutData.moves(i).powerPoint + "PP", skin)
         checkedButton = {b.addListener(listener(i)); checkPP(b, layoutData.moves(i))}
       yield (i, checkedButton)
-
+  
   def checkPP(button: ImageTextButton, move: Move): ImageTextButton =
     if move.powerPoint <= 0 then
       button.setTouchable(Touchable.disabled)
     else
       button.setTouchable(Touchable.enabled)
     button
-
-  def generateTable: Unit =
-    for (elem <- generateButtons)
-      add(elem._2).fill().pad(10)
-      if (elem._1 + 1) % 2 == 0 then
-        row()
-
-  override def update(newLayoutInfo: Pokemon): Unit =
+  
+  override def updateLayout(newLayoutInfo: Pokemon): Unit =
     layoutData = newLayoutInfo
     for
-      (index,button) <- generateButtons
+      (index,button) <- movesButtons
       cell = getCells.items(index+1)
     do
       cell.getActor match

@@ -14,7 +14,7 @@ class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: 
   override type T = Bag
   val box: DialogueBox = DialogueBox(Seq("Seleziona uno strumento di cura"), skin)
   add(box)
-  generateScrollableTable
+  add(scrollableList).fill().minHeight(100)
   setVisible(false)
 
 
@@ -28,7 +28,7 @@ class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: 
       label
     })
 
-  private def generateScrollableTable: Unit =
+  private def scrollableList: ScrollPane =
     val table = Table()
     row()
     for
@@ -38,14 +38,8 @@ class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: 
         table.row()
     val scrollPane: ScrollPane = ScrollPane(table)
     scrollPane.setFadeScrollBars(false)
-    scrollPane.setDebug(true)
-    add(scrollPane).fill().minHeight(100)
+    scrollPane
 
-  override def update(updatedBag: Bag): Unit =
+  override def updateLayout(updatedBag: Bag): Unit =
     layoutData = updatedBag
-    cleanItemTable
-    generateScrollableTable
-
-  private def cleanItemTable: Unit =
-    removeActor(getCells.items(1).getActor)
-    getCells.removeIndex(1)
+    updateActorByIndex(scrollableList, 1)
