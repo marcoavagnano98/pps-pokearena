@@ -1,6 +1,8 @@
 package view
 
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import model.entities.{Door, Item, Trainer, VisibleEntity}
 import model.entities.pokemon.Pokemon
 
@@ -18,3 +20,8 @@ object Sprites:
   def getMapPath(id: String): String = "assets/rooms/" + id + Random.between(0, numberOfMaps) + ".png"
   def getSpritePokemonId(id: String): String = "sprites/pokedex/" + id + ".png"
   def getBattleSprite(id: String): String = "sprites/pokedex/battle/" + id + ".png"
+
+  def texture (path:String) = new Texture(Gdx.files.classpath(path))
+  object MemoHelper:
+    def memoize[I, O](f: I => O): I => O = new collection.mutable.HashMap[I, O]() :
+      override def apply(key: I): O = getOrElseUpdate(key, f(key))
