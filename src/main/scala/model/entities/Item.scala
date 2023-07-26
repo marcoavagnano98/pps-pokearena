@@ -17,25 +17,25 @@ trait Item extends VisibleEntity :
   def use(pokemon: Pokemon): Pokemon
 
 private class Potion(override val id: String = "Item_01", override val position: Position, override val name: String = "Potion") extends Item with ChangeHpEffect :
-  override def hpToChange: Int = 20
+  override def hpToChange: Int = 50
 
   override def use(p: Pokemon): Pokemon =
     applyChangeStat(p)
 
 private class SuperPotion(override val position: Position) extends Potion("Item_02", position, "Super Potion") :
-  override def hpToChange: Int = 50
+  override def hpToChange: Int = 100
 
-enum ItemId:
+enum ItemType:
   case Potion, SuperPotion
 
 object ItemFactory:
-  def apply(itemId: ItemId, pos: Position = Position(0, 0)): Item = itemId match
-    case ItemId.Potion => Potion(position = pos)
-    case ItemId.SuperPotion => SuperPotion(position = pos)
+  def apply(itemType: ItemType, pos: Position = Position(0, 0)): Item = itemType match
+    case ItemType.Potion => Potion(position = pos)
+    case ItemType.SuperPotion => SuperPotion(position = pos)
 
   def getRandomItem(pos: Position): Item =
     import scala.util.Random
-    Random.nextInt(ItemId.values.length) match
-      case 1 => apply(ItemId.SuperPotion, pos)
-      case _ => apply(ItemId.Potion, pos)
+    Random.nextInt(ItemType.values.length) match
+      case 1 => apply(ItemType.SuperPotion, pos)
+      case _ => apply(ItemType.Potion, pos)
 
