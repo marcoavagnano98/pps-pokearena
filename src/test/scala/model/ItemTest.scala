@@ -7,12 +7,12 @@ import org.scalatest.matchers.*
 import model.entities.{ItemFactory, Potion}
 import model.entities.pokemon.ElementType
 import model.entities.World.Position
-import model.entities.ItemId
+import model.entities.ItemType
 class ItemTest extends AnyFlatSpec with should.Matchers:
 
   private var bulbasaur = Pokemon("1","Bulbasaur",50,49,49,45,List(),ElementType.Grass)
-  private val potion = ItemFactory(ItemId.Potion)
-  private val superPotion = ItemFactory(ItemId.SuperPotion)
+  private val potion = ItemFactory(ItemType.Potion)
+  private val superPotion = ItemFactory(ItemType.SuperPotion)
 
   "A potion" should "increase the amount of hp of pokemon by 30" in {
     bulbasaur = bulbasaur withHp 30
