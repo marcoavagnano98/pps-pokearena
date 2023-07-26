@@ -8,7 +8,7 @@ import model.entities.World.Position
 
 abstract class BaseLayout[S](boundary: Rectangle, callback: S => Unit) extends Table:
   type T
-
+  
   def update(newLayoutInfo: T) : Unit
 
   def listener(action: S): ClickListener = new ClickListener() {

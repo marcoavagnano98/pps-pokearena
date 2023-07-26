@@ -2,7 +2,7 @@ package view.battle.layout
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.{InputEvent, Touchable}
 import com.badlogic.gdx.scenes.scene2d.ui.{Cell, ImageTextButton, Skin, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
@@ -22,15 +22,15 @@ class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, call
   def generateButtons: Seq[(Int, ImageTextButton)] =
       for
         i <- layoutData.moves.indices
-        b = ImageTextButton(layoutData.moves(i).name, skin)
+        b = ImageTextButton(layoutData.moves(i).name + " " + layoutData.moves(i).powerPoint + "PP", skin)
         checkedButton = {b.addListener(listener(i)); checkPP(b, layoutData.moves(i))}
       yield (i, checkedButton)
 
   def checkPP(button: ImageTextButton, move: Move): ImageTextButton =
     if move.powerPoint <= 0 then
-      button.setDisabled(true)
+      button.setTouchable(Touchable.disabled)
     else
-      button.setDisabled(false)
+      button.setTouchable(Touchable.enabled)
     button
 
   def generateTable: Unit =
