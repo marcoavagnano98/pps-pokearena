@@ -31,8 +31,8 @@ case class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: R
   lazy val menuButtons: Seq[ImageTextButton] =
     val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
     val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
-    fightButton.onTouchDown(callback, FightOption)
-    bagButton.onTouchDown(callback, BagOption)
+    fightButton.onTouchDown(callback(FightOption))
+    bagButton.onTouchDown(callback(BagOption))
     Seq(fightButton, bagButton)
 
   def setButtonsVisibility(visibility: LayoutVisibility): Unit =

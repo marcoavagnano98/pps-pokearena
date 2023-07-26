@@ -25,7 +25,7 @@ class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: 
       label = new TextField(layoutData.items(i).name, skin)
     yield (i, {
       label.setAlignment(Align.center)
-      label.onTouchDown(callback, i)
+      label.onTouchDown(callback(i))
       label
     })
 

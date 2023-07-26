@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, Im
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, Touchable, utils}
 import com.badlogic.gdx.utils.viewport.{FitViewport, ScreenViewport, Viewport}
 import model.entities.{Entity, ItemFactory, ItemId, Potion}
-import com.badlogic.gdx.scenes.scene2d.utils.{ClickListener, TextureRegionDrawable}
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
@@ -52,7 +52,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   def backButton: ImageButton =
     val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
     backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 100,100)
-    backButton.onTouchDown(_ => showBattleMenu)
+    backButton.onTouchDown(showBattleMenu)
     backButton
 
   def showBattleMenu: Unit =
