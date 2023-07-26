@@ -5,24 +5,33 @@ import com.badlogic.gdx.graphics.g2d.{Batch, BitmapFont, TextureRegion}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.{Color, GL20, Texture}
 import com.badlogic.gdx.math.{Rectangle, Vector2}
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.Viewport
 import controller.events.EventDispatcher
 
 import scala.language.postfixOps
+import view.Sprites.MemoHelper.*
+import view.Sprites.*
 
-abstract class BasicScreen extends ScreenAdapter with EventDispatcher:
+abstract class BasicScreen extends ScreenAdapter with EventDispatcher :
   def drawables: Seq[Drawable] = Seq.empty
-  def writables: Seq[Writable] = Seq.empty
-  def actors: Seq[Actor] = Seq.empty
-  def viewport: Viewport
-  def updateView() : Unit = {}
 
-  private val stage:Stage = Stage(viewport)
+  def writables: Seq[Writable] = Seq.empty
+
+  def actors: Seq[Actor] = Seq.empty
+
+  def viewport: Viewport
+
+  def updateView(): Unit = {}
+
+  private val stage: Stage = Stage(viewport)
   private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/fnt_white.fnt"))
   private val sr: ShapeRenderer = ShapeRenderer()
+  lazy val skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
 
-   override def render(delta: Float): Unit =
+
+  override def render(delta: Float): Unit =
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     updateView()
@@ -30,24 +39,26 @@ abstract class BasicScreen extends ScreenAdapter with EventDispatcher:
     batch.begin()
 
     drawables.foreach(d =>
-      batch.draw(getTexture(d.path), d.bounds.x, d.bounds.y, d.bounds.width, d.bounds.height)
+      batch.draw(memoizeTexture(d.path), d.bounds.x, d.bounds.y, d.bounds.width, d.bounds.height)
     )
 
     writables.foreach(w =>
       scaleFont(w.height)
-        font.draw(batch, w.s, w.pos.x, w.pos.y)
+        font
+      .draw(batch, w.s, w.pos.x, w.pos.y)
     )
     dispatch()
     batch.end()
     stage.draw()
     stage.act(delta)
-
+  
   private def scaleFont(height: Float): Unit =
     font.getData.setScale(height * 2 * font.getScaleY / font.getLineHeight)
 
-  private def getTexture(path:String) = new Texture(Gdx.files.classpath(path))
+  private val memoizeTexture: String => Texture =
+    memoize(texture)
 
-  final override def resize(width: Int, height: Int): Unit = stage.getViewport.update(width,height,true)
+  final override def resize(width: Int, height: Int): Unit = stage.getViewport.update(width, height, true)
 
   override def show(): Unit =
     stage.clear()
