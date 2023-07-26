@@ -22,7 +22,7 @@ object PokedexParser:
         defense <- hCursor.downField("base").downField("Defense").as[Int]
         speed <- hCursor.downField("base").downField("Speed").as[Int]
         hp <- hCursor.downField("base").downField("HP").as[Int]
-      yield Pokemon(id.toString, name, hp, atk, defense, speed, List[Move](), elements.head)
+      yield Pokemon(id.toString, name, hp*2, atk, defense, speed, List[Move](), elements.head)
 
 
     val decodingResult = parser.decode[List[Pokemon]](inputString)
