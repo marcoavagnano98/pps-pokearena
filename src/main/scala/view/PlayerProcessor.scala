@@ -10,11 +10,6 @@ class PlayerProcessor(world: World) extends InputAdapter:
   private var y = world.player.position.y
   private val playerSpeed = world.level.playerSpeed
 
-  private def updatePlayerPosition(newX: Double, newY: Double): Unit =
-    world.player = world.player withPosition Position(newX, newY)
-
-  private def updateSpritePlayer(direction:String): Unit = world.player = world.player movesTo direction
-
   override def keyDown(keycode: Int): Boolean =
     keycode match
       case Keys.RIGHT => {x = playerSpeed; y = 0; updateSpritePlayer("right")}
@@ -34,4 +29,8 @@ class PlayerProcessor(world: World) extends InputAdapter:
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)
 
+  private def updatePlayerPosition(newX: Double, newY: Double): Unit =
+    world.player = world.player withPosition Position(newX, newY)
+  
+  private def updateSpritePlayer(direction: String): Unit = world.player = world.player movesTo direction
   
