@@ -12,7 +12,7 @@ import view.screen.{BasicScreen, BattleScreen, GameScreen}
 * All methods that handle internal screen events must be private
 * */
 
-trait Controller:
+protected[controller] trait Controller:
 
   type T
 
