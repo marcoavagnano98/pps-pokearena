@@ -1,9 +1,9 @@
 package model.entities
 
 import model.entities.pokemon.{Pokemon, PokemonFactory}
-import view.Sprites.getMapPath
 import com.badlogic.gdx.Gdx
 import controller.events.{CollisionEvent, EventDispatcher}
+import util.Stats
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -18,26 +18,32 @@ trait World:
   def itemCollision(item: Item): Unit
   def doorCollision(door: Door): Unit
   def removeTrainer(idTrainer: String): Unit
+  def updateDoor: Unit
   def difficulty: Int
   def difficulty_=(difficulty: Int): Unit
   def room: Int
   def gameEnded: Boolean
-
+  def stats: Stats
 
 object World:
   def apply(): World = WorldImpl()
 
   private class WorldImpl extends World:
-    private final val idLevel = "map_"
-    private var _level: Level = _
-    private var _player: Player = Player(Position(0, 0), "player", Seq.empty)
+    private val idLevel = "map_"
+    private val idPlayer = "player"
+    private val openDoor = "door_open"
+    private val numberOfMaps = 13
     private var _difficulty = 0
     private var _levelRoom = 1
+    private var playerDefeated = 0
     private var _gameEnded = false
+    private var _level: Level = _
+    private var _player: Player = Player(Position(0, 0), idPlayer, Seq.empty)
+    private val _statistics = Stats()
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
-      _level = Level(getMapPath(idLevel))
+      _level = Level(idLevel+Random.between(0, numberOfMaps))
       _level.generateEntities(_levelRoom)
 
     override def level: Level = _level
@@ -53,17 +59,24 @@ object World:
       _level.removeItem(item)
 
     override def doorCollision(door: Door): Unit =
-      if _level.door.state.equals(DoorState.Open) then
-        _levelRoom += 1
-        if _levelRoom <=4 then
-          createLevel(player.pokemonTeam)
-          _player = _player withPosition Position(0, 0)
-        else
-          _gameEnded = true
-
+      _level.door.state match
+        case DoorState.Open =>
+          _levelRoom += 1
+          _levelRoom match
+            case room if room <= 4 =>
+              createLevel(player.pokemonTeam)
+              _player = _player.withPosition(Position(0, 0))
+            case _ =>
+              _gameEnded = true
+        case _ =>
 
     override def removeTrainer(idTrainer: String): Unit =
       _level.removeOpponent(idTrainer)
+      playerDefeated += 1
+
+    override def updateDoor: Unit =
+      if _level.opponents.isEmpty then
+        _level.door = _level.door.updateDoor(openDoor, DoorState.Open)
 
     override def difficulty: Int = _difficulty
 
@@ -73,6 +86,8 @@ object World:
     override def room: Int = _levelRoom
 
     override def gameEnded: Boolean = _gameEnded
+
+    override def stats: Stats = _statistics
 
   /**
    *  Position class represents the coordinates x,y in the World
