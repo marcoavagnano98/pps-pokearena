@@ -48,35 +48,39 @@ object BattleEngine:
         case pair if nTurn > 0 =>
           pair._1.turnStatus match
             case Alive => pair._1.trainerChoice match
-              case Attack(move) => _loop((pair._1 withTurnPerformed, turnAfterAttack(pair._1, pair._2, move)) swap, nTurn - 1)
+              case Attack(move) => _loop(turnAfterAttack(pair._1 withTurnPerformed, pair._2, move) swap, nTurn - 1)
               case UseBag(item) => _loop((turnAfterHeal(pair._1, item) withTurnPerformed, pair._2) swap, nTurn - 1)
             case _ => pair
         case _ => turnPair
+
     _loop(turnPair, 2)
 
   /**
    *
-   * @param b1 the attacking pokemon's turn
-   * @param b2 the defending pokemon's turn
+   * @param t1   the attacking pokemon's turn
+   * @param t2   the defending pokemon's turn
    * @param move move used by attacker
-   * @return updated turn of defender
+   * @return turn of attacker with move updated and turn of defender with pokemon demaged
    */
-  def turnAfterAttack(b1: Turn, b2: Turn, move: Move): Turn =
-    val stab = ComparatorTypeElement(move.elementType, b2.pokemon.elementType)
+  def turnAfterAttack(t1: Turn, t2: Turn, move: Move): (Turn, Turn) =
+    val stab = ComparatorTypeElement(move.elementType, t2.pokemon.elementType)
+
     val computeTotalDamage: (Int, Int, Int) => Int =
       (power, attack, defense) => ((2 + (((42 * power * attack) / defense) / 50)) * stab).toInt
 
-    val totDamage = computeTotalDamage(move.damage, b1.pokemon.attack, b2.pokemon.defense)
-    println(b1.pokemon.toString + move.powerPoint)
-    b2.withPokemonUpdate(
-      move.applyStatus(
-        b2.pokemon.withHp(
-          b2.pokemon.hp - totDamage)))
+    val totDamage = computeTotalDamage(move.damage, t1.pokemon.attack, t2.pokemon.defense)
+
+    val pokemonDamaged = move.applyStatus(
+      t2.pokemon.withHp(
+        t2.pokemon.hp - totDamage))
+
+    val pokemonWithMoveUpdated = t1.pokemon withUpdateMove(move.withReducePowerPoint(), t1.pokemon.moves.indexOf(move))
+    (t1 withPokemonUpdate pokemonWithMoveUpdated, t2 withPokemonUpdate pokemonDamaged)
 
 
   /**
    *
-   * @param b1 turn of the pokemon that needs to be healed
+   * @param b1   turn of the pokemon that needs to be healed
    * @param item healing tool
    * @return turn updated after pokemon healing
    */
