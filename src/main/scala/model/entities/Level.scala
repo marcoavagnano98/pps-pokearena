@@ -1,12 +1,11 @@
 package model.entities
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.math.Rectangle
 import model.entities.World.Position
 import model.entities.pokemon.{Pokemon, PokemonFactory}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Set
 import scala.util.Random
+
 trait Level:
   def background: String
   def levelXPos: Float
@@ -38,10 +37,17 @@ object Level:
     private var _opponents: Seq[Trainer] = Seq.empty
     private var _items: Seq[Item] = Seq.empty
     private var _door: Door = Door(DoorState.Close, Position(4, 9))
-    private final val playerPosition = Position(0,0) //???
-    private final val numberOfEntitiesToGenerate = 3
+    private val playerPosition = Position(0,0)
+    private val opponentsNumber = 22
+    private val numberOfEntitiesToGenerate = 3
+    private var allOpponents: Seq[Int] = Seq.empty
+    private var allPositions: Seq[Position] = for
+      row <- 0 until gridHeight
+      col <- 0 until gridWidth
+    yield Position(col, row)
 
     override def opponents: Seq[Trainer] = _opponents
+
     override def items: Seq[Item] = _items
 
     override def removeItem(item: Item): Unit =
@@ -58,7 +64,7 @@ object Level:
     override def generateEntities(levelRoom: Int): Unit = levelRoom match
       case 4 => val boss: Trainer = generateBoss
         _opponents = Seq(boss)
-      case _ => val (opps, itms): (Seq[Trainer], Seq[Potion]) = generateTrainersAndItems(numberOfEntitiesToGenerate)
+      case _ => val (opps, itms): (Seq[Trainer], Seq[Item]) = generateTrainersAndItems(numberOfEntitiesToGenerate)
         _opponents = opps
         _items = itms
 
@@ -72,43 +78,22 @@ object Level:
 
     private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonFactory(4))
 
-    private var generatedOpponents: Set[Int] = Set.empty
-    private val opponentsNumber = 22
+    allPositions = allPositions.filterNot(pos => pos == playerPosition || pos == _door.position)
 
+    @tailrec
     private def randomOpponent: Int =
-      generatedOpponents.size match
-        case `opponentsNumber` =>
-          generatedOpponents = Set.empty
-        case _ =>
-
-      val availableOpponents = (0 until opponentsNumber).filterNot(generatedOpponents.contains)
-      val randomOp = availableOpponents(Random.between(0, availableOpponents.length))
-      generatedOpponents += randomOp
-      randomOp
+      val opp = Random.between(0, opponentsNumber)
+      opp match
+        case opp if !allOpponents.contains(opp) =>
+          allOpponents = allOpponents :+ opp
+          opp
+        case _ => randomOpponent
 
     private def randomPos: Position =
-      val allPositions: Seq[Position] = for
-        row <- 0 until gridHeight
-        col <- 0 until gridWidth
-      yield Position(col, row)
-
-      @tailrec
-      def findValidPosition(remainingPositions: List[Position]): Position =
-        if (remainingPositions.isEmpty)
-          println("No more positions available")
-          Position(-1, -1)
-        else
-          import scala.util.Random
-          val filteredPositions = remainingPositions.filterNot(_ == _door.position)
-          val randomIndex = Random.nextInt(filteredPositions.length)
-          val randomPosition = filteredPositions(randomIndex)
-
-          if (randomPosition != playerPosition && !_opponents.exists(_.position == randomPosition) && !_items.exists(_.position == randomPosition))
-            randomPosition
-          else
-            findValidPosition(remainingPositions.filterNot(_ == randomPosition))
-
-      findValidPosition(allPositions.toList)
+      val newPosition = Random.shuffle(allPositions)
+      val pos = newPosition.head
+      allPositions = newPosition.drop(1)
+      pos
 
 
 
