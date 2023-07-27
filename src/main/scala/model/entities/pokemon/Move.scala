@@ -36,23 +36,22 @@ trait Move:
    */
   def applyStatus(pokemon: Pokemon): Pokemon
 
-
+  def withReducePowerPoint(): Move
+  
 object Move:
   def apply(damage: Int, powerPoint: Int, name: String, elementType: ElementType, status: Option[PokemonStatus]): Move =
     MoveImpl(damage, powerPoint, name, elementType, status)
 
   private case class MoveImpl(override val damage: Int,
-                              private var _powerpoint: Int,
+                              override val powerPoint: Int,
                               override val name: String,
                               override val elementType: ElementType,
                               override val status: Option[PokemonStatus],
                              ) extends Move :
     
-    override def powerPoint: Int = _powerpoint
+    override def withReducePowerPoint() : Move = copy(powerPoint=powerPoint-1)
     
-    override def applyStatus(pokemon: Pokemon): Pokemon =
-      _powerpoint = _powerpoint - 1
-      status match
+    override def applyStatus(pokemon: Pokemon): Pokemon = status match
       case Some(status:PokemonStatusWithEffect) if pokemon.status != status => status applyStatus pokemon
       case _ => pokemon
 
