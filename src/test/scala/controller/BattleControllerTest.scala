@@ -12,7 +12,7 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, BeforeAndAfterEach}
 
 import scala.language.postfixOps
 
-class TestBattleController extends AnyWordSpec with Matchers:
+class BattleControllerTest extends AnyWordSpec with Matchers:
 
   val player: Player = Player(Position(0, 0), "player", Seq.empty)
   val opponent: Trainer = Trainer(id = "op", pos = Position(0, 0), pokemonList = Seq.empty)

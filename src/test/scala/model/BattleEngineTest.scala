@@ -1,6 +1,6 @@
 package model
 
-import model.entities.{Item, ItemFactory, ItemId, Player, Trainer}
+import model.entities.{Item, ItemFactory, ItemType, Player, Trainer}
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
@@ -11,7 +11,7 @@ import model.battle.*
 import scala.language.postfixOps
 import model.entities.World.Position
 import org.scalatest.wordspec.AnyWordSpec
-class TestBattleEngine extends AnyFlatSpec with should.Matchers:
+class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   import TrainerChoice.*
   val bulbasaur: Pokemon = PokemonFactory.getPokemonById("1").get
   val charmender: Pokemon = PokemonFactory.getPokemonById("4").get
@@ -37,7 +37,7 @@ class TestBattleEngine extends AnyFlatSpec with should.Matchers:
 
   "A Battle engine " should " return healed battle units after hp recovery item used" in {
     val damagedBulbasaur: Pokemon = bulbasaur withHp 5
-    val item: Item = ItemFactory(ItemId.SuperPotion) //Superpotion increase hp by 50
+    val item: Item = ItemFactory(ItemType.SuperPotion) //Superpotion increase hp by 50
     val bagEvent = UseBag(item)
     val turnAfterHeal = BattleEngine.turnAfterHeal(Turn("", damagedBulbasaur, bagEvent), item)
     turnAfterHeal.pokemon.hp shouldBe damagedBulbasaur.maxHp //bulbasaur maxHp = 45
