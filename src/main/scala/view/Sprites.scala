@@ -11,6 +11,8 @@ import scala.util.Random
 protected[view] object Sprites:
   private val numberOfMaps = 13
 
+  val background = "assets/pokemon_grass.png"
+  val separatorLine = "assets/blackline.png"
   val getPokemonSprite : Pokemon => String = "sprites/pokedex/" + _.id + ".png"
   val getBattleSprite: String => String = "sprites/pokedex/battle/" + _ + ".png"
 

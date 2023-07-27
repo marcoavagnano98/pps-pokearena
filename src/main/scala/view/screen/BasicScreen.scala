@@ -47,11 +47,11 @@ abstract class BasicScreen extends ScreenAdapter with EventDispatcher :
         font
       .draw(batch, w.s, w.pos.x, w.pos.y)
     )
-    dispatch()
     batch.end()
     stage.draw()
     stage.act(delta)
-  
+    dispatch()
+
   private def scaleFont(height: Float): Unit =
     font.getData.setScale(height * 2 * font.getScaleY / font.getLineHeight)
 

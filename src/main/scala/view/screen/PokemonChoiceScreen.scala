@@ -16,7 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import controller.events.{EventDispatcher, StartGame}
 import controller.events.StartGame
-import view.GdxUtil.onTouchDown
+import view.GdxUtil.{onTouchDown, texture}
+import view.Sprites
+
 import scala.language.postfixOps
 import view.battle.DialogueBox
 
@@ -39,18 +41,19 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
 
     val table: Table = Table();
     val pokemonChosenTable: Table = Table()
+    val cellSize = 100
 
-    for (i <- 1 until 13)
-      val pokemonCell = Image(Texture(Gdx.files.internal(getPokemonSprite(pokemonGenerator(i - 1)))))
+    for (i <- pokemonGenerator.indices)
+      val pokemonCell = Image(Texture(Gdx.files.internal(getPokemonSprite(pokemonGenerator(i)))))
       pokemonCells = pokemonCells :+ Map(pokemonCell -> i.toString)
       pokemonCell.onTouchDown(
           if pokemonChosenTable.getColumns < 4 then
-            pokemonChosenTable.add(pokemonCell).size(100, 100)
-            listPokemonChose = listPokemonChose :+ pokemonGenerator(i - 1)
+            pokemonChosenTable.add(pokemonCell).size(cellSize, cellSize)
+            listPokemonChose = listPokemonChose :+ pokemonGenerator(i)
       )
 
-      table.add(pokemonCell).size(100, 100)
-      if i % 4 == 0 then
+      table.add(pokemonCell).size(cellSize, cellSize)
+      if (i+1) % 4 == 0 then
         table.row()
 
     val buttonStart: TextButton = new TextButton("START", skin)
@@ -60,16 +63,16 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
     )
 
     val infoBox = DialogueBox(Seq("Choose 4 Pokemon and then press Start!"), skin)
-    rootTable.add(infoBox).height(100).width(500)
+    rootTable.add(infoBox).height(cellSize).width(500)
     rootTable.row()
     rootTable.add(table)
     rootTable.row()
-    val separatorLine: Image = Image(Texture(Gdx.files.internal("assets/blackline.png")))
-    rootTable.add(separatorLine).height(100)
+    val separatorLine: Image = Image(texture(Sprites.separatorLine))
+    rootTable.add(separatorLine).height(cellSize)
     rootTable.row()
     rootTable.add(pokemonChosenTable)
     rootTable.row()
     rootTable.add(buttonStart).width(200).height(70)
-    val background = Image(Texture(Gdx.files.internal("assets/pokemon_grass.png")))
+    val background = Image(texture(Sprites.background))
     Seq(background,rootTable)
 
