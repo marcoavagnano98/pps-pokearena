@@ -1,5 +1,7 @@
 package view
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Timer
@@ -20,3 +22,10 @@ protected[view] object GdxUtil:
       override def run(): Unit =
         action
     }, seconds)
+
+
+  def texture (path:String) = new Texture(Gdx.files.classpath(path))
+  
+  object MemoHelper:
+    def memoize[I, O](f: I => O): I => O = new collection.mutable.HashMap[I, O]() :
+      override def apply(key: I): O = getOrElseUpdate(key, f(key))

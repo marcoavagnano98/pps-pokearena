@@ -11,7 +11,8 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import controller.events.EventDispatcher
 
 import scala.language.postfixOps
-import view.Sprites.MemoHelper.*
+import view.GdxUtil.MemoHelper.*
+import view.GdxUtil.*
 import view.Sprites.*
 
 abstract class BasicScreen extends ScreenAdapter with EventDispatcher :
@@ -30,7 +31,6 @@ abstract class BasicScreen extends ScreenAdapter with EventDispatcher :
   private val sr: ShapeRenderer = ShapeRenderer()
   lazy val skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
 
-
   override def render(delta: Float): Unit =
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -47,11 +47,11 @@ abstract class BasicScreen extends ScreenAdapter with EventDispatcher :
         font
       .draw(batch, w.s, w.pos.x, w.pos.y)
     )
-    dispatch()
     batch.end()
     stage.draw()
     stage.act(delta)
-  
+    dispatch()
+
   private def scaleFont(height: Float): Unit =
     font.getData.setScale(height * 2 * font.getScaleY / font.getLineHeight)
 
