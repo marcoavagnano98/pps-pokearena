@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.ui.{Container, HorizontalGroup, Image, ImageButton, ImageTextButton, Label, ProgressBar, Skin, Slider, Table, TextButton, TextField, VerticalGroup, Widget}
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage, Touchable, utils}
 import com.badlogic.gdx.utils.viewport.{FitViewport, ScreenViewport, Viewport}
-import model.entities.{Entity, ItemFactory, ItemId, Potion}
+import model.entities.{Entity, ItemFactory, Potion}
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -36,8 +36,6 @@ import view.GdxUtil.*
 
 
 class BattleScreen(battle: Battle) extends BasicScreen :
-  val skin: Skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
-
   private def viewPortSize: (Float, Float) = (1000, 1000)
 
   override def viewport: FitViewport = FitViewport(viewPortSize._1, viewPortSize._2)
@@ -51,7 +49,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
 
   def backButton: ImageButton =
     val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
-    backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 100,100)
+    backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 100, 100)
     backButton.onTouchDown(showBattleMenu)
     backButton
 
@@ -65,21 +63,20 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   def battleScreenUpdate(turnData: Seq[Turn]): Unit =
     showBattleMenu
     battleMenuLayout.setButtonsVisibility(NotVisible)
+
     battleMenuLayout.updateLayout(
-      (for
-        turn <- turnData
-        description = turn.trainerChoice.description if turn.performed
-        title = turn.pokemon.name + " " + description
-      yield title)
+      turnData
+        .collect({
+          case t if t.performed => t.pokemon.name + " " + t.trainerChoice.description
+        })
         ++
         (for
           turn <- turnData
           description <- turn.turnStatus.description
           title = turn.pokemon.name + " " + description
         yield title)
+
     )
-
-
     scheduleDelayedAction(2,
       {
         battle.pokemonInBattle match
