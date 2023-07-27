@@ -6,7 +6,8 @@ import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
 import model.entities.{Door, Entity, Item, Player, Trainer, VisibleEntity, World}
 import pokearena.PokeArena
-import view.screen.{BasicScreen, BattleScreen, GameScreen}
+import util.Stats
+import view.screen.{BasicScreen, BattleScreen, GameOverScreen, GameScreen}
 
 /*
 * All methods that handle internal screen events must be private
@@ -15,7 +16,6 @@ import view.screen.{BasicScreen, BattleScreen, GameScreen}
 trait Controller:
 
   type T
-
 
   var model: T = _
 
@@ -40,10 +40,8 @@ protected object GameController extends Controller:
 
   override type T = World
 
-  model = World()
-
   override def eventHandler(e: Event): Unit = e match
-    case visibleEntity: CollisionEvent => visibleEntity.entity match
+    case visibleEntityCollision: CollisionEvent => visibleEntityCollision.entity match
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
       case item: Item => model.itemCollision(item)
       case door: Door => model.doorCollision(door)
@@ -51,17 +49,22 @@ protected object GameController extends Controller:
 
   def removeTrainer(id: String): Unit =
     model.removeTrainer(id)
+    model.updateDoor
     handleScreenChange(screen)
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
+    setModel(World())
     model.createLevel(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
 
   def endGame(): Unit =
-    /*screen = GameScreen(model) /*TODO: change to StatsScreen*/
-    handleScreenChange(screen)*/
-    println("Fine gioco")
+    model.gameEnded match
+      case false =>
+        screen = GameOverScreen(model.stats.updateStats(((model.room - 1) * 3 + (3 - model.level.opponents.length)), model.room, model.player.pokemonTeam, model.gameEnded))
+      case _ =>
+        screen = GameOverScreen(model.stats.updateStats(((model.room - 1) * 3) - 2, model.room, model.player.pokemonTeam, model.gameEnded))
+    handleScreenChange(screen)
 
 object BattleController extends Controller:
   override type T = Battle
@@ -79,6 +82,5 @@ object BattleController extends Controller:
       case e: EndBattle =>
         if e.trainerId == model.player.id then
           GameController.endGame()
-          //println("FIne gioco")
         else
           GameController.removeTrainer(e.trainerId)
