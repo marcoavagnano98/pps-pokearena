@@ -6,14 +6,13 @@ import com.badlogic.gdx.graphics.{GL20, OrthographicCamera, Texture}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.{ExtendViewport, FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, ScreenAdapter}
-import controller.events.EventDispatcher
+import controller.events.{EndGame, CollisionEvent, EventDispatcher}
 import model.entities.{DoorState, Level, Player, Trainer, VisibleEntity, World}
 import model.entities.pokemon.*
 import view.screen
 import view.Sprites.{getEntitySprite, getMapPath}
 import view.screen.Drawable
 import view.PlayerProcessor
-import controller.events.{CollisionEvent, EndGame}
 
 object ViewportUtil:
   val viewportHeight: Float = 100

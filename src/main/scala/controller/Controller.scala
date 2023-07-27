@@ -1,6 +1,6 @@
 package controller
 
-import controller.events.{CollisionEvent, EndBattle, EndGame, Event, OptionChosen, StartGame}
+import controller.events.{CollisionEvent, EndGame, Event, OptionChosen, PokemonDefeated, StartGame}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
@@ -30,13 +30,13 @@ protected[controller] trait Controller:
   def handleScreenChange(screen: BasicScreen): Unit =
     PokeArena.changeScreen(screen)
 
-protected object MenuController extends Controller:
+protected object MenuController extends Controller :
   override def eventHandler(e: Event): Unit = e match
     case e: StartGame =>
       GameController.startGame(e.list)
     case _ =>
 
-protected object GameController extends Controller:
+protected object GameController extends Controller :
 
   override type T = World
 
@@ -47,7 +47,7 @@ protected object GameController extends Controller:
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
       case item: Item => model.itemCollision(item)
       case door: Door => model.doorCollision(door)
-    case _  => endGame()
+    case _ => endGame()
 
   def removeTrainer(id: String): Unit =
     model.removeTrainer(id)
@@ -59,11 +59,11 @@ protected object GameController extends Controller:
     handleScreenChange(screen)
 
   def endGame(): Unit =
-    /*screen = GameScreen(model) /*TODO: change to StatsScreen*/
-    handleScreenChange(screen)*/
+  /*screen = GameScreen(model) /*TODO: change to StatsScreen*/
+  handleScreenChange(screen)*/
     println("Fine gioco")
 
-object BattleController extends Controller:
+object BattleController extends Controller :
   override type T = Battle
 
   def startBattle(player: Player, opponent: Trainer): Unit =
@@ -74,11 +74,18 @@ object BattleController extends Controller:
   override def eventHandler(e: Event): Unit =
     e match
       case e: OptionChosen =>
-          screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.playRound(e.battleOption))
-          
-      case e: EndBattle =>
-        if e.trainerId == model.player.id then
-          GameController.endGame()
-          //println("FIne gioco")
-        else
-          GameController.removeTrainer(e.trainerId)
+        screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.playRound(e.battleOption))
+
+      case _: PokemonDefeated =>
+        model.pokemonInBattle match
+          case (None, Some(_)) => GameController.endGame()
+          case (Some(_), None) =>{println("EI"); GameController.removeTrainer(model.opponent.id)}
+          case _ => println("OI")
+
+
+/*case e: EndBattle =>
+  if e.trainerId == model.player.id then
+    GameController.endGame()
+    //println("FIne gioco")
+  else
+    GameController.removeTrainer(e.trainerId)**/
