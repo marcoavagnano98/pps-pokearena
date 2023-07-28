@@ -10,6 +10,7 @@ import model.entities.pokemon.{Pokemon, PokemonFactory}
 import pokearena.PokeArena
 import util.Stats
 import view.battle.DialogueBox
+import view.GdxUtil.onTouchDown
 
 class GameOverScreen(stats: Stats) extends BasicScreen:
 
@@ -25,22 +26,17 @@ class GameOverScreen(stats: Stats) extends BasicScreen:
     rootTable.setSize(contentWidth, contentHeight)
     rootTable.setPosition((screenWidth - contentWidth)/2.0f, (screenHeight - contentHeight)/2.0f)
 
-    val mySkin = new Skin(Gdx.files.internal("assets/uiskin.json"))
-    val buttonStart: TextButton = new TextButton("NEW GAME", mySkin)
+    val buttonStart: TextButton = new TextButton("NEW GAME", skin)
 
-    buttonStart.addListener(new ClickListener() {
-      override def touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean =
-        PokeArena.create()
-        true
-    })
+    buttonStart.onTouchDown(PokeArena.create())
 
     import view.battle.DialogueBox
 
-    createAndAddInfobox("You reach Level ", stats.levelRoomReached, mySkin)
-    createAndAddInfobox("You defeated ", stats.trainerDefeated+ " Opponents", mySkin)
+    createAndAddInfobox("You reach Level ", stats.levelRoomReached, skin)
+    createAndAddInfobox("You defeated ", stats.trainerDefeated+ " Opponents", skin)
     if (stats.bossDefeated)
-      createAndAddInfobox("You defeated the BOSS!!!", "Awesome", mySkin)
-    stats.team.foreach(member => createAndAddInfobox("Was part of your team: ", member.name, mySkin))
+      createAndAddInfobox("You defeated the BOSS!!!", "Awesome", skin)
+    stats.team.foreach(member => createAndAddInfobox("Was part of your team: ", member.name, skin))
 
     def createAndAddInfobox[A](text: String, el: A, skin: Skin): Unit =
       val box = DialogueBox(Seq(text + el), skin)

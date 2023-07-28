@@ -20,4 +20,5 @@ object Stats:
                                override val bossDefeated: Boolean = false) extends Stats:
 
     override def updateStats(defeatedTrainer: Int, levelRoomReached: Int, pokemonTeam: Seq[Pokemon], bossDefeated: Boolean): Stats = 
+      
       copy(trainerDefeated=defeatedTrainer, levelRoomReached=levelRoomReached, team=pokemonTeam, bossDefeated=bossDefeated)  

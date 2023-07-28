@@ -9,8 +9,6 @@ import model.entities.pokemon.Pokemon
 import scala.util.Random
 
 protected[view] object Sprites:
-  private val numberOfMaps = 13
-
   val background = "assets/pokemon_grass.png"
   val separatorLine = "assets/blackline.png"
   val getPokemonSprite : Pokemon => String = "sprites/pokedex/" + _.id + ".png"
@@ -22,4 +20,4 @@ protected[view] object Sprites:
     case door: Door => "assets/doors/"+ door.id +".png"
 
 
-  def getMapPath(id: String): String = "assets/rooms/" + id + Random.between(0, numberOfMaps) + ".png"
+  def getMapPath(id: String): String = "assets/rooms/" + id + ".png"
