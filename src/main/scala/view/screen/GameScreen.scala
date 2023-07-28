@@ -45,9 +45,6 @@ class GameScreen(world: World) extends BasicScreen:
         e.width))
 
   override def updateView(): Unit =
-    if world.level.opponents.isEmpty then
-      world.level.door = world.level.door.updateDoor("door_open", DoorState.Open)
-
     if world.gameEnded then
       sendEvent(EndGame())
 
