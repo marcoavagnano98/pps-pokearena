@@ -18,6 +18,12 @@ case class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: R
   import LayoutVisibility.*
 
   override type T = Seq[String]
+  val menuButtons: Seq[ImageTextButton] =
+    val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
+    val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
+    fightButton.onTouchDown(callback(FightOption))
+    bagButton.onTouchDown(callback(BagOption))
+    Seq(fightButton, bagButton)
 
   add(infoBox).colspan(2)
   row()
@@ -28,19 +34,13 @@ case class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: R
 
   private def infoBox: DialogueBox = DialogueBox(layoutData, skin)
 
-  lazy val menuButtons: Seq[ImageTextButton] =
-    val fightButton: ImageTextButton = ImageTextButton("LOTTA", skin)
-    val bagButton: ImageTextButton = ImageTextButton("ZAINO", skin)
-    fightButton.onTouchDown(callback(FightOption))
-    bagButton.onTouchDown(callback(BagOption))
-    Seq(fightButton, bagButton)
 
   def setButtonsVisibility(visibility: LayoutVisibility): Unit =
     val seq: Seq[ImageTextButton] = menuButtons
     for i <- seq.indices
       do
-      seq(i).setVisible(visibility.value)
-      updateActorByIndex(seq(i), i + 1)
+        seq(i).setVisible(visibility.value)
+        updateActorByIndex(seq(i), i + 1)
 
   def bagButtonTouchable(touchable: Touchable): Unit =
     val bagButton: ImageTextButton = menuButtons(1)

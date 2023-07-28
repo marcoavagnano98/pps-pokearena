@@ -1,4 +1,5 @@
-import model.entities.{Item, ItemFactory, ItemId, Player, Trainer}
+package model
+import model.entities.{Item, ItemFactory, ItemType, Player, Trainer}
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
@@ -10,7 +11,7 @@ import model.battle.cpu.Cpu
 
 import scala.language.postfixOps
 import model.entities.World.Position
-class TestCpu extends AnyFlatSpec with should.Matchers:
+class CpuTest extends AnyFlatSpec with should.Matchers:
 
   var bulbasaur: Pokemon = PokemonFactory.getPokemonById("1").get
   var charmender: Pokemon = PokemonFactory.getPokemonById("4").get

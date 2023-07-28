@@ -12,9 +12,9 @@ import LayoutVisibility.*
 import view.GdxUtil.onTouchDown
 import scala.io.Source
 
-class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary):
+class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary) :
   override type T = Pokemon
-  
+
   add(DialogueBox(Seq("Scegli una mossa"), skin)).colspan(2)
   row()
   for (elem <- movesButtons)
@@ -23,26 +23,31 @@ class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, call
       row()
   setVisible(NotVisible.value)
 
+  private def buttonString(move: Move): String =
+    move.name + "\n" + move.damage + " dmg | " + move.powerPoint + "PP | " + move.elementType.elemType
+
   def movesButtons: Seq[(Int, ImageTextButton)] =
-      for
-        i <- layoutData.moves.indices
-        b = ImageTextButton(layoutData.moves(i).name + " " + layoutData.moves(i).powerPoint + "PP", skin)
-        checkedButton = {b.onTouchDown(callback(i)); checkPP(b, layoutData.moves(i))}
-      yield (i, checkedButton)
-  
+    for
+      i <- layoutData.moves.indices
+      b = ImageTextButton(buttonString(layoutData.moves(i)), skin)
+      checkedButton = {
+        b.onTouchDown(callback(i)); checkPP(b, layoutData.moves(i))
+      }
+    yield (i, checkedButton)
+
   def checkPP(button: ImageTextButton, move: Move): ImageTextButton =
     if move.powerPoint <= 0 then
       button.setTouchable(Touchable.disabled)
     else
       button.setTouchable(Touchable.enabled)
     button
-  
+
   override def updateLayout(newLayoutInfo: Pokemon): Unit =
     layoutData = newLayoutInfo
     for
-      (index,button) <- movesButtons
-      cell = getCells.items(index+1)
+      (index, button) <- movesButtons
+      cell = getCells.items(index + 1)
     do
       cell.getActor match
-        case _: ImageTextButton =>  cell.setActor(button)
+        case _: ImageTextButton => cell.setActor(button)
         case _ =>

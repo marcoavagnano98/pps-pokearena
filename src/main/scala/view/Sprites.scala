@@ -8,20 +8,18 @@ import model.entities.pokemon.Pokemon
 
 import scala.util.Random
 
-object Sprites:
+protected[view] object Sprites:
   private val numberOfMaps = 13
 
-  def getPokemonSprite(pokemon: Pokemon) : String = "sprites/pokedex/" + pokemon.id + ".png"
-  def getEntitySprite(entity: VisibleEntity): String = entity match
+  val background = "assets/pokemon_grass.png"
+  val separatorLine = "assets/blackline.png"
+  val getPokemonSprite : Pokemon => String = "sprites/pokedex/" + _.id + ".png"
+  val getBattleSprite: String => String = "sprites/pokedex/battle/" + _ + ".png"
+
+  val getEntitySprite : VisibleEntity => String =
     case trainer: Trainer => "assets/trainers/"+ trainer.id+ ".png"
     case item: Item => "assets/items/"+ item.id+ ".png"
     case door: Door => "assets/doors/"+ door.id +".png"
-  def getGenericItem = "assets/items/Item_00.png"
-  def getMapPath(id: String): String = "assets/rooms/" + id + Random.between(0, numberOfMaps) + ".png"
-  def getSpritePokemonId(id: String): String = "sprites/pokedex/" + id + ".png"
-  def getBattleSprite(id: String): String = "sprites/pokedex/battle/" + id + ".png"
 
-  def texture (path:String) = new Texture(Gdx.files.classpath(path))
-  object MemoHelper:
-    def memoize[I, O](f: I => O): I => O = new collection.mutable.HashMap[I, O]() :
-      override def apply(key: I): O = getOrElseUpdate(key, f(key))
+
+  def getMapPath(id: String): String = "assets/rooms/" + id + Random.between(0, numberOfMaps) + ".png"

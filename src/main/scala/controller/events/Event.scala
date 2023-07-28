@@ -15,7 +15,7 @@ trait BattleEvent extends Event
 
 case class StartGame(list: Seq[Pokemon]) extends MenuEvent
 
-case class EndBattle(trainerId: String) extends BattleEvent
+case class PokemonDefeated() extends BattleEvent
 
 case class OptionChosen(battleOption: TrainerChoice) extends BattleEvent
 

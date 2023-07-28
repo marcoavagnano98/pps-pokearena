@@ -86,6 +86,12 @@ trait Pokemon extends Entity :
    */
   def withAtk(atk: Int): Pokemon
 
+  /**
+   * @param move The updated [[Move]] of the [[Pokemon]].
+   * @return The same [[Pokemon]] with the [[Move]] updated.
+   */
+  def withUpdateMove (move:Move, indexOfMove: Int) : Pokemon
+
 object Pokemon:
   def apply(id: String, name: String, hp: Int, attack: Int, defense: Int, speed: Int, moves: Seq[Move], elementType: ElementType): Pokemon =
     PokemonImpl(id = id, name = name, hp = hp, attack = attack, defense = defense, speed = speed, moves = moves, elementType = elementType, maxHp = hp)
@@ -106,6 +112,8 @@ object Pokemon:
       case hp if hp < 0 => copy(hp = 0)
       case hp if hp > maxHp => copy(hp = maxHp)
       case _ => copy(hp = newHp)
+
+    override def withUpdateMove (move:Move, indexOfMove: Int) : Pokemon = withMoves(moves.updated(indexOfMove,move))
 
     override def withStatus(newStatus: PokemonStatus): Pokemon = copy(status = newStatus)
 

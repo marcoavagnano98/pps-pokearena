@@ -1,6 +1,6 @@
 package pokearena
 import com.badlogic.gdx.{Game, Gdx, Screen}
-import controller.events.{EndBattle, EventDispatcher}
+import controller.events.EventDispatcher
 import model.entities.pokemon.PokemonFactory
 import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
 import controller.{BattleController, GameController}
