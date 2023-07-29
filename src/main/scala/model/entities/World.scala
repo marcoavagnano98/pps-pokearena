@@ -8,6 +8,9 @@ import util.Stats
 import scala.annotation.tailrec
 import scala.util.Random
 
+enum GameStatus:
+  case Win, Lose
+
 trait World:
   def createLevel(pokemonTeam: Seq[Pokemon]): Unit
   def level: Level
@@ -17,13 +20,12 @@ trait World:
   def checkCollision: Option[VisibleEntity]
   def itemCollision(item: Item): Unit
   def doorCollision(door: Door): Unit
-  def removeTrainer(idTrainer: String): Unit
+  def removeTrainer(trainer: Trainer): Unit
   def updateDoor: Unit
   def difficulty: Int
   def difficulty_=(difficulty: Int): Unit
   def room: Int
-  def gameEnded: Boolean
-  def stats: Stats
+  def isGameWon: GameStatus
 
 object World:
   def apply(): World = WorldImpl()
@@ -35,11 +37,10 @@ object World:
     private val numberOfMaps = 13
     private var _difficulty = 0
     private var _levelRoom = 1
-    private var playerDefeated = 0
-    private var _gameEnded = false
+    private var _isGameWon = GameStatus.Lose
     private var _level: Level = _
     private var _player: Player = Player(Position(0, 0), idPlayer, Seq.empty)
-    private val _statistics = Stats()
+    private val maxLevel = 4
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
@@ -61,18 +62,16 @@ object World:
     override def doorCollision(door: Door): Unit =
       _level.door.state match
         case DoorState.Open =>
-          _levelRoom += 1
-          _levelRoom match
-            case room if room <= 4 =>
+          if _levelRoom < maxLevel then
+              _levelRoom += 1
               createLevel(player.pokemonTeam)
               _player = _player.withPosition(Position(0, 0))
-            case _ =>
-              _gameEnded = true
+          else
+              _isGameWon = GameStatus.Win
         case _ =>
 
-    override def removeTrainer(idTrainer: String): Unit =
-      _level.removeOpponent(idTrainer)
-      playerDefeated += 1
+    override def removeTrainer(trainer: Trainer): Unit =
+      _level.removeOpponent(trainer)
 
     override def updateDoor: Unit =
       if _level.opponents.isEmpty then
@@ -85,9 +84,8 @@ object World:
 
     override def room: Int = _levelRoom
 
-    override def gameEnded: Boolean = _gameEnded
+    override def isGameWon: GameStatus = _isGameWon
 
-    override def stats: Stats = _statistics
 
   /**
    *  Position class represents the coordinates x,y in the World

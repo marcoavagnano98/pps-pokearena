@@ -17,7 +17,7 @@ trait Level:
   def opponents: Seq[Trainer]
   def items: Seq[Item]
   def removeItem(item: Item): Unit
-  def removeOpponent(idTrainer: String): Unit
+  def removeOpponent(trainer: Trainer): Unit
   def door: Door
   def door_=(door: Door): Unit
   def generateEntities(levelRoom: Int): Unit
@@ -38,7 +38,7 @@ object Level:
     private var _items: Seq[Item] = Seq.empty
     private var _door: Door = Door(DoorState.Close, Position(4, 9))
     private val playerPosition = Position(0,0)
-    private val opponentsNumber = 22
+    private val opponentIdsNumber = 22
     private val numberOfEntitiesToGenerate = 3
     private var allOpponents: Seq[Int] = Seq.empty
     private var allPositions: Seq[Position] = for
@@ -53,8 +53,8 @@ object Level:
     override def removeItem(item: Item): Unit =
       _items = _items.filter(_!=item)
 
-    override def removeOpponent(idTrainer: String): Unit =
-      _opponents = _opponents.filterNot(_.id == idTrainer)
+    override def removeOpponent(trainer: Trainer): Unit =
+      _opponents = _opponents.filterNot(_ == trainer)
 
     override def door: Door = _door
 
@@ -82,7 +82,7 @@ object Level:
 
     @tailrec
     private def randomOpponent: Int =
-      val opp = Random.between(0, opponentsNumber)
+      val opp = Random.between(0, opponentIdsNumber)
       opp match
         case opp if !allOpponents.contains(opp) =>
           allOpponents = allOpponents :+ opp

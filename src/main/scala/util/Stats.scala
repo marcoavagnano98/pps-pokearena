@@ -1,24 +1,23 @@
 package util
 
+import model.entities.{Door, Entity, GameStatus, Item, Trainer}
 import model.entities.pokemon.Pokemon
+import model.entities.GameStatus.*
 
-trait Stats:
+class Stats():
+  private var _storedData: Map[String, Int] = Map.empty
+  def storedData: Map[String, Int] = _storedData
 
-  def trainerDefeated: Int
-  def levelRoomReached: Int
-  def team: Seq[Pokemon]
-  def bossDefeated: Boolean
+  def reset(): Unit = _storedData = Map.empty
 
-  def updateStats(defeatedTrainer: Int, levelRoomReached: Int, a: Seq[Pokemon], bossDefeated: Boolean): Stats
+  def count[E](elem: E): Unit =
+    val e = converterToKeyString(elem)
+    _storedData += (e -> (_storedData.getOrElse(e, 0) + 1))
 
-object Stats:
-  def apply(): Stats = StatsImpl()
-
-  private case class StatsImpl(override val trainerDefeated: Int = 0, 
-                               override val levelRoomReached: Int = 1,
-                               override val team: Seq[Pokemon] = Seq.empty, 
-                               override val bossDefeated: Boolean = false) extends Stats:
-
-    override def updateStats(defeatedTrainer: Int, levelRoomReached: Int, pokemonTeam: Seq[Pokemon], bossDefeated: Boolean): Stats = 
-      
-      copy(trainerDefeated=defeatedTrainer, levelRoomReached=levelRoomReached, team=pokemonTeam, bossDefeated=bossDefeated)  
+  private def converterToKeyString[E](e: E): String =
+    e match
+      case _: Trainer => "trainer"
+      case _: Item => "item"
+      case Win => "win"
+      case Lose => "lose"
+      case _  => ""

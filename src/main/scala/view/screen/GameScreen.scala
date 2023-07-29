@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.{GL20, OrthographicCamera, Texture}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.utils.viewport.{ExtendViewport, FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, ScreenAdapter}
-import controller.events.{EndGame, CollisionEvent, EventDispatcher}
-import model.entities.{DoorState, Level, Player, Trainer, VisibleEntity, World}
+import controller.events.{CollisionEvent, EndGame, EventDispatcher}
+import model.entities.{DoorState, Level, Player, Trainer, VisibleEntity, World, GameStatus}
 import model.entities.pokemon.*
 import view.screen
 import view.Sprites.{getEntitySprite, getMapPath}
@@ -45,7 +45,7 @@ class GameScreen(world: World) extends BasicScreen:
         e.width))
 
   override def updateView(): Unit =
-    if world.gameEnded then
+    if world.isGameWon.equals(GameStatus.Win) then
       sendEvent(EndGame())
 
     world.checkCollision match

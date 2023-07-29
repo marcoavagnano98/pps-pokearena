@@ -4,7 +4,7 @@ import controller.events.{CollisionEvent, EndGame, Event, OptionChosen, PokemonD
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
-import model.entities.{Door, Entity, Item, Player, Trainer, VisibleEntity, World}
+import model.entities.{Door, Entity, Item, Player, Trainer, VisibleEntity, World, GameStatus}
 import pokearena.PokeArena
 import util.Stats
 import view.screen.{BasicScreen, BattleScreen, GameOverScreen, GameScreen}
@@ -39,31 +39,32 @@ protected object MenuController extends Controller :
 protected object GameController extends Controller :
 
   override type T = World
+  import util.Stats
+  private val stats = Stats()
 
   override def eventHandler(e: Event): Unit = e match
     case visibleEntityCollision: CollisionEvent => visibleEntityCollision.entity match
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
-      case item: Item => model.itemCollision(item)
+      case item: Item => {model.itemCollision(item); stats.count(item)}
       case door: Door => model.doorCollision(door)
     case _ => endGame()
 
-  def removeTrainer(id: String): Unit =
-    model.removeTrainer(id)
+  def removeTrainer(trainer: Trainer): Unit =
+    model.removeTrainer(trainer)
     model.updateDoor
+    stats.count(trainer)
     handleScreenChange(screen)
 
   def startGame(pokemonList: Seq[Pokemon]): Unit =
     setModel(World())
+    stats.reset()
     model.createLevel(pokemonList)
     screen = GameScreen(model)
     handleScreenChange(screen)
 
   def endGame(): Unit =
-    model.gameEnded match
-      case false =>
-        screen = GameOverScreen(model.stats.updateStats(((model.room - 1) * 3 + (3 - model.level.opponents.length)), model.room, model.player.pokemonTeam, model.gameEnded))
-      case _ =>
-        screen = GameOverScreen(model.stats.updateStats(((model.room - 1) * 3) - 2, model.room, model.player.pokemonTeam, model.gameEnded))
+    stats.count(model.isGameWon)
+    screen = GameOverScreen(stats, model.room, model.player.pokemonTeam)
     handleScreenChange(screen)
 
 object BattleController extends Controller :
@@ -81,5 +82,5 @@ object BattleController extends Controller :
       case _: PokemonDefeated =>
         model.pokemonInBattle match
           case (None, Some(_)) => GameController.endGame()
-          case (Some(_), None) =>{println("EI"); GameController.removeTrainer(model.opponent.id)}
-          case _ => println("OI")
+          case (Some(_), None) => GameController.removeTrainer(model.opponent)
+          case _ =>
