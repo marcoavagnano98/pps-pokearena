@@ -1,51 +1,114 @@
 package model.entities
 
-import model.entities.pokemon.{Pokemon, PokemonFactory}
+import model.entities.pokemon.Pokemon
 import com.badlogic.gdx.Gdx
-import controller.events.{CollisionEvent, EventDispatcher}
 import util.Stats
-
 import scala.annotation.tailrec
 import scala.util.Random
 
+/**
+ * Represent the game state:
+ * Win if you have defeated the boss in the last level;
+ * Lose otherwise.
+ */
 enum GameStatus:
   case Win, Lose
 
+/**
+ * Represent the entire game world.
+ * Within it, you can find information about the current Level and about the Player.
+ */
 trait World:
+  /**
+   * Create the current Level and provide the Player with the Pokemon team
+   * @param pokemonTeam the Pokemon team of the Player
+   */
   def createLevel(pokemonTeam: Seq[Pokemon]): Unit
+
+  /**
+   *
+   * @return the current Level with the informations about [[Opponent]], [[Items]] and [[Door]]
+   */
   def level: Level
+
+  /**
+   *
+   * @param player update the Player informations
+   */
   def player_=(player: Player): Unit
+
+  /**
+   *
+   * @return retrive the Player informations
+   */
   def player: Player
+
+  /**
+   *
+   * @return all the visibleEntities to be displayed in the Screen
+   */
   def visibleEntities: Seq[VisibleEntity]
+
+  /**
+   *
+   * @return the VisibleEntity with which a collision has occurred
+   */
   def checkCollision: Option[VisibleEntity]
+
+  /**
+   *
+   * @param item the Item with which a collision has occurred
+   */
   def itemCollision(item: Item): Unit
+
+  /**
+   *
+   * @param door the Door with which a collision has occurred
+   */
   def doorCollision(door: Door): Unit
+
+  /**
+   *
+   * @param trainer the Trainer with which a collision has occurred
+   */
   def removeTrainer(trainer: Trainer): Unit
+
+  /**
+   * check if all the Trainers are defeated and updates the Door
+   */
   def updateDoor: Unit
   def difficulty: Int
   def difficulty_=(difficulty: Int): Unit
-  def room: Int
+
+  /**
+   *
+   * @return the current level
+   */
+  def currentLevel: Int
+
+  /**
+   *
+   * @return the status of the game (Win/Lose)
+   */
   def isGameWon: GameStatus
 
 object World:
-  def apply(): World = WorldImpl()
+  def apply(_difficulty: Int = 0, maxLevel: Int = 4): World = WorldImpl(_difficulty, maxLevel)
 
-  private class WorldImpl extends World:
+  private class WorldImpl(var _difficulty: Int, val maxLevel: Int) extends World:
     private val idLevel = "map_"
     private val idPlayer = "player"
     private val openDoor = "door_open"
-    private val numberOfMaps = 13
-    private var _difficulty = 0
-    private var _levelRoom = 1
+    private val numberOfBackgroundMaps = 13
+    private var _currentLevel = 1
     private var _isGameWon = GameStatus.Lose
     private var _level: Level = _
     private var _player: Player = Player(Position(0, 0), idPlayer, Seq.empty)
-    private val maxLevel = 4
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
-      _level = Level(idLevel+Random.between(0, numberOfMaps))
-      _level.generateEntities(_levelRoom)
+      _level = Level(idLevel+Random.between(0, numberOfBackgroundMaps))
+      _level.generateEntities(_currentLevel, maxLevel)
 
     override def level: Level = _level
     override def player_=(player: Player ): Unit = _player = player
@@ -62,8 +125,8 @@ object World:
     override def doorCollision(door: Door): Unit =
       _level.door.state match
         case DoorState.Open =>
-          if _levelRoom < maxLevel then
-              _levelRoom += 1
+          if _currentLevel < maxLevel then
+              _currentLevel += 1
               createLevel(player.pokemonTeam)
               _player = _player.withPosition(Position(0, 0))
           else
@@ -82,13 +145,13 @@ object World:
     override def difficulty_=(difficulty: Int): Unit =
       _difficulty = difficulty
 
-    override def room: Int = _levelRoom
+    override def currentLevel: Int = _currentLevel
 
     override def isGameWon: GameStatus = _isGameWon
 
 
   /**
-   *  Position class represents the coordinates x,y in the World
+   * Represent the coordinates (x, y) in the game world.
    * @param x coordinate
    * @param y coordinate
    */

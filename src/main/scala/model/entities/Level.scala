@@ -1,9 +1,8 @@
 package model.entities
+
 import model.entities.World.Position
 import model.entities.pokemon.{Pokemon, PokemonFactory}
-
 import scala.annotation.tailrec
-import scala.collection.immutable.Set
 import scala.util.Random
 
 trait Level:
@@ -20,7 +19,7 @@ trait Level:
   def removeOpponent(trainer: Trainer): Unit
   def door: Door
   def door_=(door: Door): Unit
-  def generateEntities(levelRoom: Int): Unit
+  def generateEntities(currentLevel: Int, maxLevel: Int): Unit
 
 object Level:
   def apply(path: String): Level =
@@ -61,8 +60,8 @@ object Level:
     override def door_=(door: Door): Unit =
       _door = door
 
-    override def generateEntities(levelRoom: Int): Unit = levelRoom match
-      case 4 => val boss: Trainer = generateBoss
+    override def generateEntities(currentLevel: Int, maxLevel: Int): Unit = currentLevel match
+      case `maxLevel` => val boss: Trainer = generateBoss
         _opponents = Seq(boss)
       case _ => val (opps, itms): (Seq[Trainer], Seq[Item]) = generateTrainersAndItems(numberOfEntitiesToGenerate)
         _opponents = opps
@@ -70,11 +69,11 @@ object Level:
 
     private def generateTrainersAndItems(numberOfEntities: Int): (Seq[Trainer], Seq[Item]) =
       @tailrec
-      def _generateTAndI(trainerList: List[Trainer], itemList: List[Item], numberOfTrainer: Int): (Seq[Trainer], Seq[Item]) = (trainerList, itemList) match
+      def _generateTAndI(trainerList: Seq[Trainer], itemList: Seq[Item], numberOfTrainer: Int): (Seq[Trainer], Seq[Item]) = (trainerList, itemList) match
         case (t, p) if numberOfTrainer > 0 => _generateTAndI(t :+ Trainer(id = "op" + randomOpponent, pos = randomPos, pokemonList = PokemonFactory(2)), p :+ ItemFactory.getRandomItem(pos = randomPos), numberOfTrainer - 1)
         case _ => (trainerList, itemList)
 
-      _generateTAndI(List[Trainer](), List[Item](), numberOfEntities)
+      _generateTAndI(Seq[Trainer](), Seq[Item](), numberOfEntities)
 
     private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonFactory(4))
 

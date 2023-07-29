@@ -4,14 +4,10 @@ import controller.events.{CollisionEvent, EndGame, Event, OptionChosen, PokemonD
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
-import model.entities.{Door, Entity, Item, Player, Trainer, VisibleEntity, World, GameStatus}
+import model.entities.{Door, Item, Player, Trainer, VisibleEntity, World, GameStatus}
 import pokearena.PokeArena
 import util.Stats
 import view.screen.{BasicScreen, BattleScreen, GameOverScreen, GameScreen}
-
-/*
-* All methods that handle internal screen events must be private
-* */
 
 protected[controller] trait Controller:
 
@@ -45,7 +41,7 @@ protected object GameController extends Controller :
   override def eventHandler(e: Event): Unit = e match
     case visibleEntityCollision: CollisionEvent => visibleEntityCollision.entity match
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
-      case item: Item => {model.itemCollision(item); stats.count(item)}
+      case item: Item => model.itemCollision(item); stats.count(item)
       case door: Door => model.doorCollision(door)
     case _ => endGame()
 
@@ -64,7 +60,7 @@ protected object GameController extends Controller :
 
   def endGame(): Unit =
     stats.count(model.isGameWon)
-    screen = GameOverScreen(stats, model.room, model.player.pokemonTeam)
+    screen = GameOverScreen(stats, model.currentLevel, model.player.pokemonTeam)
     handleScreenChange(screen)
 
 object BattleController extends Controller :

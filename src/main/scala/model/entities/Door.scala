@@ -10,8 +10,15 @@ trait Door extends VisibleEntity:
    * @return the state of the [[Door]]
    *
    */
-  def updateDoor(idDoor: String, doorState: DoorState): Door
   def state: DoorState
+
+  /**
+   * Update the state of the [[Door]]
+   * @param idDoor the String representing the name of the image to be rendered
+   * @param doorState the state with which you want to set the doors: Open/Close
+   * @return
+   */
+  def updateDoor(idDoor: String, doorState: DoorState): Door
 
 object Door:
   def apply(state: DoorState, position: Position): Door =

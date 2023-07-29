@@ -1,9 +1,8 @@
 package view.screen
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent}
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.{Skin, Table, TextButton}
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
 import model.entities.World
 import model.entities.pokemon.Pokemon
@@ -11,7 +10,6 @@ import pokearena.PokeArena
 import util.Stats
 import view.battle.DialogueBox
 import view.GdxUtil.onTouchDown
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import view.Sprites.getPokemonSprite
 import model.entities.{Door, Trainer, Item}
 import model.entities.GameStatus._

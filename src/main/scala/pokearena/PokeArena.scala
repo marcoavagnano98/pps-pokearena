@@ -9,8 +9,13 @@ import model.battle.Battle
 import model.entities.World.Position
 
 object PokeArena extends Game:
+
+  /**
+   * Set the game screen to the initial screen
+   */
   override def create(): Unit =
     setScreen(PokemonChoiceScreen(PokemonFactory(12)))
+
   /**
    * Change screen to one using the given behavior.
    */
@@ -18,6 +23,6 @@ object PokeArena extends Game:
     Gdx.app.postRunnable(() =>
       setScreen(behavior)
     )
-
+  
   override def render(): Unit =
     super.render()

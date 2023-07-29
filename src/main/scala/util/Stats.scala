@@ -1,7 +1,6 @@
 package util
 
-import model.entities.{Door, Entity, GameStatus, Item, Trainer}
-import model.entities.pokemon.Pokemon
+import model.entities.{Door, GameStatus, Item, Trainer}
 import model.entities.GameStatus.*
 
 class Stats():
