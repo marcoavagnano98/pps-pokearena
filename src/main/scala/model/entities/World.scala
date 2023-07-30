@@ -99,7 +99,7 @@ object World:
     private val idLevel = "map_"
     private val idPlayer = "player"
     private val openDoor = "door_open"
-    private val numberOfBackgroundMaps = 13
+    private val numberOfLevelsBackground = 13
     private var _currentLevel = 1
     private var _isGameWon = GameStatus.Lose
     private var _level: Level = _
@@ -107,7 +107,7 @@ object World:
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
-      _level = Level(idLevel+Random.between(0, numberOfBackgroundMaps))
+      _level = Level(idLevel + Random.between(0, numberOfLevelsBackground))
       _level.generateEntities(_currentLevel, maxLevel)
 
     override def level: Level = _level

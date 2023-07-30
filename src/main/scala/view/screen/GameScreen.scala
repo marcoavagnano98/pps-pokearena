@@ -9,9 +9,13 @@ import view.screen.Drawable
 import view.PlayerProcessor
 
 object ViewportUtil:
-  val viewportHeight: Float = 100f
-  val viewportWidth: Float = 100f
+  val viewportHeight = 100f
+  val viewportWidth = 100f
 
+/**
+ * Screen of the Game in witch the Player, the Trainers, the Items and the Door are displayed.
+ * @param world contain the information's about the Player and the current Level
+ */
 class GameScreen(world: World) extends BasicScreen:
 
   override def viewport: Viewport = FitViewport(ViewportUtil.viewportWidth, ViewportUtil.viewportHeight)

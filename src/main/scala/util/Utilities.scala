@@ -1,5 +1,9 @@
 package util
 
+import model.entities.World.Position
+import model.entities.Level
+
+import scala.annotation.tailrec
 import scala.util.Random
 
 object Utilities:
