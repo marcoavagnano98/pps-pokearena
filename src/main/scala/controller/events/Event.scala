@@ -29,7 +29,7 @@ trait BattleEvent extends Event
  * Event generated during the interaction with PokemonChoiceScreen
  * @param list the Sequence of Pokemon that compose the Player pokemon team
  */
-case class StartGame(list: Seq[Pokemon]) extends MenuEvent
+case class StartGame(list: Seq[Pokemon], difficulty: Int) extends MenuEvent
 
 /**
  * Event generated when a Pokemon is defeated during the Battle between the Player and a Trainer
