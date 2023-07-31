@@ -1,8 +1,8 @@
 package model.entities
 
 import model.entities.World.Position
-import model.entities.factories.{ItemGenerator, TrainerFactory}
-import model.entities.pokemon.{Pokemon, PokemonFactory}
+import model.entities.generator.{ItemGenerator, PokemonGenerator, TrainerGenerator}
+import model.entities.pokemon.Pokemon
 import util.Grid
 
 import scala.annotation.tailrec
@@ -135,7 +135,7 @@ object Level:
       case `maxLevel` =>
         _opponents = Seq(generateBoss)
       case _ =>
-        _opponents = TrainerFactory(_grid, numberOfTrainersToGenerate)
+        _opponents = TrainerGenerator(_grid, numberOfTrainersToGenerate)
         _items = ItemGenerator(_grid, numberOfItemsToGenerate)
 
-    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonFactory(4))
+    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator(4))

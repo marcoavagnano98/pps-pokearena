@@ -1,6 +1,6 @@
 package model
 
-import model.entities.pokemon.{ElementType, Pokemon, PokemonFactory}
+import model.entities.pokemon.{ElementType, Pokemon}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 

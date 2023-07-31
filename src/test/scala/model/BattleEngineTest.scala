@@ -10,15 +10,16 @@ import model.battle.*
 
 import scala.language.postfixOps
 import model.entities.World.Position
+import model.entities.generator.PokemonGenerator
 import org.scalatest.wordspec.AnyWordSpec
 class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   import TrainerChoice.*
-  val bulbasaur: Pokemon = PokemonFactory.getPokemonById("1").get
-  val charmender: Pokemon = PokemonFactory.getPokemonById("4").get
+  val bulbasaur: Pokemon = PokemonGenerator.getPokemonById("1").get
+  val charmender: Pokemon = PokemonGenerator.getPokemonById("4").get
   val actionMove: Move = Move(20, 10, "action", Normal, None)
   val lethalMove: Move = Move(9999, 10, "action", Normal, None)
-  val player: Player = Player(Position(0,0),"",PokemonFactory(3))
-  val opponent: Trainer = Trainer(Position(0,0),"",PokemonFactory(3))
+  val player: Player = Player(Position(0,0),"",PokemonGenerator(3))
+  val opponent: Trainer = Trainer(Position(0,0),"",PokemonGenerator(3))
   val slowestBt: Turn = Turn(player.id, bulbasaur, Attack(actionMove))
   val fastestBt: Turn = Turn(opponent.id,charmender, Attack(actionMove))
 

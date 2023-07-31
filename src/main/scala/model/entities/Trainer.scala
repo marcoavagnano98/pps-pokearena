@@ -22,19 +22,14 @@ object Trainer:
  * Represents the entity controlled by the one whos playing
  */
 trait Player extends Trainer with MovingAbility:
-  /**
+  override type UpdatedEntity = Player
+
+/**
    * Udate the pokemon team of the Player
    * @param pokemonTeam the new Sequence of Pokemon representing the team of the Player
    * @return the Player updated
    */
   def withPokemon(pokemonTeam : Seq[Pokemon]) : Player
-
-  /**
-   * Update the position of the Player
-   * @param position the new Position of the Player in the Level
-   * @return the Player updated
-   */
-  def withPosition(position : Position) : Player
 
   /**
    * Update the image used to represent the Player on the screen
@@ -54,7 +49,6 @@ object Player:
   def apply(pos: Position, id: String, pokemonList: Seq[Pokemon]): Player =
     PlayerImpl(pos, id, pokemonList)
   private case class PlayerImpl(override val position: Position, override val id: String, override val pokemonTeam: Seq[Pokemon], override val bag: Bag = Bag()) extends Player:
-    override def updatePosition(position: Position): Player = copy(position = position)
     override def withPokemon(pokemonTeam: Seq[Pokemon]): Player = copy(pokemonTeam=pokemonTeam)
-    override def  withPosition(position : Position) : Player = copy(position=position)
+    override def withPosition(position : Position) : Player = copy(position=position)
     override def movesTo(direction: String): Player = copy(id=direction)

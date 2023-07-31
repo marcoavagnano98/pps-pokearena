@@ -10,7 +10,7 @@ import com.badlogic.gdx.{Screen, ScreenAdapter}
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import model.entities.pokemon.{Pokemon, PokemonFactory}
+import model.entities.pokemon.Pokemon
 import view.Sprites.getPokemonSprite
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
