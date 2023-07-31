@@ -2,18 +2,24 @@ package model.entities
 
 import model.entities.World.Position
 
+/**
+ * The State of the Door. Can be Open or Close
+ */
 enum DoorState:
   case Open, Close
 
+/**
+ * Represents the Entity through which it's possible to access the next level
+ */
 trait Door extends VisibleEntity:
   /**
-   * @return the state of the [[Door]]
    *
+   * @return the state of the [[Door]]
    */
   def state: DoorState
 
   /**
-   * Update the state of the [[Door]]
+   * Updates the information of the [[Door]]
    * @param idDoor the String representing the name of the image to be rendered
    * @param doorState the state with which you want to set the doors: Open/Close
    * @return

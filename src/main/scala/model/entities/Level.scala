@@ -110,6 +110,7 @@ object Level:
     private var _door: Door = Door(DoorState.Close, Position(4, 9))
     private val numberOfLevelsBackground = 13
     private var (_items,_opponents) = generateEntities(currentLevel,maxLevel)
+    private val bossId = "boss"
     override val idLevel: String = "map_" + Random.between(0, numberOfLevelsBackground)
 
     override def opponents: Seq[Trainer] = _opponents
@@ -133,4 +134,4 @@ object Level:
       case _ =>
         (ItemGenerator(_grid, numberOfItemsToGenerate), TrainerGenerator(_grid, numberOfTrainersToGenerate))
 
-    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator(4))
+    private def generateBoss: Trainer = Trainer(id = bossId, pos = Position(4,5), pokemonList = PokemonGenerator(4))
