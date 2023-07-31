@@ -25,7 +25,7 @@ class GameScreen(world: World) extends BasicScreen:
     Gdx.input.setInputProcessor(PlayerProcessor(world))
 
   override def drawables: Seq[Drawable] =
-    Drawable(getMapPath(world.level.background), world.level.levelXPos, world.level.levelYPos, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
+    Drawable(getMapPath(world.level.idLevel), world.level.levelXPos, world.level.levelYPos, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
       world.visibleEntities.map(e => Drawable(getEntitySprite(e),
         e.position.x.toFloat * ViewportUtil.viewportWidth/world.level.gridWidth,
         e.position.y.toFloat * ViewportUtil.viewportHeight/world.level.gridHeight,

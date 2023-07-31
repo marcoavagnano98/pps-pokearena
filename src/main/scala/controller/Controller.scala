@@ -45,7 +45,7 @@ protected[controller] trait Controller:
 protected object MenuController extends Controller :
   override def eventHandler(e: Event): Unit = e match
     case e: StartGame =>
-      GameController.startGame(e.list)
+      GameController.startGame(e.list, e.difficulty)
     case _ =>
 
 /**
@@ -79,8 +79,8 @@ protected object GameController extends Controller :
    * Create the Level and set the GameScreen as the current screen
    * @param pokemonList
    */
-  def startGame(pokemonList: Seq[Pokemon]): Unit =
-    setModel(World())
+  def startGame(pokemonList: Seq[Pokemon], difficulty: Int): Unit =
+    setModel(World(difficulty))
     stats.reset()
     model.createLevel(pokemonList)
     screen = GameScreen(model)

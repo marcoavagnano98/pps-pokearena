@@ -78,7 +78,6 @@ trait World:
    */
   def updateDoor: Unit
   def difficulty: Int
-  def difficulty_=(difficulty: Int): Unit
 
   /**
    *
@@ -93,13 +92,11 @@ trait World:
   def isGameWon: GameStatus
 
 object World:
-  def apply(_difficulty: Int = 0, maxLevel: Int = 4): World = WorldImpl(_difficulty, maxLevel)
+  def apply(difficulty: Int = 0, maxLevel: Int = 4): World = WorldImpl(difficulty, maxLevel)
 
-  private class WorldImpl(var _difficulty: Int, val maxLevel: Int) extends World:
-    private val idLevel = "map_"
+  private class WorldImpl(override val difficulty: Int, val maxLevel: Int) extends World:
     private val idPlayer = "player"
     private val openDoor = "door_open"
-    private val numberOfLevelsBackground = 13
     private var _currentLevel = 1
     private var _isGameWon = GameStatus.Lose
     private var _level: Level = _
@@ -107,8 +104,7 @@ object World:
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
-      _level = Level(idLevel + Random.between(0, numberOfLevelsBackground))
-      _level.generateEntities(_currentLevel, maxLevel)
+      _level = Level(_currentLevel, maxLevel)
 
     override def level: Level = _level
     override def player_=(player: Player ): Unit = _player = player
@@ -139,11 +135,6 @@ object World:
     override def updateDoor: Unit =
       if _level.opponents.isEmpty then
         _level.door = _level.door.updateDoor(openDoor, DoorState.Open)
-
-    override def difficulty: Int = _difficulty
-
-    override def difficulty_=(difficulty: Int): Unit =
-      _difficulty = difficulty
 
     override def currentLevel: Int = _currentLevel
 

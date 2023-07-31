@@ -5,7 +5,7 @@ import util.Grid
 import scala.annotation.tailrec
 
 /**
- * Factory used to create Sequences of Items to be rendered on the Level screen
+ * Generator used to create Sequences of Items to be rendered on the Level screen
  */
 object ItemGenerator:
 

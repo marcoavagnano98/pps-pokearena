@@ -16,7 +16,7 @@ trait Level:
    *
    * @return the unique file name that identifies the background of the level
    */
-  def background: String
+  def idLevel: String
 
   /**
    *
@@ -90,31 +90,27 @@ trait Level:
    */
   def door_=(door: Door): Unit
 
-  /**
-   * Generate Trainers and Items that will be displayed on the Level screen based on the current level and the maximum level
-   * @param currentLevel the current level in which the elements should be created
-   * @param maxLevel the last level in the game where the Boss will be
-   */
-  def generateEntities(currentLevel: Int, maxLevel: Int): Unit
-
 object Level:
-  def apply(idLevel: String, gridWidth: Int = 10, gridHeight: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
-    LevelImpl(idLevel, gridWidth, gridHeight, numberOfTrainersToGenerate, numberOfItemsToGenerate)
+  def apply(currentLevel:Int, maxLevel: Int, gridWidth: Int = 10, gridHeight: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
+    LevelImpl(gridWidth, gridHeight, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel)
 
-  private case class LevelImpl(background: String,
-                               override val gridWidth: Int,
+  private case class LevelImpl(override val gridWidth: Int,
                                override val gridHeight: Int,
                                numberOfTrainersToGenerate: Int,
                                numberOfItemsToGenerate: Int,
+                               currentLevel: Int,
+                               maxLevel: Int,
                                override val levelXPos: Float = 0.0,
                                override val levelYPos: Float = 0.0,
                                override val cellSize: Int = 1,
-                               override val playerSpeed: Int = 1) extends Level:
+                               override val playerSpeed: Int = 1,
+                               ) extends Level:
 
     private val _grid: Grid = Grid(gridWidth, gridHeight)
-    private var _opponents: Seq[Trainer] = Seq.empty
-    private var _items: Seq[Item] = Seq.empty
     private var _door: Door = Door(DoorState.Close, Position(4, 9))
+    private val numberOfLevelsBackground = 13
+    private var (_items,_opponents) = generateEntities(currentLevel,maxLevel)
+    override val idLevel: String = "map_" + Random.between(0, numberOfLevelsBackground)
 
     override def opponents: Seq[Trainer] = _opponents
 
@@ -131,11 +127,10 @@ object Level:
     override def door_=(door: Door): Unit =
       _door = door
 
-    override def generateEntities(currentLevel: Int, maxLevel: Int): Unit = currentLevel match
+    private def generateEntities(currentLevel: Int, maxLevel: Int): (Seq[Item],Seq[Trainer]) = currentLevel match
       case `maxLevel` =>
-        _opponents = Seq(generateBoss)
+        (Seq[Item](), Seq(generateBoss))
       case _ =>
-        _opponents = TrainerGenerator(_grid, numberOfTrainersToGenerate)
-        _items = ItemGenerator(_grid, numberOfItemsToGenerate)
+        (ItemGenerator(_grid, numberOfItemsToGenerate), TrainerGenerator(_grid, numberOfTrainersToGenerate))
 
     private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator(4))
