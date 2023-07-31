@@ -1,7 +1,7 @@
 package controller
 import model.entities.{Player, Trainer}
 import model.entities.World.Position
-import model.entities.pokemon.PokemonFactory
+import model.entities.generator.PokemonGenerator
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers.must

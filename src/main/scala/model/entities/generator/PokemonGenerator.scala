@@ -1,10 +1,11 @@
-package model.entities.pokemon
+package model.entities.generator
 
+import model.entities.pokemon.{Move, Pokemon}
 import model.parser.{MoveParser, PokedexParser}
 
 import scala.util.Random
 
-object PokemonFactory:
+object PokemonGenerator:
   private val listOfAllPokemon: Seq[Pokemon] = PokedexParser.getAllPokemon
   private val listOfAllMoves: Seq[Move] = MoveParser.getAllMoves.filter(_.damage > 0)
   private val random: Random = Random()

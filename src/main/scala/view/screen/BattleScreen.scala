@@ -23,7 +23,7 @@ import controller.events.{EventDispatcher, OptionChosen, PokemonDefeated}
 import model.battle.Status.*
 import model.battle.TrainerChoice.*
 import model.entities.World.Position
-import model.entities.pokemon.{Move, PokemonFactory}
+import model.entities.pokemon.Move
 import pokearena.PokeArena
 import view.battle.DialogueBox
 import view.battle.layout.BattleMenuOption.{BagOption, FightOption}

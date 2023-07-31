@@ -1,4 +1,4 @@
-package model.entities.factories
+package model.entities.generator
 
 import model.entities.{Item, ItemFactory}
 import util.Grid
