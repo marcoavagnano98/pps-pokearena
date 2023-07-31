@@ -8,7 +8,7 @@ import util.Grid
 import scala.util.Random
 
 /**
- * Factory used to construct Sequences of Trainers to be rendered on the Level screen
+ * Factory used to create Sequences of Trainers to be rendered on the Level screen
  */
 object TrainerFactory:
   private var allGeneratedOpponents: Seq[Int] = Seq.empty

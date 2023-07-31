@@ -9,6 +9,9 @@ import pokearena.PokeArena
 import util.Stats
 import view.screen.{BasicScreen, BattleScreen, GameOverScreen, GameScreen}
 
+/**
+ * Manage the Event generated during the interactions with the Game
+ */
 protected[controller] trait Controller:
 
   type T
@@ -17,21 +20,37 @@ protected[controller] trait Controller:
 
   var screen: BasicScreen = _
 
-  def setScreen(basicScreen: BasicScreen): Unit = screen = basicScreen
-
+  /**
+   * Set the model from where the data should be retrieved
+   * @param data used as model
+   */
   def setModel(data: T): Unit = model = data
 
+  /**
+   * Handle the input event
+   * @param e the Event to be handled
+   */
   def eventHandler(e: Event): Unit
 
+  /**
+   * Handle the screen to be displayed in the game
+   * @param screen to be displayed
+   */
   def handleScreenChange(screen: BasicScreen): Unit =
     PokeArena.changeScreen(screen)
 
+/**
+ * The Controller for the MenuScreen (PokemonChoiceScreen)
+ */
 protected object MenuController extends Controller :
   override def eventHandler(e: Event): Unit = e match
     case e: StartGame =>
       GameController.startGame(e.list)
     case _ =>
 
+/**
+ * The Controller for the GameScreen
+ */
 protected object GameController extends Controller :
 
   override type T = World
@@ -45,12 +64,21 @@ protected object GameController extends Controller :
       case door: Door => model.doorCollision(door)
     case _ => endGame()
 
+  /**
+   * Remove the input Trainer from the Level
+   * @param trainer to be removed
+   */
   def removeTrainer(trainer: Trainer): Unit =
     model.removeTrainer(trainer)
     model.updateDoor
     stats.count(trainer)
     handleScreenChange(screen)
 
+
+  /**
+   * Create the Level and set the GameScreen as the current screen
+   * @param pokemonList
+   */
   def startGame(pokemonList: Seq[Pokemon]): Unit =
     setModel(World())
     stats.reset()
@@ -58,14 +86,25 @@ protected object GameController extends Controller :
     screen = GameScreen(model)
     handleScreenChange(screen)
 
+  /**
+   * Handle the end of the game
+   */
   def endGame(): Unit =
     stats.count(model.isGameWon)
     screen = GameOverScreen(stats, model.currentLevel, model.player.pokemonTeam)
     handleScreenChange(screen)
 
+/**
+ * The Controller for the BattleScreen
+ */
 object BattleController extends Controller :
   override type T = Battle
 
+  /**
+   * Handle the Battle between the Player and a Trainer
+   * @param player involved in the battle
+   * @param opponent involved in the battle
+   */
   def startBattle(player: Player, opponent: Trainer): Unit =
     model = Battle(player, opponent)
     screen = BattleScreen(model)
