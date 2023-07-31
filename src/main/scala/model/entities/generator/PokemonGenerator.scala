@@ -19,8 +19,8 @@ object PokemonGenerator:
 
   def getPokemonById(id: String): Option[Pokemon] = listOfAllPokemon.find(_.id == id)
 
-  def getPokemonByBstRange(range: (Int, Int)): Seq[Pokemon] =
-    getNRandomElement(listOfAllPokemon.filter(p => p.bst >= range._1 && p.bst <= range._2), 4, random)
+  def getPokemonByBstRange(range: (Int, Int), numberOfPokemon: Int): Seq[Pokemon] =
+    getNRandomElement(listOfAllPokemon.filter(p => p.bst >= range._1 && p.bst <= range._2), numberOfPokemon, random)
 
   private def getNRandomElement[A](seq: Seq[A], numberOfElements: Int, random: Random): Seq[A] =
     random.shuffle(seq).take(numberOfElements)
