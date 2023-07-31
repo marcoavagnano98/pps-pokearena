@@ -27,31 +27,31 @@ trait World:
 
   /**
    *
-   * @return the current Level with the informations about [[Opponent]], [[Items]] and [[Door]]
+   * @return the current Level with the informations about [[Trainer]], [[Item]] and [[Door]]
    */
   def level: Level
 
   /**
    *
-   * @param player update the Player informations
+   * @param player update the [[Player]] informations
    */
   def player_=(player: Player): Unit
 
   /**
    *
-   * @return retrive the Player informations
+   * @return retrive the [[Player]] informations
    */
   def player: Player
 
   /**
    *
-   * @return all the visibleEntities to be displayed in the Screen
+   * @return all the [[VisibleEntities]] to be displayed in the Screen
    */
   def visibleEntities: Seq[VisibleEntity]
 
   /**
    *
-   * @return the VisibleEntity with which a collision has occurred
+   * @return the [[VisibleEntity]] with which a collision has occurred
    */
   def checkCollision: Option[VisibleEntity]
 
@@ -63,18 +63,18 @@ trait World:
 
   /**
    *
-   * @param door the Door with which a collision has occurred
+   * @param door the [[Door]] with which a collision has occurred
    */
   def doorCollision(door: Door): Unit
 
   /**
    *
-   * @param trainer the Trainer with which a collision has occurred
+   * @param trainer the [[Trainer]] with which a collision has occurred
    */
   def removeTrainer(trainer: Trainer): Unit
 
   /**
-   * check if all the Trainers are defeated and updates the Door
+   * check if all the [[Trainer]] are defeated and updates the Door
    */
   def updateDoor: Unit
   def difficulty: Int

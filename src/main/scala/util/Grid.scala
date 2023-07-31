@@ -4,25 +4,25 @@ import model.entities.World.Position
 import scala.util.Random
 
 /**
- * The Grid in which the Level is divide to enable rendering of elements and the movement of the Player
+ * The Grid in which the [[Level]] is divide to enable rendering of elements and the movement of the [[Player]]
  */
 trait Grid:
 
   /**
-   * update the available position after an Entity is created
-   * @param pos the new Sequence of available Position
+   * update the available position after an [[Entity]] is created
+   * @param pos the new Sequence of available [[Position]]
    */
   def updateAvailablePositions(pos: Seq[Position]): Unit
 
   /**
    *
-   * @return a random Position from all the available Position in the Grid
+   * @return a random [[Position]] from all the available Position in the [[Grid]]
    */
   def getRandomPos: Position
 
   /**
    *
-   * @return the Sequence of all the available Position in the Grid
+   * @return the Sequence of all the available [[Position]] in the [[Grid]]
    */
   def allAvailablePositions: Seq[Position]
 

@@ -11,28 +11,28 @@ import view.screen.{BasicScreen, BattleScreen, PokemonChoiceScreen}
 trait Event
 
 /**
- * Type of Event generated during the interaction with PokemonChoiceScreen
+ * Type of Event generated during the interaction with [[PokemonChoiceScreen]]
  */
 trait MenuEvent extends Event
 
 /**
- * Type of Event generated during the interaction with GameScreen
+ * Type of Event generated during the interaction with [[GameScreen]]
  */
 trait GameEvent extends Event
 
 /**
- * Type of Event generated during the interaction with BattleScreen
+ * Type of Event generated during the interaction with [[BattleScreen]]
  */
 trait BattleEvent extends Event
 
 /**
- * Event generated during the interaction with PokemonChoiceScreen
+ * Event generated during the interaction with [[PokemonChoiceScreen]]
  * @param list the Sequence of Pokemon that compose the Player pokemon team
  */
 case class StartGame(list: Seq[Pokemon], difficulty: Int) extends MenuEvent
 
 /**
- * Event generated when a Pokemon is defeated during the Battle between the Player and a Trainer
+ * Event generated when a [[Pokemon]] is defeated during the Battle between the [[Player]] and a [[Trainer]]
  */
 case class PokemonDefeated() extends BattleEvent
 
@@ -43,7 +43,7 @@ case class PokemonDefeated() extends BattleEvent
 case class OptionChosen(battleOption: TrainerChoice) extends BattleEvent
 
 /**
- * Event generated when the Player collide with another Entity in the GameScreen
+ * Event generated when the [[Player]] collide with another [[Entity]] in the GameScreen
  * @param entity with which a collision occurred
  */
 case class CollisionEvent(entity: VisibleEntity) extends GameEvent

@@ -44,43 +44,43 @@ trait Level:
 
   /**
    *
-   * @return the size of a cell. It identifies the dimension of the cells that will compose the grid for the Player's movement
+   * @return the size of a cell. It identifies the dimension of the cells that will compose the grid for the [[Player]]'s movement
    */
   def cellSize: Int
 
   /**
    *
-   * @return the amount by which the Player should move within the grid
+   * @return the amount by which the [[Player]] should move within the grid
    */
   def playerSpeed: Int
 
   /**
    *
-   * @return the sequence of opponents Trainer that need to be created in the level
+   * @return the sequence of opponents [[Trainer]] that need to be created in the [[Level]]
    */
   def opponents: Seq[Trainer]
 
   /**
    *
-   * @return the sequence of Items that need to be created in the level
+   * @return the sequence of Items that need to be created in the [[Level]]
    */
   def items: Seq[Item]
 
   /**
    *
-   * @param item that should be deleted from the level
+   * @param item that should be deleted from the [[Level]]
    */
   def removeItem(item: Item): Unit
 
   /**
    *
-   * @param trainer tha should be deleted from the level
+   * @param trainer tha should be deleted from the [[Level]]
    */
   def removeOpponent(trainer: Trainer): Unit
 
   /**
    *
-   * @return the the Door in the level
+   * @return the the [[Door]] in the level
    */
   def door: Door
 

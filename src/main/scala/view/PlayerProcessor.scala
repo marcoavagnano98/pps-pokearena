@@ -7,7 +7,7 @@ import com.badlogic.gdx
 
 /**
  * Class that controls the movement of the Player
- * @param world contain the information's about the Player and the current Level
+ * @param world contain the information's about the [[Player]] and the current [[Level]]
  */
 class PlayerProcessor(world: World) extends InputAdapter:
   private var x = world.player.position.x

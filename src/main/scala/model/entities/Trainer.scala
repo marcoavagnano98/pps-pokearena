@@ -9,7 +9,7 @@ import model.entities.World.Position
 trait Trainer extends VisibleEntity:
   /**
    *
-   * @return the Pokemon team of the Trainer
+   * @return the [[Pokemon]] team of the Trainer
    */
   def pokemonTeam: Seq[Pokemon]
 
@@ -25,8 +25,8 @@ trait Player extends Trainer with MovingAbility:
   override type UpdatedEntity = Player
 
 /**
-   * Udate the pokemon team of the Player
-   * @param pokemonTeam the new Sequence of Pokemon representing the team of the Player
+   * Udate the pokemon team of the [[Player]]
+   * @param pokemonTeam the new Sequence of [[Pokemon]] representing the team of the Player
    * @return the Player updated
    */
   def withPokemon(pokemonTeam : Seq[Pokemon]) : Player
