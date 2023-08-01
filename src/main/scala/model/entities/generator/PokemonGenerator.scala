@@ -15,17 +15,15 @@ object PokemonGenerator:
   private val numberOfMovesForPokemon = 4
 
   def apply(numberOfPokemon: Int): Seq[Pokemon] =
-    getRandomPokemon(numberOfPokemon)
+    getRandomPokemon(listOfAllPokemon, numberOfPokemon)
 
-  private def getRandomPokemon(numberOfPokemon: Int): Seq[Pokemon] =
-    getNRandomElement(listOfAllPokemon, numberOfPokemon).map(p => p withMoves getNRandomElement(listOfAllMoves, numberOfMovesForPokemon))
+  private def getRandomPokemon(pokemonList: Seq[Pokemon], numberOfPokemon: Int): Seq[Pokemon] =
+    getNRandomElement(pokemonList, numberOfPokemon).map(p => p withMoves getNRandomElement(listOfAllMoves, numberOfMovesForPokemon))
 
-  def getPokemonById(id: String): Option[Pokemon] = listOfAllPokemon.find(_.id == id)
-
+  def getPokemonById(id: String): Option[Pokemon] = listOfAllPokemon.find(_.id == id).map(p => p withMoves getNRandomElement(listOfAllMoves, numberOfMovesForPokemon))
 
   def getPokemonByBstRange(range: (Int, Int), numberOfPokemon: Int): Seq[Pokemon] =
-    getNRandomElement(listOfAllPokemon.filter(p => p.bst >= range._1 && p.bst <= range._2), numberOfPokemon)
-
+    getRandomPokemon(listOfAllPokemon.filter(p => p.bst >= range._1 && p.bst <= range._2), numberOfPokemon)
 
   private def getNRandomElement[A](seq: Seq[A], numberOfElements: Int): Seq[A] =
     random.shuffle(seq).take(numberOfElements)
