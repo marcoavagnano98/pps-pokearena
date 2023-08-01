@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Timer.Task
-import controller.events.{EventDispatcher, OptionChosen, PokemonDefeated}
+import controller.events.{EventDispatcher, OptionChosen, EndRound}
 import model.battle.Status.*
 import model.battle.TrainerChoice.*
 import model.entities.World.Position
@@ -89,7 +89,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
             battleMenuLayout.setButtonsVisibility(Visible)
             if !(playerPokemon.maxHp == playerPokemon.hp) then battleMenuLayout.bagButtonTouchable(Touchable.enabled) else battleMenuLayout.bagButtonTouchable(Touchable.disabled)
           case _ =>
-        if turnData.exists(_.turnStatus == Defeat) then sendEvent(PokemonDefeated())
+        if turnData.exists(_.turnStatus == Defeat) then sendEvent(EndRound())
       }
     )
 
