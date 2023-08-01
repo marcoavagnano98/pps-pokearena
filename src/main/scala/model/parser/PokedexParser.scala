@@ -7,9 +7,13 @@ import io.circe.parser
 import io.circe.HCursor
 import io.circe.Decoder
 
+/** A Parser that extract all pokemon information from a local file*/
 object PokedexParser:
   private val pokedexFileName = "data/pokedex.json"
 
+  /**
+   * @return a list of all [[Pokemon]] of the game
+   */
   def getAllPokemon: Seq[Pokemon] =
     val inputString = Source.fromResource(pokedexFileName)(Codec("UTF-8")).mkString
     import givenConversionStringElementType.given

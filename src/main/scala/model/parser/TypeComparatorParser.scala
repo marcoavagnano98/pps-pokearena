@@ -7,9 +7,13 @@ import scala.collection.immutable.HashMap
 import scala.io.Source
 import io.circe.{Decoder, HCursor, parser}
 
+/** A Parser that extract all element type from a local file*/
 object TypeComparatorParser:
   private val typeCompareFileName = "data/typesCompare.json"
 
+  /**
+   * @return a list of all elementType compared to another and his effectiveness
+   */
   def getAllTypesComparable: Seq[(String,String,Double)] =
     val inputString = Source.fromResource(typeCompareFileName).mkString
     given typesDecoder: Decoder[(String,String,Double)] = (hCursor: HCursor) => {

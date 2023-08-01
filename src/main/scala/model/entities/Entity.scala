@@ -29,11 +29,14 @@ trait VisibleEntity extends Entity :
   def position: Position
 
 trait MovingAbility:
+  /** 
+   * The type that the method [[withPosition]] returns.
+   */
   type UpdatedEntity <: VisibleEntity
 
 /**
    * @param position the new position of the entity
-   * @return the same [[Entity]] with position updated
+   * @return the [[UpdatedEntity]] with position updated
    */
   def withPosition(position: Position): UpdatedEntity
 

@@ -23,6 +23,3 @@ object PokeArena extends Game:
     Gdx.app.postRunnable(() =>
       setScreen(behavior)
     )
-  
-  override def render(): Unit =
-    super.render()

@@ -42,6 +42,9 @@ private class SuperPotion(override val position: Position) extends Potion("Item_
 enum ItemType:
   case Potion, SuperPotion
 
+/**
+ * Factory used to create different type of Item
+ */
 object ItemFactory:
   def apply(itemType: ItemType, pos: Position = Position(0, 0)): Item = itemType match
     case ItemType.Potion => Potion(position = pos)
