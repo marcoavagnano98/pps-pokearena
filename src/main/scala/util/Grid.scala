@@ -28,12 +28,11 @@ trait Grid:
 
 object Grid:
 
-  def apply(gridW: Int, gridH: Int): Grid = GridImpl(gridW, gridH)
+  def apply(gridDimension: Int, doorPosition: Position): Grid = GridImpl(gridDimension, doorPosition)
 
-    private case class GridImpl(gridW: Int, gridH: Int) extends Grid:
+    private case class GridImpl(gridDimension: Int, doorPosition: Position) extends Grid:
       private val playerPosition = Position(0, 0)
-      private val doorPosition = Position(4, 9)
-      private var allLevelGridPositions: Seq[Position] = computeAllLevelGridPositions(gridW, gridH).filterNot(pos => pos == playerPosition || pos == doorPosition)
+      private var allLevelGridPositions: Seq[Position] = computeAllLevelGridPositions(gridDimension).filterNot(pos => pos == playerPosition || pos == doorPosition)
 
       override def getRandomPos: Position =
         val newPositions: Seq[Position] = Random.shuffle(allLevelGridPositions)
@@ -46,8 +45,8 @@ object Grid:
 
       override def allAvailablePositions: Seq[Position] = allLevelGridPositions
 
-      private def computeAllLevelGridPositions(gridW: Int, gridH: Int): Seq[Position] = for
-        row <- 0 until gridH
-        col <- 0 until gridW
+      private def computeAllLevelGridPositions(gridDimension: Int): Seq[Position] = for
+        row <- 0 until gridDimension
+        col <- 0 until gridDimension
       yield Position(col, row)
 

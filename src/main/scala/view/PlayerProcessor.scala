@@ -27,13 +27,13 @@ class PlayerProcessor(world: World) extends InputAdapter:
   private def canMove: Unit =
     val newX = world.player.position.x+x
     val newY = world.player.position.y+y
-    val withinXBounds = newX >= 0 && newX <= world.level.gridWidth-1
-    val withinYBounds = newY >= 0 && newY <= world.level.gridHeight-1
+    val withinXBounds = newX >= 0 && newX <= world.level.gridDimension-1
+    val withinYBounds = newY >= 0 && newY <= world.level.gridDimension-1
 
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)
 
-  private def updatePlayerPosition(newX: Double, newY: Double): Unit =
+  private def updatePlayerPosition(newX: Float, newY: Float): Unit =
     world.player = world.player withPosition Position(newX, newY)
   
   private def updateSpritePlayer(direction: String): Unit = world.player = world.player movesTo direction

@@ -2,7 +2,7 @@ package view.screen
 
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.Gdx
-import controller.events.{CollisionEvent, EndGame, EventDispatcher}
+import controller.events.{CollisionEvent, OpenDoor, DisplayGameOverScreen, EventDispatcher}
 import model.entities.{DoorState, Player, Trainer, VisibleEntity, World, GameStatus}
 import view.Sprites.{getEntitySprite, getMapPath}
 import view.screen.Drawable
@@ -17,6 +17,7 @@ object ViewportUtil:
  * @param world contain the information's about the Player and the current Level
  */
 class GameScreen(world: World) extends BasicScreen:
+  private val aspectRatio = ((ViewportUtil.viewportWidth/world.level.gridDimension)*1/10)
 
   override def viewport: Viewport = FitViewport(ViewportUtil.viewportWidth, ViewportUtil.viewportHeight)
 
@@ -27,14 +28,17 @@ class GameScreen(world: World) extends BasicScreen:
   override def drawables: Seq[Drawable] =
     Drawable(getMapPath(world.level.idLevel), world.level.levelXPos, world.level.levelYPos, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
       world.visibleEntities.map(e => Drawable(getEntitySprite(e),
-        e.position.x.toFloat * ViewportUtil.viewportWidth/world.level.gridWidth,
-        e.position.y.toFloat * ViewportUtil.viewportHeight/world.level.gridHeight,
-        e.height,
-        e.width))
+        e.position.x * ViewportUtil.viewportWidth/world.level.gridDimension,
+        e.position.y * ViewportUtil.viewportHeight/world.level.gridDimension,
+        (e.height * aspectRatio).toInt,
+        (e.width * aspectRatio).toInt))
 
   override def updateView(): Unit =
+    if world.level.opponents.isEmpty && world.level.door.state.equals(DoorState.Close) then
+      sendEvent(OpenDoor())
+
     if world.isGameWon.equals(GameStatus.Win) then
-      sendEvent(EndGame())
+      sendEvent(DisplayGameOverScreen())
 
     world.checkCollision match
       case Some(e:VisibleEntity) => sendEvent(CollisionEvent(e))

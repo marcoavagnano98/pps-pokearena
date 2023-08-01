@@ -32,15 +32,10 @@ trait Level:
 
   /**
    *
-   * @return the width of the level
+   * @return the dimension of the level, as width and height
    */
-  def gridWidth: Int
+  def gridDimension: Int
 
-  /**
-   *
-   * @return the height of the level
-   */
-  def gridHeight: Int
 
   /**
    *
@@ -91,11 +86,10 @@ trait Level:
   def door_=(door: Door): Unit
 
 object Level:
-  def apply(currentLevel:Int, maxLevel: Int, gridWidth: Int = 10, gridHeight: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
-    LevelImpl(gridWidth, gridHeight, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel)
+  def apply(currentLevel:Int, maxLevel: Int, gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
+    LevelImpl(gridDimension, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel)
 
-  private case class LevelImpl(override val gridWidth: Int,
-                               override val gridHeight: Int,
+  private case class LevelImpl(override val gridDimension: Int,
                                numberOfTrainersToGenerate: Int,
                                numberOfItemsToGenerate: Int,
                                currentLevel: Int,
@@ -106,11 +100,10 @@ object Level:
                                override val playerSpeed: Int = 1,
                                ) extends Level:
 
-    private val _grid: Grid = Grid(gridWidth, gridHeight)
-    private var _door: Door = Door(DoorState.Close, Position(4, 9))
+    private var _door: Door = Door(DoorState.Close, Position((gridDimension * 0.4).toInt, (gridDimension * 0.9).toInt))
+    private val _grid: Grid = Grid(gridDimension, _door.position)
     private val numberOfLevelsBackground = 13
-    private var (_items,_opponents) = generateEntities(currentLevel,maxLevel)
-    private val bossId = "boss"
+    private var (_opponents, _items) = generateEntities(currentLevel,maxLevel)
     override val idLevel: String = "map_" + Random.between(0, numberOfLevelsBackground)
 
     override def opponents: Seq[Trainer] = _opponents
@@ -128,10 +121,10 @@ object Level:
     override def door_=(door: Door): Unit =
       _door = door
 
-    private def generateEntities(currentLevel: Int, maxLevel: Int): (Seq[Item],Seq[Trainer]) = currentLevel match
+    private def generateEntities(currentLevel: Int, maxLevel: Int): (Seq[Trainer], Seq[Item]) = currentLevel match
       case `maxLevel` =>
-        (Seq[Item](), Seq(generateBoss))
+        (Seq(generateBoss), Seq[Item]())
       case _ =>
-        (ItemGenerator(_grid, numberOfItemsToGenerate), TrainerGenerator(_grid, numberOfTrainersToGenerate))
+        (TrainerGenerator(_grid, numberOfTrainersToGenerate), ItemGenerator(_grid, numberOfItemsToGenerate))
 
-    private def generateBoss: Trainer = Trainer(id = bossId, pos = Position(4,5), pokemonList = PokemonGenerator(4))
+    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator(4))

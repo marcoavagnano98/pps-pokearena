@@ -133,8 +133,7 @@ object World:
       _level.removeOpponent(trainer)
 
     override def updateDoor: Unit =
-      if _level.opponents.isEmpty then
-        _level.door = _level.door.updateDoor(openDoor, DoorState.Open)
+      _level.door = _level.door.updateDoor(openDoor, DoorState.Open)
 
     override def currentLevel: Int = _currentLevel
 
@@ -146,4 +145,4 @@ object World:
    * @param x coordinate
    * @param y coordinate
    */
-  case class Position(x: Double, y: Double)
+  case class Position(x: Float, y: Float)

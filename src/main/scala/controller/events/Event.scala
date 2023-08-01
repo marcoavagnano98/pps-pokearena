@@ -49,6 +49,11 @@ case class OptionChosen(battleOption: TrainerChoice) extends BattleEvent
 case class CollisionEvent(entity: VisibleEntity) extends GameEvent
 
 /**
+ * Event generate when the Door needs to be opened: all the Trainers in the Level are defeated
+ */
+case class OpenDoor() extends GameEvent
+
+/**
  * Event generate when the game needs to be ended
  */
-case class EndGame() extends GameEvent
+case class DisplayGameOverScreen() extends GameEvent

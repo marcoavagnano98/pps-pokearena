@@ -1,6 +1,6 @@
 package controller
 
-import controller.events.{CollisionEvent, EndGame, Event, OptionChosen, PokemonDefeated, StartGame}
+import controller.events.{CollisionEvent, DisplayGameOverScreen, Event, OptionChosen, PokemonDefeated, StartGame, OpenDoor}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
@@ -62,6 +62,7 @@ protected object GameController extends Controller :
       case trainer: Trainer => BattleController.startBattle(model.player, trainer)
       case item: Item => model.itemCollision(item); stats.count(item)
       case door: Door => model.doorCollision(door)
+    case _: OpenDoor => model.updateDoor
     case _ => endGame()
 
   /**
@@ -70,7 +71,6 @@ protected object GameController extends Controller :
    */
   def removeTrainer(trainer: Trainer): Unit =
     model.removeTrainer(trainer)
-    model.updateDoor
     stats.count(trainer)
     handleScreenChange(screen)
 
