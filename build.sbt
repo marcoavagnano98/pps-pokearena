@@ -17,7 +17,9 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Dependencies.Gdx()
   )
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.16" % Test
+  "org.scalatest" %% "scalatest" % "3.2.16" % Test,
+  "it.unibo.alice.tuprolog" % "2p-core" % "4.1.1",
+  "it.unibo.alice.tuprolog" % "2p-ui" % "4.1.1",
 )
 val circeVersion = "0.14.1"
 

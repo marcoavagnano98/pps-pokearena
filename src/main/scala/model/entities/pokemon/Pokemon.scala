@@ -52,7 +52,7 @@ trait Pokemon extends Entity :
   def maxHp: Int
 
   /**
-   * @return the base stats total of the [[Pokemon]]
+   * @return the base stats total of the [[Pokemon]], is the sum of hp,attack,defense and speed
    */
   def bst: Int = hp + attack + defense + speed
 

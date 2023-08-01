@@ -14,26 +14,29 @@ import model.entities.generator.PokemonGenerator
 import org.scalatest.wordspec.AnyWordSpec
 class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   import TrainerChoice.*
-  val bulbasaur: Pokemon = PokemonGenerator.getPokemonById("1").get
-  val charmender: Pokemon = PokemonGenerator.getPokemonById("4").get
   val actionMove: Move = Move(20, 10, "action", Normal, None)
   val lethalMove: Move = Move(9999, 10, "action", Normal, None)
+  val bulbasaur: Pokemon = PokemonGenerator.getPokemonById("1").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
+  val charmender: Pokemon = PokemonGenerator.getPokemonById("4").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
+
   val player: Player = Player(Position(0,0),"",PokemonGenerator(3))
   val opponent: Trainer = Trainer(Position(0,0),"",PokemonGenerator(3))
-  val slowestBt: Turn = Turn(player.id, bulbasaur, Attack(actionMove))
-  val fastestBt: Turn = Turn(opponent.id,charmender, Attack(actionMove))
+  val slowestTurn: Turn = Turn(player.id, bulbasaur, Attack(bulbasaur.moves.head))
+  val fastestTurn: Turn = Turn(opponent.id,charmender, Attack(charmender.moves.head))
 
   "A BattleEngine " should " return the fastest Pokemon in battle first" in{
-   BattleEngine(slowestBt, fastestBt).head.pokemon.id shouldBe charmender.id
+   BattleEngine(slowestTurn, fastestTurn).head.pokemon.id shouldBe charmender.id
   }
-
-  "A BattleEngine " should " return damaged battle units after attacks" in{
-    BattleEngine(slowestBt, fastestBt) shouldBe Seq(BattleEngine.turnAfterAttack(slowestBt, fastestBt,actionMove), BattleEngine.turnAfterAttack(fastestBt, slowestBt, actionMove))
+ 
+  "A BattleEngine " should " return damaged pokemon after attacks" in{
+    val t1 = BattleEngine.turnAfterAttack(fastestTurn withTurnPerformed,slowestTurn,actionMove).swap
+    val t2 = BattleEngine.turnAfterAttack(t1._1 withTurnPerformed, t1._2,actionMove).swap
+    BattleEngine(slowestTurn, fastestTurn) shouldBe  Seq(t2._1, t2._2)
   }
   val lethalBt: Turn = Turn(player.id, bulbasaur , Attack(lethalMove))
 
   "A BattleEngine " should "return defeated pokemon with turn status Defeat" in{
-    BattleEngine(lethalBt, fastestBt).head.turnStatus shouldBe Status.Defeat
+    BattleEngine(lethalBt, fastestTurn).head.turnStatus shouldBe Status.Defeat
   }
 
   "A Battle engine " should " return healed battle units after hp recovery item used" in {

@@ -1,6 +1,6 @@
 package controller
 
-import controller.events.{CollisionEvent, DisplayGameOverScreen, Event, OptionChosen, PokemonDefeated, StartGame, OpenDoor}
+import controller.events.{CollisionEvent, DisplayGameOverScreen, Event, OptionChosen, EndRound, StartGame, OpenDoor}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
@@ -114,7 +114,7 @@ object BattleController extends Controller :
     e match
       case e: OptionChosen =>
          screen.asInstanceOf[BattleScreen].battleScreenUpdate(model.playRound(e.battleOption))
-      case _: PokemonDefeated =>
+      case _: EndRound =>
         model.pokemonInBattle match
           case (None, Some(_)) => GameController.endGame()
           case (Some(_), None) => GameController.removeTrainer(model.opponent)

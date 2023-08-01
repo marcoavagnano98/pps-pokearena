@@ -30,7 +30,7 @@ class CpuTest extends AnyFlatSpec with should.Matchers:
 
   "A Cpu " should " return eventually the super effective move " in{
     var passed = false
-    for i <- 1 to 100 do
+    for _ <- 1 to 100 do
       Cpu(bulbasaur, charmender).optionChosen match
         case Attack(move) if move == brazier => passed = true
         case _ =>

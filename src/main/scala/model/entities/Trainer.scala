@@ -25,7 +25,7 @@ trait Player extends Trainer with MovingAbility:
   override type UpdatedEntity = Player
 
 /**
-   * Udate the pokemon team of the [[Player]]
+   * Update the pokemon team of the [[Player]]
    * @param pokemonTeam the new Sequence of [[Pokemon]] representing the team of the Player
    * @return the Player updated
    */
@@ -39,7 +39,7 @@ trait Player extends Trainer with MovingAbility:
   def movesTo(direction: String): Player
 
   /**
-   * Retrive the information about the Bag of the Player
+   * Retrieve the information about the Bag of the Player
    * @return the Bag containing the Item collected by the Player
    */
   def bag: Bag

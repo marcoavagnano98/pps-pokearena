@@ -10,6 +10,8 @@ import model.entities.pokemon.{Move, Pokemon}
 import view.battle.DialogueBox
 import LayoutVisibility.*
 import view.GdxUtil.onTouchDown
+
+import scala.collection.mutable
 import scala.io.Source
 
 class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary) :
@@ -24,7 +26,7 @@ class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, call
   setVisible(NotVisible.value)
 
   private def buttonString(move: Move): String =
-    move.name + "\n" + move.damage + " dmg | " + move.powerPoint + "PP | " + move.elementType.elemType
+   move.name + "\n" + move.damage + " dmg | " + move.powerPoint + "PP | " + move.elementType.elemType
 
   def movesButtons: Seq[(Int, ImageTextButton)] =
     for

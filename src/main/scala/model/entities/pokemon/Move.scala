@@ -36,6 +36,9 @@ trait Move:
    */
   def applyStatus(pokemon: Pokemon): Pokemon
 
+  /**
+   * @return The update [[Move]] with the [[powerPoint]] reduce by one.
+   */
   def withReducePowerPoint(): Move
   
 object Move:

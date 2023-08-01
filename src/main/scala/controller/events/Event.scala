@@ -32,9 +32,9 @@ trait BattleEvent extends Event
 case class StartGame(list: Seq[Pokemon], difficulty: Int) extends MenuEvent
 
 /**
- * Event generated when a [[Pokemon]] is defeated during the Battle between the [[Player]] and a [[Trainer]]
+ * Event generated when a round between the [[Pokemon]] of [[Player]] and  [[Trainer]] is terminated
  */
-case class PokemonDefeated() extends BattleEvent
+case class EndRound() extends BattleEvent
 
 /**
  * Event generated to control the Battle options
