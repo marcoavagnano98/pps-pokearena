@@ -50,7 +50,7 @@ object BattleEngine:
             case Alive => pair._1.trainerChoice match
               case Attack(move) => _loop(turnAfterAttack(pair._1 withTurnPerformed, pair._2, move) swap, nTurn - 1)
               case UseBag(item) => _loop((turnAfterHeal(pair._1, item) withTurnPerformed, pair._2) swap, nTurn - 1)
-            case _ => pair
+            case _ => pair swap
         case _ => turnPair
 
     _loop(turnPair, 2)
