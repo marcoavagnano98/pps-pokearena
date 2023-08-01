@@ -68,7 +68,7 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
     val buttonStart: TextButton = new TextButton("START", skin)
     buttonStart.onTouchDown(
       if listPokemonChose.length > 3 then
-        sendEvent(StartGame(listPokemonChose, selectBox.getSelectedIndex))
+        sendEvent(StartGame(listPokemonChose, selectBox.getSelectedIndex+1))
     )
 
     val infoBox = DialogueBox(Seq("Choose 4 Pokemon and then press Start!"), skin)

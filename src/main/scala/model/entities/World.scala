@@ -2,7 +2,9 @@ package model.entities
 
 import model.entities.pokemon.Pokemon
 import com.badlogic.gdx.Gdx
+import prolog.PrologApp.BstGenerator
 import util.Stats
+
 import scala.annotation.tailrec
 import scala.util.Random
 
@@ -95,6 +97,7 @@ object World:
   def apply(difficulty: Int = 0, maxLevel: Int = 4): World = WorldImpl(difficulty, maxLevel)
 
   private class WorldImpl(override val difficulty: Int, val maxLevel: Int) extends World:
+    private val bstIterator = BstGenerator.generate(difficulty, maxLevel)
     private val idPlayer = "player"
     private val openDoor = "door_open"
     private var _currentLevel = 1
@@ -104,7 +107,7 @@ object World:
 
     override def createLevel(pokemonTeam: Seq[Pokemon]): Unit =
       _player = _player withPokemon pokemonTeam
-      _level = Level(_currentLevel, maxLevel)
+      _level = Level(_currentLevel, maxLevel, bstIterator.next())
 
     override def level: Level = _level
     override def player_=(player: Player ): Unit = _player = player

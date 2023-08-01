@@ -86,14 +86,15 @@ trait Level:
   def door_=(door: Door): Unit
 
 object Level:
-  def apply(currentLevel:Int, maxLevel: Int, gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
-    LevelImpl(gridDimension, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel)
+  def apply(currentLevel:Int, maxLevel: Int, bstRange: (Int, Int), gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
+    LevelImpl(gridDimension, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel, bstRange)
 
   private case class LevelImpl(override val gridDimension: Int,
                                numberOfTrainersToGenerate: Int,
                                numberOfItemsToGenerate: Int,
                                currentLevel: Int,
                                maxLevel: Int,
+                               bstRange: (Int, Int),
                                override val levelXPos: Float = 0.0,
                                override val levelYPos: Float = 0.0,
                                override val cellSize: Int = 1,
@@ -125,6 +126,6 @@ object Level:
       case `maxLevel` =>
         (Seq(generateBoss), Seq[Item]())
       case _ =>
-        (TrainerGenerator(_grid, numberOfTrainersToGenerate), ItemGenerator(_grid, numberOfItemsToGenerate))
+        (TrainerGenerator(_grid, numberOfTrainersToGenerate, bstRange), ItemGenerator(_grid, numberOfItemsToGenerate))
 
     private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator(4))
