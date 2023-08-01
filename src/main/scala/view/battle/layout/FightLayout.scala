@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.{InputEvent, Touchable}
 import com.badlogic.gdx.scenes.scene2d.ui.{Cell, ImageTextButton, Skin, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
-import model.entities.pokemon.{Move, Pokemon, PokemonFactory}
+import model.entities.pokemon.{Move, Pokemon}
 import view.battle.DialogueBox
 import LayoutVisibility.*
 import view.GdxUtil.onTouchDown

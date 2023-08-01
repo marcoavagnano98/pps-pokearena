@@ -2,17 +2,18 @@ package view.screen
 
 import com.badlogic.gdx.graphics.{Color, GL20, Texture}
 import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, InputListener, Stage}
-import com.badlogic.gdx.scenes.scene2d.ui.{Container, Image, Label, Table, TextField}
-import com.badlogic.gdx.graphics.g2d.{Batch, TextureRegion}
+import com.badlogic.gdx.scenes.scene2d.ui.{Container, Image, Label, SelectBox, Table, TextField}
+import com.badlogic.gdx.graphics.g2d.{Batch, BitmapFont, TextureRegion}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
 import com.badlogic.gdx.{Screen, ScreenAdapter}
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import model.entities.pokemon.{Pokemon, PokemonFactory}
+import model.entities.pokemon.Pokemon
 import view.Sprites.getPokemonSprite
 import com.badlogic.gdx.scenes.scene2d.ui.Button
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import controller.events.{EventDispatcher, StartGame}
 import controller.events.StartGame
@@ -56,10 +57,18 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
       if (i+1) % 4 == 0 then
         table.row()
 
+
+    val selectBox = new SelectBox[String](skin)
+    selectBox.setItems("low", "medium", "high")
+    selectBox.setSelected("low")
+    val difficultyTable = Table()
+    difficultyTable.add(Label("difficulty: ", skin)).fillX()
+    difficultyTable.add(selectBox).fillY()
+
     val buttonStart: TextButton = new TextButton("START", skin)
     buttonStart.onTouchDown(
       if listPokemonChose.length > 3 then
-        sendEvent(StartGame(listPokemonChose))
+        sendEvent(StartGame(listPokemonChose, selectBox.getSelectedIndex))
     )
 
     val infoBox = DialogueBox(Seq("Choose 4 Pokemon and then press Start!"), skin)
@@ -73,6 +82,7 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
     rootTable.add(pokemonChosenTable)
     rootTable.row()
     rootTable.add(buttonStart).width(200).height(70)
+    rootTable.add(difficultyTable)
     val background = Image(texture(Sprites.background))
     Seq(background,rootTable)
 

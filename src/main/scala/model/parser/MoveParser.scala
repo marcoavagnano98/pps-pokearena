@@ -8,9 +8,13 @@ import io.circe.parser
 import io.circe.HCursor
 import io.circe.Decoder
 
+/** A Parser that extract all move information from a local file*/
 object MoveParser:
   private val movesFileName = "data/moves.json"
 
+  /**
+   * @return a list of all [[Move]] of the game
+   */
   def getAllMoves: Seq[Move] =
     val inputString = Source.fromResource(movesFileName)(Codec("UTF-8")).mkString
 

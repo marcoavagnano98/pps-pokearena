@@ -1,50 +1,117 @@
 package model.entities
+
 import model.entities.World.Position
-import model.entities.pokemon.{Pokemon, PokemonFactory}
+import model.entities.generator.{ItemGenerator, PokemonGenerator, TrainerGenerator}
+import model.entities.pokemon.Pokemon
+import util.Grid
 
 import scala.annotation.tailrec
-import scala.collection.immutable.Set
 import scala.util.Random
 
+/**
+ * Represent a Level in the Game
+ */
 trait Level:
-  def background: String
+  /**
+   *
+   * @return the unique file name that identifies the background of the level
+   */
+  def idLevel: String
+
+  /**
+   *
+   * @return the x-coordinate from which the level should start rendering
+   */
   def levelXPos: Float
+
+  /**
+   *
+   * @return the y-coordinate from which the level should start rendering
+   */
   def levelYPos: Float
+
+  /**
+   *
+   * @return the width of the level
+   */
   def gridWidth: Int
+
+  /**
+   *
+   * @return the height of the level
+   */
   def gridHeight: Int
+
+  /**
+   *
+   * @return the size of a cell. It identifies the dimension of the cells that will compose the grid for the [[Player]]'s movement
+   */
   def cellSize: Int
+
+  /**
+   *
+   * @return the amount by which the [[Player]] should move within the grid
+   */
   def playerSpeed: Int
+
+  /**
+   *
+   * @return the sequence of opponents [[Trainer]] that need to be created in the [[Level]]
+   */
   def opponents: Seq[Trainer]
+
+  /**
+   *
+   * @return the sequence of Items that need to be created in the [[Level]]
+   */
   def items: Seq[Item]
+
+  /**
+   *
+   * @param item that should be deleted from the [[Level]]
+   */
   def removeItem(item: Item): Unit
-  def removeOpponent(idTrainer: String): Unit
+
+  /**
+   *
+   * @param trainer tha should be deleted from the [[Level]]
+   */
+  def removeOpponent(trainer: Trainer): Unit
+
+  /**
+   *
+   * @return the the [[Door]] in the level
+   */
   def door: Door
+
+  /**
+   *
+   * @param door that should be updated after an event
+   */
   def door_=(door: Door): Unit
-  def generateEntities(levelRoom: Int): Unit
 
 object Level:
-  def apply(path: String): Level =
-    LevelImpl(path)
+  def apply(currentLevel:Int, maxLevel: Int, gridWidth: Int = 10, gridHeight: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
+    LevelImpl(gridWidth, gridHeight, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel)
 
-  private case class LevelImpl(background: String,
+  private case class LevelImpl(override val gridWidth: Int,
+                               override val gridHeight: Int,
+                               numberOfTrainersToGenerate: Int,
+                               numberOfItemsToGenerate: Int,
+                               currentLevel: Int,
+                               maxLevel: Int,
                                override val levelXPos: Float = 0.0,
                                override val levelYPos: Float = 0.0,
-                               override val gridWidth: Int = 10,
-                               override val gridHeight: Int = 10,
                                override val cellSize: Int = 1,
-                               override val playerSpeed: Int = 1) extends Level:
+                               override val playerSpeed: Int = 1,
+                               ) extends Level:
 
-    private var _opponents: Seq[Trainer] = Seq.empty
-    private var _items: Seq[Item] = Seq.empty
+    private val _grid: Grid = Grid(gridWidth, gridHeight)
     private var _door: Door = Door(DoorState.Close, Position(4, 9))
-    private val playerPosition = Position(0,0)
-    private val opponentsNumber = 22
-    private val numberOfEntitiesToGenerate = 3
-    private var allOpponents: Seq[Int] = Seq.empty
-    private var allPositions: Seq[Position] = for
-      row <- 0 until gridHeight
-      col <- 0 until gridWidth
-    yield Position(col, row)
+    private val numberOfLevelsBackground = 13
+    private var (_items,_opponents) = generateEntities(currentLevel,maxLevel)
+    private val bossId = "boss"
+    override val idLevel: String = "map_" + Random.between(0, numberOfLevelsBackground)
 
     override def opponents: Seq[Trainer] = _opponents
 
@@ -53,47 +120,18 @@ object Level:
     override def removeItem(item: Item): Unit =
       _items = _items.filter(_!=item)
 
-    override def removeOpponent(idTrainer: String): Unit =
-      _opponents = _opponents.filterNot(_.id == idTrainer)
+    override def removeOpponent(trainer: Trainer): Unit =
+      _opponents = _opponents.filterNot(_ == trainer)
 
     override def door: Door = _door
 
     override def door_=(door: Door): Unit =
       _door = door
 
-    override def generateEntities(levelRoom: Int): Unit = levelRoom match
-      case 4 => val boss: Trainer = generateBoss
-        _opponents = Seq(boss)
-      case _ => val (opps, itms): (Seq[Trainer], Seq[Item]) = generateTrainersAndItems(numberOfEntitiesToGenerate)
-        _opponents = opps
-        _items = itms
+    private def generateEntities(currentLevel: Int, maxLevel: Int): (Seq[Item],Seq[Trainer]) = currentLevel match
+      case `maxLevel` =>
+        (Seq[Item](), Seq(generateBoss))
+      case _ =>
+        (ItemGenerator(_grid, numberOfItemsToGenerate), TrainerGenerator(_grid, numberOfTrainersToGenerate))
 
-    private def generateTrainersAndItems(numberOfEntities: Int): (Seq[Trainer], Seq[Item]) =
-      @tailrec
-      def _generateTAndI(trainerList: List[Trainer], itemList: List[Item], numberOfTrainer: Int): (Seq[Trainer], Seq[Item]) = (trainerList, itemList) match
-        case (t, p) if numberOfTrainer > 0 => _generateTAndI(t :+ Trainer(id = "op" + randomOpponent, pos = randomPos, pokemonList = PokemonFactory(2)), p :+ ItemFactory.getRandomItem(pos = randomPos), numberOfTrainer - 1)
-        case _ => (trainerList, itemList)
-
-      _generateTAndI(List[Trainer](), List[Item](), numberOfEntities)
-
-    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonFactory(4))
-
-    allPositions = allPositions.filterNot(pos => pos == playerPosition || pos == _door.position)
-
-    @tailrec
-    private def randomOpponent: Int =
-      val opp = Random.between(0, opponentsNumber)
-      opp match
-        case opp if !allOpponents.contains(opp) =>
-          allOpponents = allOpponents :+ opp
-          opp
-        case _ => randomOpponent
-
-    private def randomPos: Position =
-      val newPosition = Random.shuffle(allPositions)
-      val pos = newPosition.head
-      allPositions = newPosition.drop(1)
-      pos
-
-
-
+    private def generateBoss: Trainer = Trainer(id = bossId, pos = Position(4,5), pokemonList = PokemonGenerator(4))

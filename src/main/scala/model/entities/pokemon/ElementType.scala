@@ -3,7 +3,7 @@ package model.entities.pokemon
 import model.entities.pokemon.ElementType.Normal
 import model.parser.TypeComparatorParser
 
-
+/** An Enumeration that models every possible element type of a pokemon and move*/
 enum ElementType(val elemType:String):
   case Normal extends ElementType("normal")
   case Fire extends ElementType("fire")
@@ -23,6 +23,8 @@ enum ElementType(val elemType:String):
   case Dragon extends ElementType("dragon")
   case Dark extends ElementType("dark")
 
+
+/** Comparator that can ben used to get the effectiveness of an element type over another */
 object ComparatorTypeElement:
   private val allTypeComparator = TypeComparatorParser.getAllTypesComparable
 

@@ -13,11 +13,10 @@ protected[view] object Sprites:
   val separatorLine = "assets/blackline.png"
   val getPokemonSprite : Pokemon => String = "sprites/pokedex/" + _.id + ".png"
   val getBattleSprite: String => String = "sprites/pokedex/battle/" + _ + ".png"
+  val getMapPath: String => String = "assets/rooms/" + _ + ".png"
 
   val getEntitySprite : VisibleEntity => String =
     case trainer: Trainer => "assets/trainers/"+ trainer.id+ ".png"
     case item: Item => "assets/items/"+ item.id+ ".png"
     case door: Door => "assets/doors/"+ door.id +".png"
 
-
-  def getMapPath(id: String): String = "assets/rooms/" + id + ".png"

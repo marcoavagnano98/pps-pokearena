@@ -5,6 +5,10 @@ import com.badlogic.gdx.Input.Keys
 import model.entities.World.Position
 import com.badlogic.gdx
 
+/**
+ * Class that controls the movement of the Player
+ * @param world contain the information's about the [[Player]] and the current [[Level]]
+ */
 class PlayerProcessor(world: World) extends InputAdapter:
   private var x = world.player.position.x
   private var y = world.player.position.y
