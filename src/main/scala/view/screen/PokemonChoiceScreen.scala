@@ -61,9 +61,8 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
     val selectBox = new SelectBox[String](skin)
     selectBox.setItems("low", "medium", "high")
     selectBox.setSelected("low")
-    val difficultyTable = Table()
-    difficultyTable.add(Label("difficulty: ", skin)).fillX()
-    difficultyTable.add(selectBox).fillY()
+
+    val infoBoxDifficulty = DialogueBox(Seq("Choose the Difficulty"), skin)
 
     val buttonStart: TextButton = new TextButton("START", skin)
     buttonStart.onTouchDown(
@@ -81,8 +80,11 @@ class PokemonChoiceScreen(pokemonGenerator: Seq[Pokemon]) extends BasicScreen :
     rootTable.row()
     rootTable.add(pokemonChosenTable)
     rootTable.row()
+    rootTable.add(infoBoxDifficulty).height(50).width(200).padBottom(20)
+    rootTable.row()
+    rootTable.add(selectBox).padBottom(20)
+    rootTable.row()
     rootTable.add(buttonStart).width(200).height(70)
-    rootTable.add(difficultyTable)
     val background = Image(texture(Sprites.background))
     Seq(background,rootTable)
 

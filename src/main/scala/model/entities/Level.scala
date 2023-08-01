@@ -128,4 +128,4 @@ object Level:
       case _ =>
         (TrainerGenerator(_grid, numberOfTrainersToGenerate, bstRange), ItemGenerator(_grid, numberOfItemsToGenerate))
 
-    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator(4))
+    private def generateBoss: Trainer = Trainer(id = "boss", pos = Position(4,5), pokemonList = PokemonGenerator.getPokemonByBstRange(bstRange,4))
