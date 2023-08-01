@@ -3,7 +3,9 @@ package prolog
 import PrologEngine.PrologUtils.{*, given}
 
 object PrologApp:
-
+  /**
+   * Generator for BST range
+   */
   object BstGenerator:
     val engine: PrologEngine = PrologEngine("prolog/range_theory.pl")
 
