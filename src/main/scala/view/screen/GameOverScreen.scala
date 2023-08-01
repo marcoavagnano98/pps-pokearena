@@ -14,7 +14,7 @@ import view.Sprites.getPokemonSprite
 import model.entities.{Door, Trainer, Item}
 import model.entities.GameStatus._
 
-class GameOverScreen(stats: Stats, levelReached: Int, pokemonTeam: Seq[Pokemon]) extends BasicScreen:
+class GameOverScreen(world: World, stats: Stats) extends BasicScreen:
 
   override def drawables: Seq[Drawable] = Seq(Drawable("assets/endGame.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
 
@@ -32,10 +32,10 @@ class GameOverScreen(stats: Stats, levelReached: Int, pokemonTeam: Seq[Pokemon])
     buttonStart.onTouchDown(PokeArena.create())
 
     import view.battle.DialogueBox
-    createAndAddInfobox("You reached Level ", levelReached, skin)
+    createAndAddInfobox("You reached Level ", world.currentLevel, skin)
     stats.storedData.foreach((item, counter) => createAndAddInfobox(item, counter, skin))
 
-    for (i <- pokemonTeam)
+    for (i <- world.player.pokemonTeam)
       createAndAddInfobox(i.name + " was part of your Team with total stats of ", i.bst, skin)
 
     def createAndAddInfobox(item: String, counter: Int, skin: Skin): Unit =

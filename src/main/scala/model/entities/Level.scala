@@ -86,7 +86,7 @@ trait Level:
   def door_=(door: Door): Unit
 
 object Level:
-  def apply(currentLevel:Int, maxLevel: Int, bstRange: (Int, Int), gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
+  def apply(currentLevel:Int, maxLevel: Int, bstRange: (Int, Int), gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 0, numberOfItemsToGenerate: Int = 3): Level =
     LevelImpl(gridDimension, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel, bstRange)
 
   private case class LevelImpl(override val gridDimension: Int,
@@ -101,7 +101,7 @@ object Level:
                                override val playerSpeed: Int = 1,
                                ) extends Level:
 
-    private var _door: Door = Door(DoorState.Close, Position((gridDimension * 0.4).toInt, (gridDimension * 0.9).toInt))
+    private var _door: Door = Door(DoorState.Close, Position((gridDimension*0.5).toInt, gridDimension-1))
     private val _grid: Grid = Grid(gridDimension, _door.position)
     private val numberOfLevelsBackground = 13
     private var (_opponents, _items) = generateEntities(currentLevel,maxLevel)
