@@ -19,7 +19,7 @@ class BattleControllerTest extends AnyWordSpec with Matchers:
 
 
   "BattleController " when {
-    "battle never started yet " should {
+    "battle never started yet " must  {
       "have null screen " in {
         BattleController.screen must be(null)
       }
