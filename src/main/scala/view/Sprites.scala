@@ -9,8 +9,8 @@ import model.entities.pokemon.Pokemon
 import scala.util.Random
 
 protected[view] object Sprites:
-  val background = "assets/pokemon_grass.png"
-  val separatorLine = "assets/blackline.png"
+  val background = "assets/background/pokemon_grass.png"
+  val separatorLine = "assets/prop/blackline.png"
   val getPokemonSprite : Pokemon => String = "sprites/pokedex/" + _.id + ".png"
   val getBattleSprite: String => String = "sprites/pokedex/battle/" + _ + ".png"
   val getMapPath: String => String = "assets/rooms/" + _ + ".png"

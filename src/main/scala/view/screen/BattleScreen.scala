@@ -48,7 +48,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   showBattleMenu
 
   def backButton: ImageButton =
-    val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
+    val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/prop/backarrow.png"))))
     backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 100, 100)
     backButton.onTouchDown(showBattleMenu)
     backButton
@@ -135,7 +135,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pOpponentLayout)
 
   private def background: Image =
-    val image = Image(Texture("assets/battle-screen.png"))
+    val image = Image(Texture("assets/background/battle-screen.png"))
     image.setBounds(0, 0, viewPortSize._1, viewPortSize._2)
     image
 
