@@ -15,8 +15,8 @@ import org.scalatest.matchers.*
 import scala.language.postfixOps
 class CpuTest extends AnyFlatSpec with should.Matchers:
 
-  var bulbasaur: Pokemon = PokemonGenerator.getPokemonById("1").get
-  var charmender: Pokemon = PokemonGenerator.getPokemonById("4").get
+  var bulbasaur: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("1").get
+  var charmender: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("4").get
   val brazier: Move = Move(20, 20, "brazier", Fire , None)
   val action: Move = Move(20, 20, "action", Normal, None)
   val moves: Seq[Move] = Seq(action, action, brazier, action)
