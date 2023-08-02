@@ -1,11 +1,10 @@
-package model
+package model.entities.generator
 
 import model.entities.generator.PokemonGenerator
+import model.entities.pokemon.{ElementType, Pokemon}
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
-import model.entities.pokemon.Pokemon
-import model.entities.pokemon.ElementType
 
 class PokemonGeneratorTest extends AnyFlatSpec with should.Matchers:
 

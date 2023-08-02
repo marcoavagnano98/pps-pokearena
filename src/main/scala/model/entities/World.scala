@@ -79,7 +79,6 @@ trait World:
    * check if all the [[Trainer]] are defeated and updates the Door
    */
   def updateDoor: Unit
-  def difficulty: Int
 
   /**
    *
@@ -94,9 +93,9 @@ trait World:
   def isGameWon: GameStatus
 
 object World:
-  def apply(difficulty: Int = 0, maxLevel: Int = 4): World = WorldImpl(difficulty, maxLevel)
+  def apply(difficulty: Int = 1, maxLevel: Int = 4): World = WorldImpl(difficulty, maxLevel)
 
-  private class WorldImpl(override val difficulty: Int, val maxLevel: Int) extends World:
+  private class WorldImpl(val difficulty: Int, val maxLevel: Int) extends World:
     private val bstIterator = BstGenerator.generate(difficulty, maxLevel)
     private val idPlayer = "player"
     private val openDoor = "door_open"

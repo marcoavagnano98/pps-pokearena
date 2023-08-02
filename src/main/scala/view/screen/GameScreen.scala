@@ -17,7 +17,7 @@ object ViewportUtil:
  * @param world contain the information's about the Player and the current Level
  */
 class GameScreen(world: World) extends BasicScreen:
-  private val aspectRatio = ((ViewportUtil.viewportWidth/world.level.gridDimension)*1/10)
+  private val aspectRatio = (ViewportUtil.viewportWidth/world.level.gridDimension) * 1/10
 
   override def viewport: Viewport = FitViewport(ViewportUtil.viewportWidth, ViewportUtil.viewportHeight)
 

@@ -1,17 +1,17 @@
-package model
+package model.battle
 
-import model.entities.{Item, ItemFactory, ItemType, Player, Trainer}
-import org.scalatest.*
-import org.scalatest.flatspec.*
-import org.scalatest.matchers.*
-import model.entities.pokemon.*
-import model.entities.pokemon.ElementType.*
 import model.battle.*
-
-import scala.language.postfixOps
 import model.entities.World.Position
 import model.entities.generator.PokemonGenerator
+import model.entities.pokemon.*
+import model.entities.pokemon.ElementType.*
+import model.entities.*
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.*
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{Status, *}
+
+import scala.language.postfixOps
 class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   import TrainerChoice.*
   val actionMove: Move = Move(20, 10, "action", Normal, None)

@@ -1,4 +1,4 @@
-package model
+package model.pokemon
 
 import model.entities.pokemon.{ElementType, Pokemon}
 import org.scalatest.flatspec.AnyFlatSpec

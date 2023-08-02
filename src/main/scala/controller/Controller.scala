@@ -74,10 +74,11 @@ protected object GameController extends Controller :
     stats.count(trainer)
     handleScreenChange(screen)
 
-
   /**
+   *
    * Create the Level and set the GameScreen as the current screen
-   * @param pokemonList
+   * @param pokemonList the Player's pokemon team
+   * @param difficulty the difficulty of the Game
    */
   def startGame(pokemonList: Seq[Pokemon], difficulty: Int): Unit =
     setModel(World(difficulty))
@@ -91,7 +92,7 @@ protected object GameController extends Controller :
    */
   def endGame(): Unit =
     stats.count(model.isGameWon)
-    screen = GameOverScreen(stats, model.currentLevel, model.player.pokemonTeam)
+    screen = GameOverScreen(model, stats)
     handleScreenChange(screen)
 
 /**

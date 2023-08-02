@@ -1,14 +1,12 @@
-package model
+package model.pokemon
 
 import model.entities.Potion
 import model.entities.World.Position
-import model.entities.pokemon.{ElementType, Pokemon}
+import model.entities.pokemon.AllPokemonStatus.BurnStatus
+import model.entities.pokemon.{ElementType, Move, Pokemon}
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
-import model.entities.pokemon.Move
-import model.entities.pokemon.ElementType
-import model.entities.pokemon.AllPokemonStatus.BurnStatus
 
 class PokemonStatusTest extends AnyFlatSpec with should.Matchers:
 
