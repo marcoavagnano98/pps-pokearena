@@ -54,7 +54,7 @@ object EntityDefaultValues:
   val width: Entity => Float =
     case _: Pokemon => 5
     case _: Trainer => 10
-    case _: Item => 5
+    case _: Item => 6
     case _: Door => 10
     case _ => 0
 
@@ -64,6 +64,6 @@ object EntityDefaultValues:
   val height: Entity => Float =
     case _: Pokemon => 5
     case _: Trainer => 10
-    case _: Item => 5
+    case _: Item => 6
     case _: Door => 10
     case _ => 0

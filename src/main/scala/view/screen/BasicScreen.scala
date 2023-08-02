@@ -27,8 +27,8 @@ abstract class BasicScreen extends ScreenAdapter with EventDispatcher:
   def updateView(): Unit = {}
 
   private val stage: Stage = Stage(viewport)
-  private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/fnt_white.fnt"))
-  lazy val skin = new Skin(Gdx.files.internal("assets/uiskin.json"))
+  private lazy val font: BitmapFont = BitmapFont(Gdx.files.internal("assets/skin/fnt_white.fnt"))
+  lazy val skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"))
 
   override def render(delta: Float): Unit =
     Gdx.gl.glClearColor(0, 0, 0, 1)

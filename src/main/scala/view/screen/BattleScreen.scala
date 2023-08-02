@@ -47,8 +47,9 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, viewPortSize._1 / 2, 100))
   showBattleMenu
 
+
   def backButton: ImageTextButton =
-    val backButton = ImageTextButton("Back", skin) //TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png")))
+    val backButton = ImageTextButton("Back", skin)
     backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 80, 50)
     backButton.onTouchDown(showBattleMenu)
     backButton
@@ -134,7 +135,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pOpponentLayout)
 
   private def background: Image =
-    val image = Image(Texture("assets/battle-screen.png"))
+    val image = Image(Texture("assets/background/battle-screen.png"))
     image.setBounds(0, 0, viewPortSize._1, viewPortSize._2)
     image
 

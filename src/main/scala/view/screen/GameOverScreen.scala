@@ -16,7 +16,7 @@ import model.entities.GameStatus._
 
 class GameOverScreen(world: World, stats: Stats) extends BasicScreen:
 
-  override def drawables: Seq[Drawable] = Seq(Drawable("assets/endGame.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
+  override def drawables: Seq[Drawable] = Seq(Drawable("assets/background/endGame.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
 
   override def actors: Seq[Actor] =
     val rootTable: Table = Table()
