@@ -1,17 +1,18 @@
-package model
-import model.entities.{Item, ItemFactory, ItemType, Player, Trainer}
-import org.scalatest.*
-import org.scalatest.flatspec.*
-import org.scalatest.matchers.*
-import model.entities.pokemon.*
-import model.entities.pokemon.ElementType.*
+package model.battle.cpu
+
 import model.battle.*
 import model.battle.TrainerChoice.*
 import model.battle.cpu.Cpu
-
-import scala.language.postfixOps
 import model.entities.World.Position
 import model.entities.generator.PokemonGenerator
+import model.entities.pokemon.*
+import model.entities.pokemon.ElementType.*
+import model.entities.*
+import org.scalatest.*
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.*
+
+import scala.language.postfixOps
 class CpuTest extends AnyFlatSpec with should.Matchers:
 
   var bulbasaur: Pokemon = PokemonGenerator.getPokemonById("1").get

@@ -1,19 +1,18 @@
-package model
+package model.battle
 
-import model.entities.{Item, ItemFactory, ItemType, Player, Trainer}
+import model.battle.{TrainerChoice, *}
+import model.entities.World.Position
+import model.entities.generator.PokemonGenerator
+import model.entities.pokemon.*
+import model.entities.pokemon.AllPokemonStatus.ParalyzeStatus
+import model.entities.pokemon.ElementType.*
+import model.entities.*
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
-import model.entities.pokemon.*
-import model.entities.pokemon.ElementType.*
-import model.battle.*
-import model.battle.TrainerChoice
+import org.scalatest.wordspec.AnyWordSpec
 
 import scala.language.postfixOps
-import model.entities.World.Position
-import model.entities.generator.PokemonGenerator
-import model.entities.pokemon.AllPokemonStatus.ParalyzeStatus
-import org.scalatest.wordspec.AnyWordSpec
 class TurnTest extends AnyFlatSpec with should.Matchers:
   val pokemon: Pokemon = PokemonGenerator(1).head
   private val thunderShock = Move(50,15,"thunderShock",ElementType.Fire,Some(ParalyzeStatus()))

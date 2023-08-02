@@ -86,7 +86,7 @@ trait Level:
   def door_=(door: Door): Unit
 
 object Level:
-  def apply(currentLevel:Int, maxLevel: Int, bstRange: (Int, Int), gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 0, numberOfItemsToGenerate: Int = 3): Level =
+  def apply(currentLevel:Int, maxLevel: Int, bstRange: (Int, Int), gridDimension: Int = 10, numberOfTrainersToGenerate: Int = 3, numberOfItemsToGenerate: Int = 3): Level =
     LevelImpl(gridDimension, numberOfTrainersToGenerate, numberOfItemsToGenerate, currentLevel, maxLevel, bstRange)
 
   private case class LevelImpl(override val gridDimension: Int,
