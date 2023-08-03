@@ -8,11 +8,16 @@ import org.scalatest.matchers.*
 
 class PokemonGeneratorTest extends AnyFlatSpec with should.Matchers:
 
-  private val bulbasaur = Pokemon("1","Bulbasaur",45,49,49,45,List(),ElementType.Grass)
-  "A PokemonFactory" should "create a seq of 4 pokemon" in{
+  "A PokemonGenerator" should "create a seq of 4 pokemon" in{
     assertResult(4)(PokemonGenerator(4).length)
   }
 
-  "A PokemonFactory" should "return Bulbasaur with specified id 1" in{
-    bulbasaur shouldBe PokemonGenerator.getPokemonById("1").get
+  "A PokemonGenerator with a specified range" should "return a seq of pokemon with a bast only in that range" in{
+    val pokemonGenerated = PokemonGenerator.getPokemonByBstRange((100,200),4)
+    pokemonGenerated.forall(p => p.bst >=100 && p.bst <= 200) shouldBe true
+  }
+
+  "A PokemonGenerator" should "return Bulbasaur with specified id 1" in{
+    val bulbasaur = Pokemon("1","Bulbasaur",90,49,49,45,List(),ElementType.Grass)
+    PokemonGenerator.getPokemonByIdWithMoves("1").get shouldBe bulbasaur
   }

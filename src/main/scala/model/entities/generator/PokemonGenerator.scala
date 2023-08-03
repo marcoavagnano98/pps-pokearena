@@ -19,9 +19,10 @@ object PokemonGenerator:
 
   /**
    * @param id of the [[Pokemon]] you want to generate.
+   * @param moves of the [[Pokemon]] you want to have.
    * @return An [[Option]] of Some [[Pokemon]] if it exist otherwise an [[Option]] Empty
    */
-  def getPokemonById(id: String): Option[Pokemon] = listOfAllPokemon.find(_.id == id).map(addMovesToPokemon(_, numberOfMovesForPokemon))
+  def getPokemonByIdWithMoves(id: String, moves: Seq[Move] = Seq.empty): Option[Pokemon] = listOfAllPokemon.find(_.id == id).map(_ withMoves moves)
 
   /**
    * @param range           of the [[Pokemon]] based on his bst stats
