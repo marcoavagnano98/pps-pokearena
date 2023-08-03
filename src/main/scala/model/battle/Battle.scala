@@ -47,7 +47,7 @@ object Battle:
                                 override val opponent: Trainer,
                                ) extends Battle :
 
-    import Status.*
+    import TurnStatus.*
 
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam

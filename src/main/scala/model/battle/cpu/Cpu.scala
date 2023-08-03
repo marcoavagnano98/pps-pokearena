@@ -1,6 +1,6 @@
 package model.battle.cpu
 
-import model.battle.{Status, TrainerChoice}
+import model.battle.{TurnStatus, TrainerChoice}
 import model.entities.pokemon.{ComparatorTypeElement, Move, Pokemon}
 import util.Utilities
 

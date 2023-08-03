@@ -12,7 +12,7 @@ import scala.language.postfixOps
 /** Represent the engine of [[Pokemon]] battle */
 object BattleEngine:
 
-  import Status.*
+  import TurnStatus.*
   import TrainerChoice.*
 
   given Ordering[Turn] = Ordering.by[Turn, (Int, Int)](t => (t.trainerChoice.priority, t.pokemon.speed)).reverse

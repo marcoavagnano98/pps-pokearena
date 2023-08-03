@@ -11,10 +11,10 @@ enum TrainerChoice(val description: String, val priority: Int):
   case UseBag(item: Item) extends TrainerChoice("usa lo strumento " + item.name, 1)
 /** Active and passive events that pokemon perform or suffers during the [[Turn]] */
 
-enum Status(val description: Option[String]):
-  case Skip extends Status(Some("salta il turno"))
-  case Defeat extends Status(Some("e' stato sconfitto"))
-  case Alive extends Status(None)
+enum TurnStatus(val description: Option[String]):
+  case Skip extends TurnStatus(Some("salta il turno"))
+  case Defeat extends TurnStatus(Some("e' stato sconfitto"))
+  case Alive extends TurnStatus(None)
 
 /** Dynamic structure that maintains the information of pokemon during the [[Battle]] and keeps track of the events that happens during the [[Turn]] */
 trait Turn:
@@ -42,9 +42,9 @@ trait Turn:
 
   /**
    *
-   * @return [[Status]] of the [[Turn]]
+   * @return [[TurnStatus]] of the [[Turn]]
    */
-  def turnStatus: Status
+  def turnStatus: TurnStatus
 
   /**
    *
@@ -83,11 +83,11 @@ object Turn:
     TurnImpl(trainerRef: String, pokemon: Pokemon, option: TrainerChoice)
 
   private case class TurnImpl(override val trainerRef: String, override val pokemon: Pokemon,
-                              override val trainerChoice: TrainerChoice, pf: Boolean = false, tStatus: Status = Status.Alive) extends Turn :
+                              override val trainerChoice: TrainerChoice, pf: Boolean = false, tStatus: TurnStatus = TurnStatus.Alive) extends Turn :
 
-    import Status.*
+    import TurnStatus.*
 
-    override def turnStatus: Status = tStatus
+    override def turnStatus: TurnStatus = tStatus
 
     override def performed: Boolean = pf
 

@@ -13,14 +13,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, Status, TrainerChoice, Turn}
+import model.battle.{Battle, TurnStatus, TrainerChoice, Turn}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Timer.Task
 import controller.events.{EventDispatcher, OptionChosen, EndFight}
-import model.battle.Status.*
+import model.battle.TurnStatus.*
 import model.battle.TrainerChoice.*
 import model.entities.World.Position
 import model.entities.pokemon.Move

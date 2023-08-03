@@ -35,7 +35,7 @@ class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   }
   
   "A BattleEngine " should "return defeated pokemon with turn status Defeat" in{
-    BattleEngine(fastestTurn, Turn(player.id, bulbasaur withHp 1, Attack(bulbasaur.moves.head)))(1).turnStatus shouldBe Status.Defeat
+    BattleEngine(fastestTurn, Turn(player.id, bulbasaur withHp 1, Attack(bulbasaur.moves.head)))(1).turnStatus shouldBe TurnStatus.Defeat
   }
 
   "A Battle engine " should " return healed battle units after hp recovery item used" in {
