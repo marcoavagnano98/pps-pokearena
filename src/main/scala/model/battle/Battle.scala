@@ -46,17 +46,19 @@ object Battle:
   private case class BattleImpl(override val player: Player,
                                 override val opponent: Trainer,
                                ) extends Battle :
+
     import Status.*
 
     var playerTeam: Seq[Pokemon] = player.pokemonTeam
     var opponentTeam: Seq[Pokemon] = opponent.pokemonTeam
 
     override def playRound(playerChoice: TrainerChoice): Seq[Turn] =
-      val playerTurn: Turn = Turn(player.id, playerTeam.head, playerChoice)
-      val opponentTurn: Turn = Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen)
-      val updatedTurnSequence: Seq[Turn] = BattleEngine(playerTurn, opponentTurn)
-      updatedTurnSequence.foreach(updatePokemonList)
-      updatedTurnSequence
+      for turn <- BattleEngine(Turn(player.id, playerTeam.head, playerChoice),
+        Turn(opponent.id, opponentTeam.head, Cpu(playerTeam.head, opponentTeam.head).optionChosen))
+      yield {
+        updatePokemonList(turn)
+        turn
+      }
 
     private def updatePokemonList(updatedUnit: Turn): Unit =
       updatedUnit.turnStatus match
