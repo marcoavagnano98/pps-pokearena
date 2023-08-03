@@ -1,10 +1,10 @@
 package controller
 
-import controller.events.{CollisionEvent, DisplayGameOverScreen, Event, OptionChosen, EndFight, StartGame, OpenDoor}
+import controller.events.{CollisionEvent, DisplayGameOverScreen, EndFight, ResetGame, Event, OpenDoor, OptionChosen, StartGame}
 import model.battle.Battle
 import model.battle.cpu.Cpu
 import model.entities.pokemon.Pokemon
-import model.entities.{Door, Item, Player, Trainer, VisibleEntity, World, GameStatus}
+import model.entities.{Door, GameStatus, Item, Player, Trainer, VisibleEntity, World}
 import pokearena.PokeArena
 import util.Stats
 import view.screen.{BasicScreen, BattleScreen, GameOverScreen, GameScreen}
@@ -63,6 +63,7 @@ protected object GameController extends Controller :
       case item: Item => model.itemCollision(item); stats.count(item)
       case door: Door => model.doorCollision(door)
     case _: OpenDoor => model.updateDoor
+    case _: ResetGame => PokeArena.setInitialScreen()
     case _ => endGame()
 
   /**

@@ -13,17 +13,24 @@ trait PrologEngine:
    */
   def generateRange(difficulty: Int, nLevels: Int): Iterator[(Int, Int)]
 
+  /***
+   *
+   * @param theory set prolog theory to engine
+   */
+  def setTheory(theory: Theory): Unit
+
 object PrologEngine:
   /***
    *
-   * @param theory load prolog theory
+   * @param defaultTheory initial prolog theory
    * @return [[PrologEngine]]
    */
-  def apply(theory: Theory): PrologEngine = PrologEngineImpl(theory)
+  def apply(defaultTheory: Theory): PrologEngine = PrologEngineImpl(defaultTheory)
 
   private case class PrologEngineImpl(theory: Theory) extends PrologEngine:
     val engine: Prolog = Prolog()
-    engine.setTheory(theory)
+    setTheory(theory)
+    def setTheory(theory: Theory) : Unit =  engine.setTheory(theory)
 
     import PrologUtils.{*,given}
 
@@ -38,12 +45,17 @@ object PrologEngine:
      *
      * @return solve a query and return a [[LazyList]] of [[SolveInfo]]
      */
-    def solve: Term => LazyList[SolveInfo] =
+
+    def solve: Term => LazyList[SolveInfo] = term => LazyList(engine solve term)/*
       goal =>
         new Iterable[SolveInfo] {
 
           override def iterator = new Iterator[SolveInfo] {
+            val v0 = System.nanoTime()
+            val v1 = System.nanoTime()
+            println("Execution time: " + (v1 - v0) + "nanoseconds")
             var solution: Option[SolveInfo] = Some(engine.solve(goal))
+
 
             override def hasNext = solution.isDefined &&
               (solution.get.isSuccess || solution.get.hasOpenAlternatives)
@@ -52,7 +64,7 @@ object PrologEngine:
               try solution.get
               finally solution = if (solution.get.hasOpenAlternatives) Some(engine.solveNext()) else None
           }
-        }.to(LazyList)
+        }.to(LazyList)*/
 
   /***
    * Contains givens and method used for converting [[Term]] to [[Iterator]]
@@ -62,13 +74,17 @@ object PrologEngine:
 
     given Conversion[String, Theory] = source => Theory.parseLazilyWithStandardOperators(Source.fromResource(source).mkString)
 
-    given Conversion[SolveInfo, Iterator[(Int, Int)]] = info => getRangeIterator(info.getTerm("T"))
+    given Conversion[SolveInfo, Iterator[(Int, Int)]] = info => {
+     getRangeIterator(info.getTerm("T"))
+    }
 
     private val stringToPair: String => (Int, Int) = s => s.split(",") match
       case Array(e1, e2) => try (e1.toFloat.toInt, e2.toFloat.toInt) catch case _: Exception => rangeDefaultValue
       case _ => rangeDefaultValue
 
     private def getRangeIterator(e: Term): Iterator[(Int, Int)] =
+
+
       val pattern = """\((.*?)\)""".r
       pattern
         .findAllIn(e.toString)
@@ -76,3 +92,4 @@ object PrologEngine:
           case pattern(s) => s
         })
         .map(stringToPair(_))
+
