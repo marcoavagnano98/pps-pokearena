@@ -33,17 +33,15 @@ class BattleEngineTest extends AnyFlatSpec with should.Matchers:
     val t2 = BattleEngine.turnAfterAttack(t1._1 withTurnPerformed, t1._2,actionMove).swap
     BattleEngine(slowestTurn, fastestTurn) shouldBe  Seq(t2._1, t2._2)
   }
-
-
-
+  
   "A BattleEngine " should "return defeated pokemon with turn status Defeat" in{
     BattleEngine(fastestTurn, Turn(player.id, bulbasaur withHp 1, Attack(bulbasaur.moves.head)))(1).turnStatus shouldBe Status.Defeat
   }
 
   "A Battle engine " should " return healed battle units after hp recovery item used" in {
     val damagedBulbasaur: Pokemon = bulbasaur withHp 5
-    val item: Item = ItemFactory(ItemType.SuperPotion) //Superpotion increase hp by 50
+    val item: Item = ItemFactory(ItemType.SuperPotion) //Superpotion increase hp by 100
     val bagEvent = UseBag(item)
     val turnAfterHeal = BattleEngine.turnAfterHeal(Turn("", damagedBulbasaur, bagEvent), item)
-    turnAfterHeal.pokemon.hp shouldBe damagedBulbasaur.maxHp //bulbasaur maxHp = 45
+    turnAfterHeal.pokemon.hp shouldBe damagedBulbasaur.maxHp //bulbasaur maxHp = 90
   }
