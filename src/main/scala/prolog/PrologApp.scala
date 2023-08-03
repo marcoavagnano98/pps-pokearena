@@ -6,6 +6,7 @@ import PrologEngine.PrologUtils.{*, given}
  * Maintains
  */
 object PrologApp:
+
   protected val defaultTheory: String = "prolog/range_theory.pl"
   protected var engine: PrologEngine = _
 
