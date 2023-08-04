@@ -17,7 +17,8 @@ object ViewportUtil:
  * @param world contain the information's about the Player and the current Level
  */
 class GameScreen(world: World) extends BasicScreen:
-  private val aspectRatio = (ViewportUtil.viewportWidth/world.level.gridDimension) * 1/10
+  private val aspectRatioPosition = ViewportUtil.viewportWidth/world.level.gridDimension
+  private val aspectRatioEntityDimension =  aspectRatioPosition * 1/10
 
   override def viewport: Viewport = FitViewport(ViewportUtil.viewportWidth, ViewportUtil.viewportHeight)
 
@@ -28,10 +29,10 @@ class GameScreen(world: World) extends BasicScreen:
   override def drawables: Seq[Drawable] =
     Drawable(getMapPath(world.level.idLevel), world.level.levelXPos, world.level.levelYPos, ViewportUtil.viewportWidth, ViewportUtil.viewportHeight) +:
       world.visibleEntities.map(e => Drawable(getEntitySprite(e),
-        e.position.x * ViewportUtil.viewportWidth/world.level.gridDimension,
-        e.position.y * ViewportUtil.viewportHeight/world.level.gridDimension,
-        e.height * aspectRatio,
-        e.width * aspectRatio))
+        e.position.x * aspectRatioPosition,
+        e.position.y * aspectRatioPosition,
+        e.height * aspectRatioEntityDimension,
+        e.width * aspectRatioEntityDimension))
 
   override def updateView(): Unit =
     if world.level.opponents.isEmpty && world.level.door.state.equals(DoorState.Close) then
