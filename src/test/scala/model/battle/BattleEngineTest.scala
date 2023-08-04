@@ -15,9 +15,8 @@ import scala.language.postfixOps
 class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   import TrainerChoice.*
   val actionMove: Move = Move(20, 10, "action", Normal, None)
-  val lethalMove: Move = Move(9999, 10, "action", Normal, None)
-  val bulbasaur: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("1").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
-  val charmender: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("4").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
+  val bulbasaur: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("1").get withMoves Seq.fill(4)(actionMove)
+  val charmender: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("4").get withMoves Seq.fill(4)(actionMove)
 
   val player: Player = Player(Position(0,0),"",PokemonGenerator(3))
   val opponent: Trainer = Trainer(Position(0,0),"",PokemonGenerator(3))
