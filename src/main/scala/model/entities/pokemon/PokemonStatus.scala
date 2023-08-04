@@ -26,12 +26,6 @@ trait PokemonStatusWithEffect extends PokemonStatus :
    * @return The new [[Pokemon]] with the [[PokemonStatusWithEffect]] updated
    */
   def applyStatus(pokemon: Pokemon): Pokemon = if Random.dice(probabilityToApplyStatus) then pokemon withStatus this else pokemon
-
-  /**
-   * @return true if the dice roll have success otherwise return false
-   */
-  //protected def isApplicableStatus: Boolean = Random.dice(probabilityToApplyStatus)
-
 import StatusEffects.*
 
 object AllPokemonStatus:
