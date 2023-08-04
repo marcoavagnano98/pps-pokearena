@@ -18,17 +18,17 @@ class PrologTest extends AnyWordSpec with BeforeAndAfter with Matchers:
   }
 
   "BSTGenerator for 4 levels " when{
-    "receives 1 as difficulty " should{
+    "receives low difficulty " should{
       "generate a low BST range iterator " in{
         BstGenerator.generate(1, nLevels).toSeq shouldBe lowRange
       }
     }
-    "receives 1 as difficulty " should{
+    "receives medium difficulty " should{
       "generate a medium BST range iterator " in{
         BstGenerator.generate(2, nLevels).toSeq shouldBe mediumRange
       }
     }
-    "receives 1 as difficulty " should{
+    "receives hard difficulty " should{
       "generate an hard BST range iterator " in{
         BstGenerator.generate(3, nLevels).toSeq shouldBe hardRange
       }
