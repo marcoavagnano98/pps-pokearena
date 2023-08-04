@@ -34,7 +34,7 @@ case class StartGame(list: Seq[Pokemon], difficulty: Int) extends MenuEvent
 /**
  * Event generated when a fight between two [[Pokemon]] is ended
  */
-case class EndFight() extends BattleEvent
+case class EndRound() extends BattleEvent
 
 /**
  * Event generated to control the Battle options

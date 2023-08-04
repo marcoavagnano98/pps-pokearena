@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Timer.Task
-import controller.events.{EventDispatcher, OptionChosen, EndFight}
+import controller.events.{EventDispatcher, OptionChosen, EndRound}
 import model.battle.TurnStatus.*
 import model.battle.TrainerChoice.*
 import model.entities.World.Position
@@ -89,7 +89,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
             pOpponentLayout.updateLayout(opponentPokemon)
             battleMenuLayout.setButtonsVisibility(Visible)
           case _ =>
-        if turnData.exists(_.turnStatus == Defeat) then sendEvent(EndFight())
+        if turnData.exists(_.turnStatus == Defeat) then sendEvent(EndRound())
       }
     )
 
