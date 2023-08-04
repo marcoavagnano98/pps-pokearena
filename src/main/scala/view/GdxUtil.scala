@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.Timer
 import com.badlogic.gdx.utils.Timer.Task
 
 protected[view] object GdxUtil:
+  /***
+   * Actor's extension method to avoid explicitly defining the listener onTouchDown
+   */
   extension (actor: Actor)
     def onTouchDown(action: => Unit): Unit =
       actor.addListener(new ClickListener() {
