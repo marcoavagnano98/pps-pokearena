@@ -8,12 +8,16 @@ import model.entities.pokemon.{ComparatorTypeElement, Move, Pokemon, StatusEffec
 import scala.Tuple2
 import scala.annotation.tailrec
 import scala.language.postfixOps
+import util.Utilities.{toSeq, toPair}
+
 
 /** Represent the engine of [[Pokemon]] battle */
 object BattleEngine:
 
   import TurnStatus.*
   import TrainerChoice.*
+
+
 
   given Ordering[Turn] = Ordering.by[Turn, (Int, Int)](t => (t.trainerChoice.priority, t.pokemon.speed)).reverse
 
@@ -24,18 +28,16 @@ object BattleEngine:
    */
   def apply(t: (Turn, Turn)): Seq[Turn] =
     for
-      turn <- Seq(roundLoop(turnOrder(t)))
-      seqWithDamageStatusApplied <- Seq(turn._1 withDamageStatusApplied, turn._2 withDamageStatusApplied)
-    yield seqWithDamageStatusApplied
+      turn <- roundLoop(turnOrder(t)).toSeq
+    yield turn withDamageStatusApplied
 
   /**
    *
    * @param t pair of turn
    * @return a Turn pair which decides who takes the turn first
    */
-  def turnOrder(t: (Turn, Turn)): (Turn, Turn) =
-    Seq(t._1, t._2).sorted match
-      case Seq(t1, t2) => (t1, t2)
+  def turnOrder(t: (Turn, Turn)): (Turn, Turn) = t.toSeq.sorted.toPair.get
+
 
   /**
    *
