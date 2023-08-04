@@ -28,7 +28,7 @@ object BattleEngine:
    */
   def apply(t: (Turn, Turn)): Seq[Turn] =
     for
-      turn <- roundLoop(turnOrder(t)).toSeq
+      turn <- roundLoop(turnOrder(t)) toSeq
     yield turn withDamageStatusApplied
 
   /**
@@ -37,7 +37,6 @@ object BattleEngine:
    * @return a Turn pair which decides who takes the turn first
    */
   def turnOrder(t: (Turn, Turn)): (Turn, Turn) = t.toSeq.sorted.toPair.get
-
 
   /**
    *
