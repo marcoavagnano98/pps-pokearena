@@ -30,7 +30,7 @@ class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   "A BattleEngine " should " return damaged pokemon after attacks" in{
     val t1 = BattleEngine.turnAfterAttack(fastestTurn withTurnPerformed,slowestTurn,actionMove).swap
     val t2 = BattleEngine.turnAfterAttack(t1._1 withTurnPerformed, t1._2,actionMove).swap
-    BattleEngine(slowestTurn, fastestTurn) shouldBe  Seq(t2._1, t2._2)
+    BattleEngine(slowestTurn, fastestTurn) shouldBe Seq(t2._1, t2._2)
   }
   
   "A BattleEngine " should "return defeated pokemon with turn status Defeat" in{

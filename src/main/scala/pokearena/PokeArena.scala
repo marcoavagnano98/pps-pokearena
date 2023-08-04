@@ -15,7 +15,7 @@ object PokeArena extends Game:
    * Set the game screen to the initial screen and create prolog engine 
    */
   override def create(): Unit =
-    PrologApp()
+    initPrologEngine()
     setInitialScreen()
 
   /**
@@ -27,3 +27,5 @@ object PokeArena extends Game:
     )
   
   def setInitialScreen(): Unit = changeScreen(PokemonChoiceScreen(PokemonGenerator(12)))
+  
+  def initPrologEngine() : Unit = PrologApp()
