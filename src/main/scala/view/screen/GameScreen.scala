@@ -30,8 +30,8 @@ class GameScreen(world: World) extends BasicScreen:
       world.visibleEntities.map(e => Drawable(getEntitySprite(e),
         e.position.x * ViewportUtil.viewportWidth/world.level.gridDimension,
         e.position.y * ViewportUtil.viewportHeight/world.level.gridDimension,
-        (e.height * aspectRatio).toInt,
-        (e.width * aspectRatio).toInt))
+        e.height * aspectRatio,
+        e.width * aspectRatio))
 
   override def updateView(): Unit =
     if world.level.opponents.isEmpty && world.level.door.state.equals(DoorState.Close) then
