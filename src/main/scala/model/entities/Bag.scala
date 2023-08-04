@@ -28,6 +28,7 @@ trait Bag:
    * @return
    */
   def getItem(index: Int) : Item
+  
 object Bag:
   def apply() : Bag = BagImpl()
 
