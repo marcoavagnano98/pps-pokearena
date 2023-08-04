@@ -5,18 +5,31 @@ import util.Utilities.*
 import scala.util.Random
 
 trait PokemonStatus:
+  /**
+   * @return the name of the [[PokemonStatus]]
+   */
   def name: String
 
+  /**
+   * @return the description of the [[PokemonStatus]]
+   */
   def description: String
 
 trait PokemonStatusWithEffect extends PokemonStatus :
+  /**
+   * @return the probability To Apply Status to a [[Pokemon]]
+   */
   def probabilityToApplyStatus: Int
 
-  def applyStatus(p: Pokemon): Pokemon =
+  /**
+   * @param pokemon The [[Pokemon]] to which the [[PokemonStatusWithEffect]] is applied.
+   * @return The new [[Pokemon]] with the [[PokemonStatusWithEffect]] updated if the probabilityToApplyStatus has success
+   */
+  def applyStatus(pokemon: Pokemon): Pokemon =
     if Random.dice(probabilityToApplyStatus) then
-      p withStatus this
+      pokemon withStatus this
     else
-      p
+      pokemon
 
 import StatusEffects.*
 

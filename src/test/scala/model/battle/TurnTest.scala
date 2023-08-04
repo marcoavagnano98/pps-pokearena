@@ -26,7 +26,7 @@ class TurnTest extends AnyFlatSpec with should.Matchers:
     assertResult(turn.withTurnPerformed.performed)(true)
   }
 
-  import model.battle.Status.*
+  import model.battle.TurnStatus.*
   "A paralyzed Pokemon" should " eventually skip the Turn " in{
     var passed = false
     for _ <- 1 to 100 do

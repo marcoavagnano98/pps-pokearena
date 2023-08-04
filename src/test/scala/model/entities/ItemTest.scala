@@ -1,6 +1,7 @@
 package model.entities
 
 import model.entities.World.Position
+import model.entities.pokemon.AllPokemonStatus.{BurnStatus, HealthyStatus}
 import model.entities.pokemon.{ElementType, Pokemon}
 import model.entities.{ItemFactory, ItemType, Potion}
 import org.scalatest.*
@@ -12,6 +13,7 @@ class ItemTest extends AnyFlatSpec with should.Matchers:
   private var giratina = Pokemon("2", "Giratina", 300, 150, 150, 100, List(), ElementType.Dragon)
   private val potion = ItemFactory(ItemType.Potion)
   private val superPotion = ItemFactory(ItemType.SuperPotion)
+  private val antidote = ItemFactory(ItemType.Antidote)
 
   "A potion" should "increase the Pokemon's HP by 50" in {
     giratina = giratina withHp 150
@@ -50,3 +52,10 @@ class ItemTest extends AnyFlatSpec with should.Matchers:
       giratina = superPotion use giratina
     giratina.hp should be(210)
   }
+
+  "A antidote" should "remove the current status of pokemon and change it into HealthyStatus" in {
+    bulbasaur = bulbasaur withStatus BurnStatus()
+    bulbasaur = antidote use bulbasaur
+    assertResult(HealthyStatus())(bulbasaur.status)
+  }
+

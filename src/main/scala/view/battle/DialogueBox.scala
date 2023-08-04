@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.{Container, Image, ImageTextButton, La
 import com.badlogic.gdx.utils.Align
 
 case class DialogueBox(var text: Seq[String], dSkin: Skin) extends Table:
-  val skin: Image = Image(Texture("assets/dialogue-box.png"))
+  val skin: Image = Image(Texture("assets/prop/dialogue-box.png"))
   setBackground(skin.getDrawable)
   for
     textLine <- text

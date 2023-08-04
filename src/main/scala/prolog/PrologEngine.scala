@@ -5,45 +5,58 @@ import alice.tuprolog.{Prolog, SolveInfo, Struct, Term, Theory}
 import scala.io.Source
 
 trait PrologEngine:
-  /***
+  /** *
    *
    * @param difficulty the game difficulty
-   * @param nLevels the total numbers of levels in game
+   * @param nLevels    the total numbers of levels in game
    * @return [[Iterator]] of BST ranges for each level
    */
   def generateRange(difficulty: Int, nLevels: Int): Iterator[(Int, Int)]
 
-object PrologEngine:
-  /***
+  /** *
    *
-   * @param theory load prolog theory
+   * @param theory set prolog theory to engine
+   */
+  def setTheory(theory: Theory): Unit
+
+object PrologEngine:
+  /** *
+   *
+   * @param defaultTheory initial prolog theory
    * @return [[PrologEngine]]
    */
-  def apply(theory: Theory): PrologEngine = PrologEngineImpl(theory)
+  def apply(defaultTheory: Theory): PrologEngine =
+    val engine = PrologEngineImpl(defaultTheory)
+    engine.setTheory(defaultTheory)
+    engine
 
-  private case class PrologEngineImpl(theory: Theory) extends PrologEngine:
-    val engine: Prolog = Prolog()
-    engine.setTheory(theory)
 
-    import PrologUtils.{*,given}
+  private case class PrologEngineImpl(theory: Theory) extends PrologEngine :
+    val engine: Prolog = new Prolog
+
+    override def setTheory(theory: Theory): Unit = engine.setTheory(theory)
+
+    import PrologUtils.{*, given}
 
     given Conversion[String, Term] = Term.createTerm(_)
 
 
-    def generateRange(difficulty: Int, nLevels: Int): Iterator[(Int, Int)] =
+    override def generateRange(difficulty: Int, nLevels: Int): Iterator[(Int, Int)] =
       val query: String = "generateLevels(" + difficulty + "," + nLevels + ",T)"
       solve(query).head
 
-    /***
+    /** *
      *
      * @return solve a query and return a [[LazyList]] of [[SolveInfo]]
      */
+
     def solve: Term => LazyList[SolveInfo] =
       goal =>
         new Iterable[SolveInfo] {
 
           override def iterator = new Iterator[SolveInfo] {
             var solution: Option[SolveInfo] = Some(engine.solve(goal))
+
 
             override def hasNext = solution.isDefined &&
               (solution.get.isSuccess || solution.get.hasOpenAlternatives)
@@ -54,7 +67,7 @@ object PrologEngine:
           }
         }.to(LazyList)
 
-  /***
+  /** *
    * Contains givens and method used for converting [[Term]] to [[Iterator]]
    */
   object PrologUtils:
@@ -62,13 +75,17 @@ object PrologEngine:
 
     given Conversion[String, Theory] = source => Theory.parseLazilyWithStandardOperators(Source.fromResource(source).mkString)
 
-    given Conversion[SolveInfo, Iterator[(Int, Int)]] = info => getRangeIterator(info.getTerm("T"))
+    given Conversion[SolveInfo, Iterator[(Int, Int)]] = info => {
+      getRangeIterator(info.getTerm("T"))
+    }
 
     private val stringToPair: String => (Int, Int) = s => s.split(",") match
       case Array(e1, e2) => try (e1.toFloat.toInt, e2.toFloat.toInt) catch case _: Exception => rangeDefaultValue
       case _ => rangeDefaultValue
 
     private def getRangeIterator(e: Term): Iterator[(Int, Int)] =
+
+
       val pattern = """\((.*?)\)""".r
       pattern
         .findAllIn(e.toString)
@@ -76,3 +93,4 @@ object PrologEngine:
           case pattern(s) => s
         })
         .map(stringToPair(_))
+

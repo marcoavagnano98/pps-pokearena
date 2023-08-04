@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.{Skin, Table, TextButton}
 import com.badlogic.gdx.utils.viewport.{ScreenViewport, Viewport}
+import controller.events.ResetGame
 import model.entities.World
 import model.entities.pokemon.Pokemon
 import pokearena.PokeArena
@@ -11,12 +12,12 @@ import util.Stats
 import view.battle.DialogueBox
 import view.GdxUtil.onTouchDown
 import view.Sprites.getPokemonSprite
-import model.entities.{Door, Trainer, Item}
-import model.entities.GameStatus._
+import model.entities.{Door, Item, Trainer}
+import model.entities.GameStatus.*
 
 class GameOverScreen(world: World, stats: Stats) extends BasicScreen:
 
-  override def drawables: Seq[Drawable] = Seq(Drawable("assets/endGame.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
+  override def drawables: Seq[Drawable] = Seq(Drawable("assets/background/endGame.png", 0, 0, Gdx.graphics.getWidth, Gdx.graphics.getHeight))
 
   override def actors: Seq[Actor] =
     val rootTable: Table = Table()
@@ -29,7 +30,7 @@ class GameOverScreen(world: World, stats: Stats) extends BasicScreen:
     rootTable.setPosition((screenWidth - contentWidth)/2.0f, (screenHeight - contentHeight)/2.0f)
 
     val buttonStart: TextButton = new TextButton("NEW GAME", skin)
-    buttonStart.onTouchDown(PokeArena.create())
+    buttonStart.onTouchDown(sendEvent(ResetGame()))
 
     import view.battle.DialogueBox
     createAndAddInfobox("You reached Level ", world.currentLevel, skin)

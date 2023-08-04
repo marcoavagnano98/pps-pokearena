@@ -13,14 +13,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.{Align, Scaling, Timer}
-import model.battle.{Battle, Status, TrainerChoice, Turn}
+import model.battle.{Battle, TurnStatus, TrainerChoice, Turn}
 import view.{Sprites, screen}
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Timer.Task
 import controller.events.{EventDispatcher, OptionChosen, EndRound}
-import model.battle.Status.*
+import model.battle.TurnStatus.*
 import model.battle.TrainerChoice.*
 import model.entities.World.Position
 import model.entities.pokemon.Move
@@ -47,9 +47,10 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, viewPortSize._1 / 2, 100))
   showBattleMenu
 
-  def backButton: ImageButton =
-    val backButton = ImageButton(TextureRegionDrawable(TextureRegion(Texture("assets/backarrow.png"))))
-    backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 100, 100)
+
+  def backButton: ImageTextButton =
+    val backButton = ImageTextButton("Back", skin)
+    backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 80, 50)
     backButton.onTouchDown(showBattleMenu)
     backButton
 
@@ -87,7 +88,6 @@ class BattleScreen(battle: Battle) extends BasicScreen :
             pPlayerInfoLayout.updateLayout(playerPokemon)
             pOpponentLayout.updateLayout(opponentPokemon)
             battleMenuLayout.setButtonsVisibility(Visible)
-            if !(playerPokemon.maxHp == playerPokemon.hp) then battleMenuLayout.bagButtonTouchable(Touchable.enabled) else battleMenuLayout.bagButtonTouchable(Touchable.disabled)
           case _ =>
         if turnData.exists(_.turnStatus == Defeat) then sendEvent(EndRound())
       }
@@ -135,7 +135,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
       pOpponentLayout)
 
   private def background: Image =
-    val image = Image(Texture("assets/battle-screen.png"))
+    val image = Image(Texture("assets/background/battle-screen.png"))
     image.setBounds(0, 0, viewPortSize._1, viewPortSize._2)
     image
 

@@ -32,7 +32,7 @@ trait BattleEvent extends Event
 case class StartGame(list: Seq[Pokemon], difficulty: Int) extends MenuEvent
 
 /**
- * Event generated when a round between the [[Pokemon]] of [[Player]] and  [[Trainer]] is terminated
+ * Event generated when a fight between two [[Pokemon]] is ended
  */
 case class EndRound() extends BattleEvent
 
@@ -57,3 +57,7 @@ case class OpenDoor() extends GameEvent
  * Event generate when the game needs to be ended
  */
 case class DisplayGameOverScreen() extends GameEvent
+/**
+ * Event generate when the game ends
+ */
+case class ResetGame() extends  GameEvent

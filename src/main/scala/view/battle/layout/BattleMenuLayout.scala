@@ -30,7 +30,6 @@ case class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: R
   for button <- menuButtons
     do add(button).fill().pad(10).minHeight(50)
   setButtonsVisibility(Visible)
-  bagButtonTouchable(Touchable.disabled)
 
   private def infoBox: DialogueBox = DialogueBox(layoutData, skin)
 
@@ -41,12 +40,6 @@ case class BattleMenuLayout(var layoutData: Seq[String], skin: Skin, boundary: R
       do
         seq(i).setVisible(visibility.value)
         updateActorByIndex(seq(i), i + 1)
-
-  def bagButtonTouchable(touchable: Touchable): Unit =
-    val bagButton: ImageTextButton = menuButtons(1)
-    bagButton.setTouchable(touchable)
-    updateActorByIndex(bagButton, 2)
-
 
   override def updateLayout(newLayoutInfo: Seq[String]): Unit =
     layoutData = newLayoutInfo

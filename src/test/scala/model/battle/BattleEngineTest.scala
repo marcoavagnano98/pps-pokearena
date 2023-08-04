@@ -16,8 +16,8 @@ class BattleEngineTest extends AnyFlatSpec with should.Matchers:
   import TrainerChoice.*
   val actionMove: Move = Move(20, 10, "action", Normal, None)
   val lethalMove: Move = Move(9999, 10, "action", Normal, None)
-  val bulbasaur: Pokemon = PokemonGenerator.getPokemonById("1").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
-  val charmender: Pokemon = PokemonGenerator.getPokemonById("4").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
+  val bulbasaur: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("1").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
+  val charmender: Pokemon = PokemonGenerator.getPokemonByIdWithMoves("4").get withMoves Seq(actionMove,actionMove,actionMove,actionMove)
 
   val player: Player = Player(Position(0,0),"",PokemonGenerator(3))
   val opponent: Trainer = Trainer(Position(0,0),"",PokemonGenerator(3))
@@ -33,16 +33,15 @@ class BattleEngineTest extends AnyFlatSpec with should.Matchers:
     val t2 = BattleEngine.turnAfterAttack(t1._1 withTurnPerformed, t1._2,actionMove).swap
     BattleEngine(slowestTurn, fastestTurn) shouldBe  Seq(t2._1, t2._2)
   }
-  val lethalBt: Turn = Turn(player.id, bulbasaur , Attack(lethalMove))
-
+  
   "A BattleEngine " should "return defeated pokemon with turn status Defeat" in{
-    BattleEngine(lethalBt, fastestTurn).head.turnStatus shouldBe Status.Defeat
+    BattleEngine(fastestTurn, Turn(player.id, bulbasaur withHp 1, Attack(bulbasaur.moves.head)))(1).turnStatus shouldBe TurnStatus.Defeat
   }
 
   "A Battle engine " should " return healed battle units after hp recovery item used" in {
     val damagedBulbasaur: Pokemon = bulbasaur withHp 5
-    val item: Item = ItemFactory(ItemType.SuperPotion) //Superpotion increase hp by 50
+    val item: Item = ItemFactory(ItemType.SuperPotion) //Superpotion increase hp by 100
     val bagEvent = UseBag(item)
     val turnAfterHeal = BattleEngine.turnAfterHeal(Turn("", damagedBulbasaur, bagEvent), item)
-    turnAfterHeal.pokemon.hp shouldBe damagedBulbasaur.maxHp //bulbasaur maxHp = 45
+    turnAfterHeal.pokemon.hp shouldBe damagedBulbasaur.maxHp //bulbasaur maxHp = 90
   }

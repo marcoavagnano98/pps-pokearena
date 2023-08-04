@@ -96,7 +96,9 @@ object World:
   def apply(difficulty: Int = 1, maxLevel: Int = 4): World = WorldImpl(difficulty, maxLevel)
 
   private class WorldImpl(val difficulty: Int, val maxLevel: Int) extends World:
+    
     private val bstIterator = BstGenerator.generate(difficulty, maxLevel)
+
     private val idPlayer = "player"
     private val openDoor = "door_open"
     private var _currentLevel = 1

@@ -1,6 +1,6 @@
 package model.battle.cpu
 
-import model.battle.{Status, TrainerChoice}
+import model.battle.{TurnStatus, TrainerChoice}
 import model.entities.pokemon.{ComparatorTypeElement, Move, Pokemon}
 import util.Utilities
 
@@ -37,7 +37,7 @@ object Cpu:
     CpuImpl(playerPokemon, cpuPokemon)
 
   private case class CpuImpl(override val playerPokemon: Pokemon, override val opponentPokemon: Pokemon) extends Cpu :
-    private val movesMap: Map[Move, Double] = opponentPokemon.moves.filter(_.powerPoint > 0).map(move => (move -> 0.0)).toMap
+    private val movesMap: Map[Move, Double] = opponentPokemon.moves.filter(_.powerPoint > 0).map(move => move -> 0.0).toMap
 
     override def optionChosen: TrainerChoice =
       import Utilities.dice
@@ -56,5 +56,5 @@ object Cpu:
         (move, score) <- scoreMap
         dbScore = ComparatorTypeElement(move.elementType, playerPokemon.elementType)
       do
-        updatedScoreMapMap = updatedScoreMapMap + (move -> dbScore.+(score))
+          updatedScoreMapMap = updatedScoreMapMap + (move -> dbScore.+(score))
       updatedScoreMapMap
