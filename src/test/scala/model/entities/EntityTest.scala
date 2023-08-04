@@ -15,14 +15,14 @@ class EntityTest extends AnyFlatSpec with Matchers:
   it should "return the correct width for each type of entity" in {
     EntityDefaultValues.width(pokemon) should be(5)
     EntityDefaultValues.width(player) should be(10)
-    EntityDefaultValues.width(item) should be(6)
+    EntityDefaultValues.width(item) should be(5)
     EntityDefaultValues.width(door) should be(10)
   }
   
   it should "return the correct height for each type of entity" in {
     EntityDefaultValues.height(pokemon) should be(5)
     EntityDefaultValues.height(player) should be(10)
-    EntityDefaultValues.height(item) should be(6)
+    EntityDefaultValues.height(item) should be(5)
     EntityDefaultValues.height(door) should be(10)
   }
   
