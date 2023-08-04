@@ -4,12 +4,18 @@ import model.entities.pokemon.*
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.Matchers
+import pokearena.PokeArena
 
-class BagTest extends AnyFlatSpec with Matchers:
+class BagTest extends AnyFlatSpec with BeforeAndAfter with Matchers:
   private val bag = Bag()
   private val potion = ItemFactory(ItemType.Potion)
   private val superPotion = ItemFactory(ItemType.SuperPotion)
-  private val world = World()
+  private var world: World = _
+
+  before {
+    PokeArena.initPrologEngine()
+    world = World()
+  }
 
   it should "add an item to the bag" in {
     bag.addItem(potion)

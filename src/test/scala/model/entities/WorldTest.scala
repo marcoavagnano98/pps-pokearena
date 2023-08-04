@@ -6,15 +6,24 @@ import model.entities.pokemon.{ElementType, Pokemon}
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.Matchers
+import pokearena.PokeArena
 
-class WorldTest extends AnyFlatSpec with Matchers:
-  private val world = World()
+class WorldTest extends AnyFlatSpec with BeforeAndAfter with Matchers:
+  private var world: World = _
   private val pokemonTeam: Seq[Pokemon] = Seq(Pokemon("3", "Charmander", 50, 52, 43, 65, List(), ElementType.Fire),
     Pokemon("4", "Squirtle", 50, 48, 65, 43, List(), ElementType.Water))
-  world.createLevel(pokemonTeam)
-  private val item = world.level.items.head
-  private val opponent = world.level.opponents.head
-  private val closedDoor = world.level.door
+  private var item: Item = _
+  private var opponent: Trainer = _
+  private var closedDoor: Door = _
+
+  before {
+    PokeArena.initPrologEngine()
+    world = World()
+    world.createLevel(pokemonTeam)
+    item = world.level.items.head
+    opponent = world.level.opponents.head
+    closedDoor = world.level.door
+  }
 
   it should "create the current Level and provide the Player with the Pokemon team" in {
     world.level should not be null

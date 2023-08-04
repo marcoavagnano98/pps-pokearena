@@ -9,12 +9,19 @@ import model.entities.pokemon.{ElementType, Pokemon}
 import model.entities.{Item, ItemFactory, ItemType, Potion, SuperPotion, World}
 import org.scalatest.*
 import org.scalatest.flatspec.*
+import pokearena.PokeArena
 
-class PlayerProcessorTest extends AnyFlatSpec with Matchers:
-  private val world = World()
-  world.createLevel(PokemonGenerator(2))
-  private val playerProcessor = PlayerProcessor(world)
+class PlayerProcessorTest extends AnyFlatSpec with BeforeAndAfter with Matchers:
+  private var world: World = _
+  private var playerProcessor: PlayerProcessor = _
   private var position = Position(0,0)
+
+  before {
+    PokeArena.initPrologEngine()
+    world = World()
+    world.createLevel(PokemonGenerator(2))
+    playerProcessor = PlayerProcessor(world)
+  }
 
   "PlayerProcessor" should "move the player to the RIGHT when pressing the RIGHT key" in {
     world.player.position should be(position)
@@ -47,6 +54,7 @@ class PlayerProcessorTest extends AnyFlatSpec with Matchers:
   }
 
   "PlayerProcessor" should "move the player UP when pressing the UP key" in {
+    position = Position(0, 0)
     playerProcessor.keyDown(Keys.UP)
     world.player.position shouldBe Position(position.x, position.y + world.level.playerSpeed)
   }
@@ -60,6 +68,9 @@ class PlayerProcessorTest extends AnyFlatSpec with Matchers:
   }
 
   "PlayerProcessor" should "move the player DOWN when pressing the DOWN key" in {
+    position = Position(3, 5)
+    world.player = world.player withPosition position
+    world.player.position shouldBe Position(3, 5)
     playerProcessor.keyDown(Keys.DOWN)
     world.player.position shouldBe Position(position.x, position.y - world.level.playerSpeed)
   }
