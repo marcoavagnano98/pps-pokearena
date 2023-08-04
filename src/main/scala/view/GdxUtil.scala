@@ -20,6 +20,11 @@ protected[view] object GdxUtil:
           true
       })
 
+  /**
+   *
+   * @param seconds seconds waited before executing the action
+   * @param action action executed
+   */
   def scheduleDelayedAction(seconds: Int, action: => Unit): Unit =
     Timer.schedule(new Task() {
       override def run(): Unit =
