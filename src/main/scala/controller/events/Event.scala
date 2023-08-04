@@ -57,6 +57,7 @@ case class OpenDoor() extends GameEvent
  * Event generate when the game needs to be ended
  */
 case class DisplayGameOverScreen() extends GameEvent
+
 /**
  * Event generate when the game ends
  */

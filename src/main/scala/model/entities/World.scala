@@ -90,7 +90,7 @@ trait World:
    *
    * @return the status of the game (Win/Lose)
    */
-  def isGameWon: GameStatus
+  def gameStatus: GameStatus
 
 object World:
   def apply(difficulty: Int = 1, maxLevel: Int = 4): World = WorldImpl(difficulty, maxLevel)
@@ -100,7 +100,7 @@ object World:
     private val idPlayer = "player"
     private val openDoor = "door_open"
     private var _currentLevel = 1
-    private var _isGameWon = GameStatus.Lose
+    private var _gameStatus = GameStatus.Lose
     private var _level: Level = _
     private var _player: Player = Player(Position(0, 0), idPlayer, Seq.empty)
 
@@ -128,7 +128,7 @@ object World:
               createLevel(player.pokemonTeam)
               _player = _player.withPosition(Position(0, 0))
           else
-              _isGameWon = GameStatus.Win
+              _gameStatus = GameStatus.Win
         case _ =>
 
     override def removeTrainer(trainer: Trainer): Unit =
@@ -139,7 +139,7 @@ object World:
 
     override def currentLevel: Int = _currentLevel
 
-    override def isGameWon: GameStatus = _isGameWon
+    override def gameStatus: GameStatus = _gameStatus
 
 
   /**

@@ -38,7 +38,7 @@ class GameScreen(world: World) extends BasicScreen:
     if world.level.opponents.isEmpty && world.level.door.state.equals(DoorState.Close) then
       sendEvent(OpenDoor())
 
-    if world.isGameWon.equals(GameStatus.Win) then
+    if world.gameStatus.equals(GameStatus.Win) then
       sendEvent(DisplayGameOverScreen())
 
     world.checkCollision match
