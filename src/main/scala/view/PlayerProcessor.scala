@@ -20,11 +20,10 @@ class PlayerProcessor(world: World) extends InputAdapter:
       case Keys.LEFT =>  {x = -playerSpeed; y = 0; updateSpritePlayer("left")}
       case Keys.UP => {y = playerSpeed; x = 0; updateSpritePlayer("up")}
       case Keys.DOWN => {y = -playerSpeed; x = 0; updateSpritePlayer("player")}
-      case _ => return true
+      case _ => return false
     canMove
-    true
 
-  private def canMove: Unit =
+  private def canMove: Boolean =
     val newX = world.player.position.x+x
     val newY = world.player.position.y+y
     val withinXBounds = newX >= 0 && newX <= world.level.gridDimension-1
@@ -33,8 +32,9 @@ class PlayerProcessor(world: World) extends InputAdapter:
     if (withinXBounds && withinYBounds)
       updatePlayerPosition(newX, newY)
 
+    withinXBounds && withinYBounds
+
   private def updatePlayerPosition(newX: Float, newY: Float): Unit =
     world.player = world.player withPosition Position(newX, newY)
-  
+
   private def updateSpritePlayer(direction: String): Unit = world.player = world.player movesTo direction
-  
