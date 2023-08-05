@@ -77,7 +77,7 @@ class WorldTest extends AnyFlatSpec with BeforeAndAfter with Matchers:
   }
 
   it should "return Lose when all levels are not completed" in {
-    world.isGameWon should be(GameStatus.Lose)
+    world.gameStatus should be(GameStatus.Lose)
   }
 
   it should "return Win when all levels are completed and the Boss defeated" in {
@@ -85,5 +85,5 @@ class WorldTest extends AnyFlatSpec with BeforeAndAfter with Matchers:
       world.updateDoor
       world.doorCollision(world.level.door)
 
-    world.isGameWon should be(GameStatus.Win)
+    world.gameStatus should be(GameStatus.Win)
   }

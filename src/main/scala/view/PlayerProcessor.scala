@@ -34,7 +34,7 @@ class PlayerProcessor(world: World) extends InputAdapter:
 
     withinXBounds && withinYBounds
 
-  private def updatePlayerPosition(newX: Float, newY: Float): Unit =
+  private def updatePlayerPosition(newX: Int, newY: Int): Unit =
     world.player = world.player withPosition Position(newX, newY)
 
   private def updateSpritePlayer(direction: String): Unit = world.player = world.player movesTo direction

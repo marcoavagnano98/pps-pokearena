@@ -7,13 +7,13 @@ trait Entity:
    *
    * @return width of [[Entity]]
    */
-  def width: Float = EntityDefaultValues.height(this)
+  def width: Int = EntityDefaultValues.height(this)
 
   /**
    *
    * @return height of [[Entity]]
    */
-  def height: Float = EntityDefaultValues.width(this)
+  def height: Int = EntityDefaultValues.width(this)
 
   /**
    *
@@ -51,7 +51,7 @@ object EntityDefaultValues:
   /**
    * Given an [[Entity]] it returns its width.
    */
-  val width: Entity => Float =
+  val width: Entity => Int =
     case _: Pokemon => 5
     case _: Trainer => 10
     case _: Item => 5
@@ -61,7 +61,7 @@ object EntityDefaultValues:
   /**
    * Given an [[Entity]] it returns its height.
    */
-  val height: Entity => Float =
+  val height: Entity => Int =
     case _: Pokemon => 5
     case _: Trainer => 10
     case _: Item => 5
