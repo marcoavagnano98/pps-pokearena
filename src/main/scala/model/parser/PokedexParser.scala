@@ -7,7 +7,7 @@ import io.circe.parser
 import io.circe.HCursor
 import io.circe.Decoder
 
-/** A Parser that extract all pokemon information from a local file*/
+/** A Parser that extract all pokemon information from a local file */
 object PokedexParser:
   private val pokedexFileName = "data/pokedex.json"
 
@@ -26,7 +26,7 @@ object PokedexParser:
         defense <- hCursor.downField("base").downField("Defense").as[Int]
         speed <- hCursor.downField("base").downField("Speed").as[Int]
         hp <- hCursor.downField("base").downField("HP").as[Int]
-      yield Pokemon(id.toString, name, hp*2, atk, defense, speed, List[Move](), elements.head)
+      yield Pokemon(id.toString, name, hp * 2, atk, defense, speed, List[Move](), elements.head)
 
 
     val decodingResult = parser.decode[List[Pokemon]](inputString)
@@ -36,4 +36,4 @@ object PokedexParser:
 
   object givenConversionStringElementType:
     given Conversion[String, ElementType] with
-      override def apply(x: String): ElementType = {ElementType.values.find(_.toString.toLowerCase == x.toLowerCase).get}
+      override def apply(x: String): ElementType = ElementType.values.find(_.toString.toLowerCase == x.toLowerCase).get

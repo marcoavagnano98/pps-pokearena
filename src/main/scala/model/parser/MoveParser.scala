@@ -8,7 +8,7 @@ import io.circe.parser
 import io.circe.HCursor
 import io.circe.Decoder
 
-/** A Parser that extract all move information from a local file*/
+/** A Parser that extract all move information from a local file */
 object MoveParser:
   private val movesFileName = "data/moves.json"
 
@@ -34,10 +34,9 @@ object MoveParser:
       case Right(l) => l
       case _ => List()
 
-  private def convertStringToPokemonStatus(status: Option[String]) : Option[PokemonStatus] = status match {
+  private def convertStringToPokemonStatus(status: Option[String]): Option[PokemonStatus] = status match
     case Some(Status.Paralyze.name) => Some(ParalyzeStatus())
     case Some(Status.Freeze.name) => Some(FreezeStatus())
     case Some(Status.Poison.name) => Some(PoisonStatus())
     case Some(Status.Burn.name) => Some(BurnStatus())
     case _ => None
-  }

@@ -55,5 +55,6 @@ class GameOverScreen(world: World, stats: Stats) extends BasicScreen:
       case "win" => "You defeated the BOSS!!!"
       case "lose" => "I'm sorry, you Lose.. Try Again!"
       case _ => item + counter
+      
   override def viewport: Viewport = ScreenViewport()
 

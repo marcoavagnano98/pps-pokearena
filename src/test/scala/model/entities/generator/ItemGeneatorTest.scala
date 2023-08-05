@@ -11,7 +11,7 @@ class ItemGeneatorTest extends AnyFlatSpec with Matchers:
   private val gridDimension = 10
   private val doorPosition = Position(5, 5)
   private var grid = Grid(gridDimension, doorPosition)
-  private val numberOfItemsToGenerate = 3
+  private val numberOfItemsToGenerate = 20
   private val tryToGenerateNumberOfItems = 110
   private var items = ItemGenerator(grid, numberOfItemsToGenerate)
 
@@ -27,8 +27,10 @@ class ItemGeneatorTest extends AnyFlatSpec with Matchers:
   it should "generate random items like potion and superPotion" in {
     val potionCount = items.count(_.name == "Potion")
     val superPotionCount = items.count(_.name == "Super Potion")
+    val antidote = items.count(_.name == "Antidote")
     potionCount should be >= 1
     superPotionCount should be >= 1
+    antidote should be >= 1
   }
 
   it should "not generate any items when the available positions are finished" in {

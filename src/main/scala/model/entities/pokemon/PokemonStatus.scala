@@ -23,14 +23,9 @@ trait PokemonStatusWithEffect extends PokemonStatus :
 
   /**
    * @param pokemon The [[Pokemon]] to which the [[PokemonStatusWithEffect]] is applied.
-   * @return The new [[Pokemon]] with the [[PokemonStatusWithEffect]] updated if the probabilityToApplyStatus has success
+   * @return The new [[Pokemon]] with the [[PokemonStatusWithEffect]] updated
    */
-  def applyStatus(pokemon: Pokemon): Pokemon =
-    if Random.dice(probabilityToApplyStatus) then
-      pokemon withStatus this
-    else
-      pokemon
-
+  def applyStatus(pokemon: Pokemon): Pokemon = if Random.dice(probabilityToApplyStatus) then pokemon withStatus this else pokemon
 import StatusEffects.*
 
 object AllPokemonStatus:
@@ -46,8 +41,9 @@ object AllPokemonStatus:
     override def probabilityToApplyStatus: Int = 30
 
     override def applyStatus(pokemon: Pokemon): Pokemon =
-      applyChangeStat(super.applyStatus(pokemon))
-
+      val newPokemon = super.applyStatus(pokemon)
+      if newPokemon.status == this then applyChangeStat(newPokemon)
+      else newPokemon
 
   case class ParalyzeStatus(override val name: String = "Paralyze",
                             override val description: String = "Possibility to skip the turn and decrease speed") extends PokemonStatusWithEffect with SkipTurnEffect with ChangeSpeedEffect :
@@ -58,7 +54,9 @@ object AllPokemonStatus:
     override def probabilityToApplySkipTurn: Int = 30
 
     override def applyStatus(pokemon: Pokemon): Pokemon =
-      applyChangeStat(super.applyStatus(pokemon))
+      val newPokemon = super.applyStatus(pokemon)
+      if newPokemon.status == this then applyChangeStat(newPokemon)
+      else newPokemon
 
   case class FreezeStatus(override val name: String = "Freeze",
                           override val description: String = "Skip the turn") extends PokemonStatusWithEffect with SkipTurnEffect :
@@ -73,7 +71,7 @@ object AllPokemonStatus:
 
     override def damageOverTime: Int = 20
 
-  enum Status(val name:String):
+  enum Status(val name: String):
     case Burn extends Status("burn")
     case Paralyze extends Status("paralyze")
     case Freeze extends Status("freeze")

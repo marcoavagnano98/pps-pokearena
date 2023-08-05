@@ -92,7 +92,7 @@ object GameController extends Controller :
    * Handle the end of the game
    */
   def endGame(): Unit =
-    stats.count(model.isGameWon)
+    stats.count(model.gameStatus)
     screen = GameOverScreen(model, stats)
     handleScreenChange(screen)
 
