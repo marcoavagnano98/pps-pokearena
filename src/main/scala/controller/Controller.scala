@@ -42,7 +42,7 @@ protected[controller] trait Controller:
 /**
  * The Controller for the MenuScreen (PokemonChoiceScreen)
  */
-protected object MenuController extends Controller :
+object MenuController extends Controller :
   override def eventHandler(e: Event): Unit = e match
     case e: StartGame =>
       GameController.startGame(e.list, e.difficulty)
@@ -51,7 +51,7 @@ protected object MenuController extends Controller :
 /**
  * The Controller for the GameScreen
  */
-protected object GameController extends Controller :
+object GameController extends Controller :
 
   override type T = World
   import util.Stats
@@ -108,7 +108,7 @@ object BattleController extends Controller :
    * @param opponent involved in the battle
    */
   def startBattle(player: Player, opponent: Trainer): Unit =
-    model = Battle(player, opponent)
+    setModel(Battle(player, opponent))
     screen = BattleScreen(model)
     handleScreenChange(screen)
 
