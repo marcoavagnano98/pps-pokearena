@@ -45,16 +45,16 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   val bagLayout: BagLayout = BagLayout(battle.player.bag, skin, battleMenuRegion, bagLayoutAction)
   val pPlayerInfoLayout: PokemonInfoLayout = PokemonInfoLayout(battle.player.pokemonTeam.head, skin, Rectangle(pBRegion.x, pBRegion.y, viewPortSize._1 / 2, 100))
   val pOpponentLayout: PokemonInfoLayout = PokemonInfoLayout(battle.opponent.pokemonTeam.head, skin, Rectangle(oBRegion.x, oBRegion.y, viewPortSize._1 / 2, 100))
-  showBattleMenu
+  showBattleMenu()
 
 
   def backButton: ImageTextButton =
     val backButton = ImageTextButton("Back", skin)
     backButton.setBounds(battleMenuRegion.x + battleMenuRegion.width + 20, battleMenuRegion.y + (battleMenuRegion.height / 2), 80, 50)
-    backButton.onTouchDown(showBattleMenu)
+    backButton.onTouchDown(showBattleMenu())
     backButton
 
-  def showBattleMenu: Unit =
+  def showBattleMenu(): Unit =
     fightLayout.setVisible(NotVisible.value)
     bagLayout.setVisible(NotVisible.value)
     battleMenuLayout.setVisible(Visible.value)
@@ -62,7 +62,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
   private def menuTitle(pokemonName: String): String = "What will " + pokemonName + " do?"
 
   def battleScreenUpdate(turnData: Seq[Turn]): Unit =
-    showBattleMenu
+    showBattleMenu()
     battleMenuLayout.setButtonsVisibility(NotVisible)
 
     battleMenuLayout.updateLayout(
