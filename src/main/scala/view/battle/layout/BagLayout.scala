@@ -13,7 +13,7 @@ import view.GdxUtil.onTouchDown
 
 class BagLayout(var layoutData: Bag, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary):
   override type T = Bag
-  val box: DialogueBox = DialogueBox(Seq("Seleziona uno strumento di cura"), skin)
+  val box: DialogueBox = DialogueBox(Seq("Select tool"), skin)
   add(box)
   add(scrollableList).fill().minHeight(100)
   setVisible(false)

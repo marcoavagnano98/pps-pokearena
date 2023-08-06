@@ -17,7 +17,7 @@ import scala.io.Source
 class FightLayout(var layoutData: Pokemon, skin: Skin, boundary: Rectangle, callback: Int => Unit) extends BaseLayout(boundary) :
   override type T = Pokemon
 
-  add(DialogueBox(Seq("Scegli una mossa"), skin)).colspan(2)
+  add(DialogueBox(Seq("Choose a move"), skin)).colspan(2)
   row()
   for (elem <- movesButtons)
     add(elem._2).fill().pad(10)

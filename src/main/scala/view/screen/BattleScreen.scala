@@ -59,7 +59,7 @@ class BattleScreen(battle: Battle) extends BasicScreen :
     bagLayout.setVisible(NotVisible.value)
     battleMenuLayout.setVisible(Visible.value)
 
-  private def menuTitle(pokemonName: String): String = "Cosa deve fare " + pokemonName + "?"
+  private def menuTitle(pokemonName: String): String = "What will " + pokemonName + " do?"
 
   def battleScreenUpdate(turnData: Seq[Turn]): Unit =
     showBattleMenu
