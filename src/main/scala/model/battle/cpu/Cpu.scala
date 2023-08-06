@@ -50,7 +50,7 @@ object Cpu:
           .moves(randomIndex)
       )
 
-    private def damageBonusScore(scoreMap: Map[Move, Double]): Map[Move, Double] =
+    def damageBonusScore(scoreMap: Map[Move, Double]): Map[Move, Double] =
       var updatedScoreMapMap: Map[Move, Double] = Map()
       for
         (move, score) <- scoreMap
