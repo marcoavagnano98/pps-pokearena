@@ -43,7 +43,7 @@ object BattleEngine:
    * @param turnPair a data structure who will update during the battle
    * @return updated pair after the battle
    */
-  def roundLoop(turnPair: (Turn, Turn)): (Turn, Turn) =
+  private def roundLoop(turnPair: (Turn, Turn)): (Turn, Turn) =
     @tailrec
     def _loop(turnPair: (Turn, Turn), nTurn: Int): (Turn, Turn) =
       (turnPair._1.checkSkipStatus, turnPair._2) match
